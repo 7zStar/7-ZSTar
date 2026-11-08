@@ -1,0 +1,60 @@
+#include "AboutDialogRes.h"
+#include "../../GuiCommon.rc"
+#include "../../MyVersion.h"
+
+// 7-ZSTar: wider and taller than upstream's 144x144 for two reasons.
+// (1) The copyright takes two lines, one per holder, and the fork disclaimer
+//     is one more paragraph below.
+// (2) The localizable note keeps more room than upstream had (208x5 vs 144x5),
+//     so no translation loses space: do not narrow the dialog back to 144.
+// The disclaimer gets 5 lines for the 4 it needs at the fonts "MS Shell Dlg"
+// resolves to here.
+#define xc 208
+#define yc 204
+
+// 7-ZSTar: first line of the localizable "free software" note (upstream: 93)
+#define y 106
+// 7-ZSTar: fork disclaimer. Deliberately id -1 (not localizable): it must show
+// in every language, and the language files only carry upstream's 2900/2901.
+#define yd 150
+
+// 7-ZSTar: own wordmark plate; upstream's 7zipLogo.ico is left untouched.
+IDI_LOGO ICON "../../UI/FileManager/7zstarLogo.ico"
+
+#ifndef SS_REALSIZEIMAGE
+#define SS_REALSIZEIMAGE 0x800
+#endif
+
+IDD_ABOUT DIALOG 0, 0, xs, ys  MY_MODAL_DIALOG_STYLE  MY_FONT
+// 7-ZSTar: the caption here is only the English fallback - Lang\*.txt string
+// 2900 overrides it when a language is loaded (see AboutDialog.cpp OnInit).
+CAPTION "About 7-ZSTar"
+{
+  DEFPUSHBUTTON  "OK", IDOK, bx1, by, bxs, bys
+  // 7-ZSTar: label follows kHomePageURL in AboutDialog.cpp - the project's
+  // website, not upstream's www.7-zip.org.
+  PUSHBUTTON  "Website", IDB_ABOUT_HOMEPAGE, bx2, by, bxs, bys
+  // 7-ZSTar: third button, leftmost; both labels are translated from Lang
+  // strings 962/963 (the text here is the English fallback).
+  PUSHBUTTON  "Donate", IDB_ABOUT_DONATE, bx3, by, bxs, bys
+  // 7-ZSTar: SS_REALSIZEIMAGE means the control takes the icon's own size and
+  // the 32x32 below is ignored - so the image's dimensions live in
+  // docs/logo/icongen.py, not here. It is 246x68 pixels, and the icon is
+  // placed at 8 dialog units. Worst case is 100% display scaling, where a
+  // vertical unit is 13/8 px: the image ends at 8*1.625+68 = 81 px and the
+  // version line below starts at 58*1.625 = 94 px.
+  ICON   IDI_LOGO, -1, m, m, 32, 32, SS_REALSIZEIMAGE
+  LTEXT  "", IDT_ABOUT_VERSION, m, 58, xc, 8
+  LTEXT  "", IDT_ABOUT_DATE, m, 71, xc, 8
+  // 7-ZSTar: one line per copyright holder (upstream: one line). As a single
+  // string the credit wrapped in the middle of the fork's name.
+  LTEXT  MY_COPYRIGHT_UPSTREAM, -1, m, 84, xc, 8
+  LTEXT  MY_COPYRIGHT_FORK, -1, m, 94, xc, 8
+  LTEXT  "7-ZSTar is free software", IDT_ABOUT_INFO, m, y, xc, (yd - y - 1)
+  // 7-ZSTar: the licence sentence names the actual terms rather than saying
+  // "with exceptions". The package really does carry BSD 2-/3-Clause and MIT
+  // components (eight vendored libraries plus a few upstream files) and the
+  // unRAR restriction on the RAR decoders; both documents named here are
+  // installed alongside the program.
+  LTEXT  "An independent fork of 7-Zip, not affiliated with or endorsed by the 7-Zip project. Under the GNU LGPL v3; parts of it carry BSD, MIT, public-domain or unRAR terms - see LICENSE-EXCEPTIONS.md and NOTICE.", -1, m, yd, xc, (by - yd - 1)
+}

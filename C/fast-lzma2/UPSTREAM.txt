@@ -1,0 +1,34 @@
+name:     fast-lzma2
+version:  1.0.1
+source:   https://github.com/conor42/fast-lzma2 (upstream)
+imported: 2026-08-02
+via:      mcmilk/7-Zip-zstd checkout 260a6a7 (its vendored C/fast-lzma2/
+          tree, flat layout of upstream, MSVC-nmake friendly).
+license:  LICENSE (BSD 3-Clause; COPYING (GPLv2) also present -- dual; this
+          project uses the BSD-3-Clause branch, matching C/zstd's own
+          license-choice precedent)
+patches:  two upstream commits made after the 1.0.1 release, which has no
+          successor release; applied unchanged on 2026-10-23 (mcmilk's
+          master does not have them either). Both are encoder-side memory
+          accesses; this project uses fast-lzma2 only to compress.
+          - b44b79b9b1decb32ba03f25c4bf8430379d6e1b6 (2025-10-26) "Fix
+            unsafe access to the match table in struct LZMA2_ECtx_s":
+            matches[-1] no longer relies on base_match sitting just before
+            the array (lzma2_enc.c).
+          - a793db99fade2957d2453035390f97e573acecb2 (2026-01-11) "Don't
+            read beyond end in RMF_handleRepeat": the block end is passed
+            in and the length is checked before the byte is read
+            (radix_engine.h, radix_internal.h, radix_mf.c).
+          A re-vendor of a later upstream release drops both.
+notes:    version macros verified in fast-lzma2.h (FL2_VERSION_MAJOR/MINOR/
+          RELEASE = 1.0.1). Fast LZMA2 has no independent .7z coder id or
+          standalone archive format of its own: it registers as an
+          *alternative encoder* for the official LZMA2 coder id (0x21, see
+          7zHeader.h k_LZMA2), producing a standard LZMA2 bitstream that the
+          official (unmodified) NCompress::NLzma2::CDecoder can decode --
+          only the encoder differs (multi-threaded radix-match-finder
+          instead of the official single-threaded LzFind). See
+          CPP/7zip/Compress/FastLzma2Encoder.h/.cpp (new files -- this
+          multi-threaded encoder is intentionally kept out of the official
+          Lzma2Encoder.h/.cpp to honor this project's minimal-official-diff
+          constraint) and FastLzma2Register.cpp.

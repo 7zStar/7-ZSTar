@@ -1,0 +1,11 @@
+# 7-ZSTar interop fixtures. Every byte here is compared across platforms by
+# sha256 (corpus/SHA256SUMS is checked with sha256sum -c on Linux), so no
+# line-ending translation anywhere, text files included.
+corpus/** -text
+windows/** -text
+linux/** -text
+
+# Scripts the Linux side writes run under bash; the repo root's eol=crlf rule
+# would otherwise check them out with CRLF on Windows.
+*.sh text eol=lf
+*.md text

@@ -1,0 +1,19 @@
+version: 2
+
+# The workflows pin every action to a commit SHA with the version in a
+# trailing comment. Dependabot understands that form and updates both, so the
+# pins do not quietly go stale.
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    # upload-artifact and download-artifact share the artifact format, so
+    # when both have updates they arrive as one pull request. When only one
+    # does, check it against the pairing noted in release.yml (upload v7
+    # goes with download v8) before merging.
+    groups:
+      artifact-actions:
+        patterns:
+          - actions/upload-artifact
+          - actions/download-artifact

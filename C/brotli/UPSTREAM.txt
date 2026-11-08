@@ -1,0 +1,25 @@
+name:     brotli
+version:  1.2.1
+source:   https://github.com/google/brotli (upstream)
+imported: 2026-08-02 (1.2.0); updated to 1.2.1 on 2026-10-23
+via:      mcmilk/7-Zip-zstd checkout 260a6a7 (its vendored C/brotli/ tree,
+          flat layout with br_*.c prefix on the top-level .c files -- avoids
+          filename collisions with other codecs' object files in the shared
+          $O build output directory -- while common/, dec/, enc/ subdirs
+          keep upstream's own header layout unchanged; MSVC-nmake friendly).
+          1.2.0 -> 1.2.1 was applied by hand from upstream's own diff,
+          https://github.com/google/brotli/compare/v1.2.0...v1.2.1 -- two
+          commits: b418fa81c4 (c/dec/decode.c and c/include/brotli/decode.h,
+          the CVE-2026-111497 fix) and db24a98aed (common/version.h). mcmilk
+          had not re-vendored 1.2.1 yet. After applying, br_decode.c and
+          decode.h differ from upstream v1.2.1 only in the #include lines
+          the flat layout rewrites.
+license:  LICENSE (MIT)
+patches:  none
+notes:    version macros verified in common/version.h (BROTLI_VERSION_MAJOR/
+          MINOR/PATCH = 1.2.1, BROTLI_ABI_REVISION 1). Brotli-Adjust.sh is
+          mcmilk's import helper
+          script, kept for reference of how the flat br_*.c naming was
+          produced. Only the 35 top-level br_*.c files are compiled
+          (C/brotli/*.c); common/, dec/, enc/ contain headers only (#include'd
+          by the br_*.c files via their original relative paths).

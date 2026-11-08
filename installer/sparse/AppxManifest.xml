@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Identity-only ("sparse") package manifest for the Windows 11 context menu.
+
+  Windows 11 puts a shell extension in the first-level context menu only when
+  it arrives with package identity and an IExplorerCommand implementation.
+  A classic HKCR\*\shellex\ContextMenuHandlers registration - what 7-ZSTar.wxs
+  writes, and what official 7-Zip, WinRAR and TortoiseGit still rely on - is
+  always demoted to "Show more options". There is no registry-only path for a
+  dynamic COM handler; every shipping example (Notepad++, PowerToys, VS Code)
+  registers a sparse package for exactly this.
+
+  Nothing of the program lives in the package: AllowExternalContent lets the
+  binaries stay in Program Files, and Add-AppxPackage -ExternalLocation points
+  the declarations below at the install directory. Apart from branding, the
+  C++ side needed one change - upstream already implements IExplorerCommand
+  (CPP/7zip/UI/Explorer/ContextMenu.cpp, in the IExplorerCommand section)
+  and simply never registered it anywhere. The change is in GetState: Windows
+  11 also lists this package's verb in the classic menu, next to the shellex
+  handler's identical submenu, so in a 64-bit build the packaged root hides
+  itself there (MAINTAINING.md Part 3.12).
+
+  Both registrations are kept. Windows 10 and anything that still reads the
+  legacy menu goes on using the shellex keys; Windows 11 additionally sees this
+  one. That is what Notepad++ does, and it is why applying the "classic context
+  menu" registry tweak does not lose our entry.
+
+  Build-Package.ps1 substitutes the two tokens and hands the result to
+  MakeAppx; this file is the source, obj\sparse\<arch>\ holds the expansion.
+    %PUBLISHER%   subject of the signing certificate, byte for byte - Windows
+                  refuses the package if Identity/@Publisher and the signature
+                  disagree. Taken from the certificate rather than written here
+                  so that moving to a CA-issued certificate needs no edit.
+    %VERSION%     four-field package version, from C\7zVersion.h.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
+  xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  IgnorableNamespaces="uap uap10 rescap desktop4 desktop5 com">
+
+  <!-- ProcessorArchitecture neutral: the package carries three PNGs and no
+       code, so one manifest serves x64, x86 and arm64. What differs per
+       architecture is the external location, and that is supplied at
+       registration time. -->
+  <Identity Name="7-ZSTar"
+            ProcessorArchitecture="neutral"
+            Publisher="%PUBLISHER%"
+            Version="%VERSION%" />
+
+  <Properties>
+    <DisplayName>7-ZSTar</DisplayName>
+    <PublisherDisplayName>7-ZSTar project</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <uap10:AllowExternalContent>true</uap10:AllowExternalContent>
+  </Properties>
+
+  <Dependencies>
+    <!-- The first-level context menu is a Windows 11 feature (build 22000+).
+         Setup-ShellIntegration.ps1 skips registration below that anyway, so
+         this bound is belt and braces. -->
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26200.0" />
+  </Dependencies>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
+  </Capabilities>
+
+  <Applications>
+    <!-- Id must start with a letter, so it cannot be "7-ZSTar". AppListEntry
+         none: the Start menu shortcut comes from the MSI, and a second entry
+         from a package that contains no program would be confusing. -->
+    <Application Id="SevenZStar"
+                 Executable="7zFM.exe"
+                 uap10:TrustLevel="mediumIL"
+                 uap10:RuntimeBehavior="win32App">
+      <uap:VisualElements AppListEntry="none"
+                          DisplayName="7-ZSTar"
+                          Description="7-ZSTar shell integration"
+                          BackgroundColor="transparent"
+                          Square150x150Logo="Assets\Square150x150Logo.png"
+                          Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <desktop4:Extension Category="windows.fileExplorerContextMenus">
+          <desktop4:FileExplorerContextMenus>
+            <!-- The verb id starts with "C" deliberately. NanaZip PR #205
+                 ("Workaround for NanaZip not appearing in classic context
+                 menu") hit a Windows bug where a Type="*" verb disappeared
+                 from the classic menu depending on the name, and prefixing it
+                 with a C was the fix. Verified here: with this id the verb
+                 reaches both menus. In a 64-bit build GetState then hides it
+                 in the classic one, where the shellex handler has the same
+                 entry; a 32-bit build still shows it there, as its only entry,
+                 so the prefix still matters. -->
+            <desktop5:ItemType Type="*">
+              <desktop5:Verb Id="CSevenZStarShell" Clsid="E9471EF7-A2B2-46B9-95AB-E4421B50C777" />
+            </desktop5:ItemType>
+            <desktop5:ItemType Type="Directory">
+              <desktop5:Verb Id="CSevenZStarShell" Clsid="E9471EF7-A2B2-46B9-95AB-E4421B50C777" />
+            </desktop5:ItemType>
+          </desktop4:FileExplorerContextMenus>
+        </desktop4:Extension>
+        <com:Extension Category="windows.comServer">
+          <!-- Same CLSID the MSI writes under HKCR\CLSID for the classic menu,
+               so both menus drive one implementation. The shell loads
+               7-zip.dll out of the external location into a surrogate host;
+               the DLL needs no manifest of its own for this (checked against
+               Notepad++'s NppShell.dll, which has none either). -->
+          <com:ComServer>
+            <com:SurrogateServer DisplayName="7-ZSTar Shell Extension">
+              <com:Class Id="E9471EF7-A2B2-46B9-95AB-E4421B50C777" Path="7-zip.dll" ThreadingModel="STA" />
+            </com:SurrogateServer>
+          </com:ComServer>
+        </com:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>

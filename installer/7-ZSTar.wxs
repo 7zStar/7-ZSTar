@@ -1,0 +1,702 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <!--
+    7-ZSTar installer, WiX v6.
+
+    Written from scratch rather than converted from upstream's DOC/7zip.wxs:
+    that file uses the WiX v2 schema (schemas.microsoft.com/wix/2003/01/wi),
+    which `wix convert` does not handle - it only upgrades v3 sources.
+    Upstream's file is still the reference for *what* has to be installed and
+    registered.
+
+    Deliberate differences from upstream's package:
+      * Two single-scope packages instead of one dual-scope MSI. The same
+        source builds per-machine (default) or per-user (-d PerUser=1 from
+        Build-Package.ps1 -PerUser); each refuses to install while the other
+        scope's copy is present (OTHERSCOPEDETECTED below).
+      * No .sfx components. 7-ZSTar does not ship self-extracting stubs at
+        all; that "stub exe + appended payload" shape is the antivirus
+        false-positive problem this project exists to avoid.
+      * No App Paths registration. Upstream registers
+        HKLM\...\App Paths\7zFM.exe, but our executable has the same name as
+        official 7-Zip's, so whichever product installed last would silently
+        win that key. Skipping it keeps the side-by-side promise; the cost is
+        that Win+R "7zFM" does not resolve to 7-ZSTar.
+      * The .chm is upstream's, unmodified. It comes from the same binary
+        release Lang\ is vendored from, and it documents 7-Zip's UI - which
+        7-ZSTar inherits almost entirely. What this fork adds is not in it;
+        README.md says so, and its Documentation section is where the help
+        links point when no .chm is installed.
+      * Own GUID family. Upstream derives everything from Igor Pavlov's
+        23170F69-40C1-... prefix; reusing it would make Windows Installer
+        treat 7-ZSTar as the same product as 7-Zip. See installer/GUIDS.md.
+
+    This is not the only source file compiled into the package:
+    Build-Package.ps1 generates obj\Languages-<arch>.wxs - one Feature per
+    language, 90-odd of them - and passes it to `wix build` alongside this
+    file. That is what <FeatureGroupRef Id="LanguageFeatures"/> below resolves
+    against. The generated file is build output; it is not in version control.
+
+    Build inputs come from four bind paths (see Build-Package.ps1):
+      stage\<arch>\        payload - binaries, docs, Lang\
+      installer\           wix-banner.bmp, wix-dialog.bmp
+      installer\obj\       License.rtf (generated, gitignored)
+      CPP\7zip\UI\FileManager\   7zstar.ico for the ARP entry
+  -->
+
+  <?define ProductName = "7-ZSTar" ?>
+  <?define Manufacturer = "7-ZSTar project" ?>
+
+  <!-- Permanently fixed. Never change this: it is how future versions
+       recognise an existing install to upgrade. See installer/GUIDS.md.
+       Each install scope carries its own permanently-fixed UpgradeCode so
+       Windows Installer never treats them as the same product. -->
+  <?ifdef PerUser ?>
+    <?define PkgScope = "perUser" ?>
+    <?define UpgradeCode = "{28B840BD-C033-4E68-B8CD-2B9ABAFEC520}" ?>
+    <?define OtherScopeName = "per-machine" ?>
+  <?else ?>
+    <?define PkgScope = "perMachine" ?>
+    <?define UpgradeCode = "{C4AA06AB-755E-4E98-97EA-41D19AB37E21}" ?>
+    <?define OtherScopeName = "per-user" ?>
+  <?endif ?>
+
+  <!-- Per-scope GUIDs of the registry-keyed components; why in the file. -->
+  <?include ComponentGuids.wxi ?>
+
+  <!-- Sparse MSIX package (Windows 11 first-level context menu):
+       - Under perMachine: included when Sparse is defined.
+       - Under perUser: included ONLY when SparseUser is defined; the default
+         leaves it out.
+       When included under perUser, the certificate custom actions run with
+       Impersonate="yes" (no SYSTEM, no elevation) - and that is not enough
+       with a self-signed certificate. Measured 2026-10-17 on Windows 11
+       26200: the installing user, unelevated, puts the certificate into
+       CurrentUser\TrustedPeople and Add-AppxPackage still fails 0x800B0109;
+       adding it to LocalMachine\TrustedPeople, which needs elevation, is
+       what makes registration work. So a SparseUser build installs without
+       the Windows 11 entry. It is kept for a CA-issued certificate, which
+       needs no local trust step (Microsoft's documentation; not measured). -->
+  <?ifdef PerUser ?>
+    <?ifdef SparseUser ?>
+      <?define IncludeSparse = "1" ?>
+      <?define SparseCertImpersonate = "yes" ?>
+      <?define SparseCertStore = "Cert:\CurrentUser\TrustedPeople" ?>
+    <?endif ?>
+  <?else ?>
+    <?ifdef Sparse ?>
+      <?define IncludeSparse = "1" ?>
+      <?define SparseCertImpersonate = "no" ?>
+      <?define SparseCertStore = "Cert:\LocalMachine\TrustedPeople" ?>
+    <?endif ?>
+  <?endif ?>
+
+  <!-- Must match the CLSID compiled into the shell extension
+       (CPP/7zip/UI/Explorer; registered in CPP/7zip/Guid.txt). -->
+  <?define ShellExtId = "{E9471EF7-A2B2-46B9-95AB-E4421B50C777}" ?>
+
+  <!-- Both injected by Build-Package.ps1: the version from C/7zVersion.h, and
+       the absolute staging directory that the Lang\ harvest globs. -->
+  <?ifndef Version ?>
+    <?error Version must be supplied, e.g. wix build -d Version=26.2.1 ?>
+  <?endif ?>
+  <?ifndef StageDir ?>
+    <?error StageDir must be supplied, e.g. wix build -d StageDir=C:\...\stage\x64 ?>
+  <?endif ?>
+  <?ifndef ProjectUrl ?>
+    <?error ProjectUrl must be supplied; Build-Package.ps1 reads it from C\7zVersion.h ?>
+  <?endif ?>
+
+  <Package
+      Name="$(var.ProductName)"
+      Manufacturer="$(var.Manufacturer)"
+      Version="$(var.Version)"
+      UpgradeCode="$(var.UpgradeCode)"
+      Scope="$(var.PkgScope)"
+      Compressed="yes"
+      InstallerVersion="500">
+
+    <!-- AllowSameVersionUpgrades: the version does not move between
+         development builds, and without this a reinstall errors out. -->
+    <MajorUpgrade
+        AllowSameVersionUpgrades="yes"
+        MigrateFeatures="yes"
+        DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+
+    <!-- Detect whether the other install scope (per-machine vs per-user) is already
+         installed, and block installation if so. Note: this is best-effort; a
+         per-user install belonging to a different user account cannot be detected
+         from here.
+
+         Not an <Upgrade> OnlyDetect row on the other scope's UpgradeCode:
+         FindRelatedProducts only finds products in the install context of the
+         package running it. Measured on Windows 11 26200, the per-user
+         package's log reads "FindRelatedProducts: current install is
+         per-user. Related install for product '{...}' is per-machine.
+         Skipping...", and the per-machine package skips a per-user install
+         the same way.
+
+         So this looks for the Path value the other scope's package writes
+         under HKMU\Software\7-ZSTar (the install-path component below):
+         Windows Installer creates it on install and removes it on uninstall -
+         which holds only because that component's GUID differs by scope
+         (ComponentGuids.wxi); with a shared GUID it outlived the uninstall.
+         It searches for the value, not the key: the file manager keeps its
+         own settings under HKCU\Software\7-ZSTar, and that key outlives an
+         uninstall. Nothing in the program writes a value named Path there.
+         - Per-user package: HKLM, in both registry views, because an x86
+           per-machine install on 64-bit Windows lands under WOW6432Node.
+         - Per-machine package: HKCU, which only holds the installing account's
+           per-user install. HKCU\Software is shared by both views.
+
+         The "Installed OR" term exempts maintenance mode (uninstall, repair,
+         modify): LaunchConditions runs unconditionally in both UI and Execute
+         sequences. Without Installed, if the other scope is installed later
+         (e.g., admin installs per-machine over user A's per-user install),
+         user A's uninstall would evaluate OTHERSCOPEDETECTED=true and be
+         blocked from removing their own installation. -->
+    <Property Id="OTHERSCOPEDETECTED" Secure="yes">
+      <?ifdef PerUser ?>
+      <RegistrySearch Id="OtherScopePath64" Root="HKLM" Key="Software\$(var.ProductName)"
+                      Name="Path" Type="raw" Bitness="always64" />
+      <RegistrySearch Id="OtherScopePath32" Root="HKLM" Key="Software\$(var.ProductName)"
+                      Name="Path" Type="raw" Bitness="always32" />
+      <?else ?>
+      <RegistrySearch Id="OtherScopePath" Root="HKCU" Key="Software\$(var.ProductName)"
+                      Name="Path" Type="raw" />
+      <?endif ?>
+    </Property>
+    <Launch Message="A $(var.OtherScopeName) installation of $(var.ProductName) is already installed. Please uninstall it first."
+            Condition="Installed OR NOT OTHERSCOPEDETECTED" />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!--
+      Apps & features entry. Without ARPPRODUCTICON, Windows Installer leaves
+      DisplayIcon empty and the Settings list falls back to a generic package
+      icon. ICE50 warns that the shell does not reliably render icons held in
+      files whose name lacks an .exe/.ico extension, so the Id carries one even
+      though it is only a table key. It cannot be "7-ZSTar.ico": WiX identifiers
+      allow letters, digits, underscores and periods, but not the hyphen.
+    -->
+    <Icon Id="ProductIcon.ico" SourceFile="7zstar.ico" />
+    <Property Id="ARPPRODUCTICON" Value="ProductIcon.ico" />
+    <!-- Per-machine: after SetINSTALLFOLDER (see the Main feature), or a
+         folder given on the command line would be recorded here even though
+         the files go to Program Files. -->
+    <?ifdef PerUser ?>
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]"
+                 After="CostFinalize" Sequence="both" />
+    <?else ?>
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]"
+                 After="SetINSTALLFOLDER" Sequence="both" />
+    <?endif ?>
+
+    <!--
+      The three links Settings > Apps shows for an installed product. The base
+      URL is not written here: Build-Package.ps1 parses MY_PROJECT_URL out of
+      C\7zVersion.h and passes it in, which is the same definition the
+      online-help fallback compiles against - so the installer cannot point
+      somewhere the program does not. They resolve once the repository is
+      published; until then they 404.
+    -->
+    <Property Id="ARPURLINFOABOUT" Value="$(var.ProjectUrl)" />
+    <Property Id="ARPHELPLINK" Value="$(var.ProjectUrl)/issues" />
+    <Property Id="ARPURLUPDATEINFO" Value="$(var.ProjectUrl)/releases" />
+
+    <!--
+      Install wizard. Without this the package has no Dialog table at all and
+      msiexec shows nothing but a progress window that vanishes - which is
+      exactly what shipped in M7.
+
+      Mondo rather than InstallDir because there are two features and the
+      language pack is worth being able to decline: welcome -> licence ->
+      setup type -> (Custom only) feature tree -> confirm -> progress -> finish.
+      `wix build` needs -ext WixToolset.UI.wixext for <ui:WixUI> and
+      -ext WixToolset.Util.wixext for the launch-on-exit custom action.
+
+      /qn is unaffected: msiexec skips the whole InstallUISequence in quiet
+      mode regardless of what the package authors, so CI keeps working.
+    -->
+    <ui:WixUI Id="WixUI_Mondo" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="wix-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="wix-dialog.bmp" />
+
+    <!--
+      Finish-page checkbox. Two different properties are involved and both are
+      required: ...TEXT supplies the label (no label, no checkbox), while the
+      one without the suffix is what the control writes 1 into. Pre-checked,
+      and immediate execution keeps the launch in the unelevated UI process
+      rather than the elevated install service.
+    -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT"
+              Value="Launch $(var.ProductName) File Manager" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <Property Id="WixShellExecTarget" Value="[#_7zFM.exe]" />
+    <CustomAction Id="LaunchApplication"
+                  BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)"
+                  DllEntry="WixShellExec"
+                  Execute="immediate"
+                  Return="check" />
+    <UI>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction"
+               Value="LaunchApplication"
+               Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
+    </UI>
+
+    <!--
+      Where it installs. Per-user: wherever the user picks (Custom setup's
+      Browse button is ConfigurableDirectory). Per-machine: Program Files, and
+      nowhere else - no Browse button, and INSTALLFOLDER given on the command
+      line is overridden by the SetDirectory below.
+
+      Because the install folder holds what runs with more than an ordinary
+      user's rights: Setup-ShellIntegration.ps1, run by SparseTrustCert and
+      SparseUntrustCert as SYSTEM and by the impersonated custom actions as
+      the installing administrator, elevated; and 7-zip.dll, which every
+      user's Explorer loads. Program Files is writable by administrators only.
+      A folder made elsewhere inherits its parent's permissions instead, and
+      under C:\ that includes Modify for every Authenticated User: measured, a
+      standard user replaced the script in C:\7-ZSTar and it ran as SYSTEM at
+      the administrator's next repair (a repair keeps a modified unversioned
+      file) and again at uninstall. Locking such a folder down is not
+      something the installer can do on its own: MsiLockPermissionsEx applied
+      an owner and the ACEs but not the protected flag, so the inherited
+      Modify stayed (measured), and doing it with a custom action would also
+      strip the permissions of whatever else is in a folder the
+      administrator picked.
+
+      A per-user install keeps the choice: nothing in it runs with more than
+      the installing user's own rights. A folder outside the user's profile
+      can still be writable by other users, as a portable copy unpacked there
+      would be - the same risk, and the user's own call.
+
+      The two Main features below differ only in ConfigurableDirectory and
+      must otherwise stay identical; do not merge them back into one.
+      Test-MsiRegistry.ps1 checks the result on the built packages.
+    -->
+    <?ifdef PerUser ?>
+    <Feature Id="Main"
+             Title="$(var.ProductName)"
+             Description="The file manager, the command line tools and the Explorer context menu."
+             Level="1"
+             AllowAbsent="no"
+             ConfigurableDirectory="INSTALLFOLDER">
+      <ComponentGroupRef Id="MainComponents" />
+    </Feature>
+    <?else ?>
+    <Feature Id="Main"
+             Title="$(var.ProductName)"
+             Description="The file manager, the command line tools and the Explorer context menu."
+             Level="1"
+             AllowAbsent="no">
+      <ComponentGroupRef Id="MainComponents" />
+    </Feature>
+    <!-- The same parent the Directory tree below names, so the same
+         per-architecture Program Files. -->
+    <SetDirectory Id="INSTALLFOLDER" Value="[ProgramFiles6432Folder]$(var.ProductName)\" />
+    <?endif ?>
+
+    <ComponentGroup Id="MainComponents">
+      <ComponentGroupRef Id="Program" />
+      <ComponentGroupRef Id="ShellIntegration" />
+      <!-- Default Programs: a ProgID per format, our entry in each
+           extension's OpenWithProgids, and the Capabilities block that puts
+           7-ZSTar in Settings > Default apps. Generated into
+           obj\Associations-<arch>.wxs by Build-Package.ps1 from the same
+           extension/icon table the shell extension compiles, so the installer
+           and the DLL cannot disagree about which icon a format gets.
+           Nothing here claims a file type - see that file's header. -->
+      <ComponentGroupRef Id="Associations" />
+      <?ifdef IncludeSparse ?>
+      <ComponentGroupRef Id="SparsePackage" />
+      <?endif ?>
+      <ComponentGroupRef Id="Docs" />
+    </ComponentGroup>
+
+    <Feature Id="LanguageFiles"
+             Title="Languages"
+             Description="Translated user interface. Expand to choose individual languages; pick one at run time under Tools > Options > Language."
+             Level="1">
+      <ComponentGroupRef Id="Languages" />
+      <!-- One child feature per language, so Custom setup can take or leave
+           each one. There are 90-odd; installer\Build-Package.ps1 generates
+           them into obj\Languages.wxs and passes that file to `wix build`. -->
+      <FeatureGroupRef Id="LanguageFeatures" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <?ifdef PerUser ?>
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="ProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+          <!-- LangUtils.cpp:33 builds this path as "<module dir>\Lang\", so the
+               name and the nesting are both load-bearing. -->
+          <Directory Id="LANGFOLDER" Name="Lang" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+    <?else ?>
+    <!-- ProgramFiles6432Folder resolves per package architecture, so there is
+         no CPU branch here the way upstream's .wxs has one.
+         Verified on all three by building and extracting each .msi with
+         `msiexec /a`: x64 and arm64 install under ProgramFiles64Folder,
+         x86 under ProgramFilesFolder. -->
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+        <!-- LangUtils.cpp:33 builds this path as "<module dir>\Lang\", so the
+             name and the nesting are both load-bearing. -->
+        <Directory Id="LANGFOLDER" Name="Lang" />
+      </Directory>
+    </StandardDirectory>
+    <?endif ?>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppMenuFolder" Name="$(var.ProductName)" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="Program" Directory="INSTALLFOLDER">
+
+      <Component>
+        <!-- Shortcut nested inside File, not beside it: as a direct child of
+             Component it gets no target and Windows Installer points it at
+             INSTALLFOLDER, so the Start menu entry opens the folder instead
+             of launching the file manager. -->
+        <File Id="_7zFM.exe" Source="7zFM.exe" KeyPath="yes">
+          <Shortcut Id="FmShortcut" Directory="AppMenuFolder"
+                    Name="$(var.ProductName) File Manager" Advertise="no" />
+        </File>
+        <RemoveFolder Id="RemoveAppMenuFolder" Directory="AppMenuFolder" On="uninstall" />
+      </Component>
+
+      <Component>
+        <File Source="7zG.exe" KeyPath="yes" />
+      </Component>
+
+      <Component>
+        <File Source="7z.exe" KeyPath="yes" />
+      </Component>
+
+      <Component>
+        <File Source="7za.exe" KeyPath="yes" />
+      </Component>
+
+      <Component>
+        <File Source="7z.dll" KeyPath="yes" />
+      </Component>
+
+      <!-- Install path. Path<bits> mirrors upstream's layout, under our own
+           hive. Two readers: the program, which falls back to Path64 (Path32
+           in x86 builds), then Path, when it finds no 7z.dll next to itself
+           (LoadCodecs.cpp), and the other scope's package, whose AppSearch for
+           OTHERSCOPEDETECTED keys on the Path value. Root="HKMU" resolves to
+           HKLM for per-machine installs and HKCU for per-user installs. -->
+      <Component Guid="$(var.InstallPathGuid)">
+        <RegistryKey Root="HKMU" Key="Software\$(var.ProductName)">
+          <RegistryValue Name="Path" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+          <RegistryValue Name="Path64" Type="string" Value="[INSTALLFOLDER]" />
+        </RegistryKey>
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <!--
+      Shell integration. Every handler key is named "7-ZSTar" rather than
+      "7-Zip" and points at our own CLSID, so installing or removing either
+      product leaves the other's context menu intact.
+    -->
+    <ComponentGroup Id="ShellIntegration" Directory="INSTALLFOLDER">
+
+      <Component>
+        <File Id="_7zip.dll" Source="7-zip.dll" KeyPath="yes" />
+        <RegistryValue Root="HKCR" Key="CLSID\$(var.ShellExtId)"
+                       Type="string" Value="$(var.ProductName) Shell Extension" />
+        <RegistryValue Root="HKCR" Key="CLSID\$(var.ShellExtId)\InprocServer32"
+                       Type="string" Value="[INSTALLFOLDER]7-zip.dll" />
+        <RegistryValue Root="HKCR" Key="CLSID\$(var.ShellExtId)\InprocServer32"
+                       Name="ThreadingModel" Type="string" Value="Apartment" />
+      </Component>
+
+      <Component Guid="$(var.MenuAllFilesGuid)">
+        <RegistryValue Root="HKCR" Key="*\shellex\ContextMenuHandlers\$(var.ProductName)"
+                       Type="string" Value="$(var.ShellExtId)" KeyPath="yes" />
+      </Component>
+
+      <Component Guid="$(var.MenuDirectoryGuid)">
+        <RegistryValue Root="HKCR" Key="Directory\shellex\ContextMenuHandlers\$(var.ProductName)"
+                       Type="string" Value="$(var.ShellExtId)" KeyPath="yes" />
+      </Component>
+
+      <Component Guid="$(var.MenuFolderGuid)">
+        <RegistryValue Root="HKCR" Key="Folder\shellex\ContextMenuHandlers\$(var.ProductName)"
+                       Type="string" Value="$(var.ShellExtId)" KeyPath="yes" />
+      </Component>
+
+      <Component Guid="$(var.DropDirectoryGuid)">
+        <RegistryValue Root="HKCR" Key="Directory\shellex\DragDropHandlers\$(var.ProductName)"
+                       Type="string" Value="$(var.ShellExtId)" KeyPath="yes" />
+      </Component>
+
+      <Component Guid="$(var.DropDriveGuid)">
+        <RegistryValue Root="HKCR" Key="Drive\shellex\DragDropHandlers\$(var.ProductName)"
+                       Type="string" Value="$(var.ShellExtId)" KeyPath="yes" />
+      </Component>
+
+      <!-- Shell extensions must be on the Approved list to load under a
+           restricted (non-admin) shell. Excluded in per-user installs because
+           HKLM is not writable by standard users. Note: without the Approved entry,
+           the classic context menu will silently fail to load on machines where
+           the EnforceShellExtensionSecurity policy is enabled (off by default). -->
+      <?ifndef PerUser ?>
+      <Component>
+        <RegistryValue Root="HKLM"
+                       Key="Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved"
+                       Name="$(var.ShellExtId)" Type="string"
+                       Value="$(var.ProductName) Shell Extension" KeyPath="yes" />
+      </Component>
+      <?endif ?>
+
+      <Component>
+        <!-- Not inside the sparse fragment: this script also cleans up file
+             associations at uninstall, which a build without a signing
+             certificate still has to do. Installed rather than run from a temp
+             copy so it can be used by hand afterwards - package registration
+             is per user and the custom actions only ever run for whoever
+             installed, so a second account repairs it with -Register.
+             -Status prints what is and is not in place. -->
+        <File Source="Setup-ShellIntegration.ps1" KeyPath="yes" />
+      </Component>
+
+    </ComponentGroup>
+
+    <!--
+      This installer never claims a file type: it only advertises ProgIDs for
+      Default Programs (the generated Associations component group). The
+      associations themselves are what Tools > Options > System in the file
+      manager writes, per user, into HKCU\Software\Classes as 7-ZSTar.<ext>
+      ProgIDs - the same names, and for a per-user install the same hive, as
+      the advertised ones (its All Users column writes HKLM\Software\Classes,
+      the per-machine install's hive). Clearing a format there deletes both
+      keys whole, advertised values included; docs/INSTALL.md, "The per-user
+      package", says so. Uninstalling used to
+      leave them behind, and a ProgID whose DefaultIcon and open command name a
+      deleted executable is what Explorer draws as a blank icon. So the
+      uninstall clears this user's own, and only entries still naming one of
+      our ProgIDs: an extension since given to another program is untouched,
+      and so is a ProgID whose open command names a 7zFM.exe outside this
+      install that still exists - a portable copy's, set up with that copy.
+      That last part holds for the per-machine package only: the per-user
+      package advertises its ProgIDs under the same HKCU names, and
+      RemoveRegistryValues deletes their open commands before this runs.
+
+      Only this user's. Associations belonging to other accounts on the machine
+      are out of reach of an impersonated custom action, and there is no
+      supported way to reach into another user's hive from an installer.
+
+      NOT UPGRADINGPRODUCTCODE is what stops an upgrade wiping them. A major
+      upgrade removes the old product first (RemoveExistingProducts, sequenced
+      at 1401), which runs this same sequence with REMOVE=ALL; without the
+      guard, every version bump would silently reset the user's file
+      associations, and nothing would put them back.
+    -->
+    <Property Id="KEEPASSOC" Secure="yes" />
+    <CustomAction Id="RemoveUserAssociations" Directory="INSTALLFOLDER"
+                  ExeCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;Setup-ShellIntegration.ps1&quot; -RemoveAssociations"
+                  Execute="deferred" Impersonate="yes" Return="ignore" />
+    <InstallExecuteSequence>
+      <!-- Before RemoveFiles, or the script has already been deleted. -->
+      <Custom Action="RemoveUserAssociations" Before="RemoveFiles"
+              Condition="(REMOVE=&quot;ALL&quot; OR &amp;Main=2) AND NOT UPGRADINGPRODUCTCODE AND KEEPASSOC &lt;&gt; &quot;1&quot;" />
+    </InstallExecuteSequence>
+  </Fragment>
+
+  <?ifdef IncludeSparse ?>
+  <Fragment>
+    <!--
+      Windows 11 first-level context menu.
+
+      The classic shellex registration above is all Windows 10 ever needed, but
+      Windows 11 shows a shell extension in the first-level menu only when it
+      arrives with package identity - anything else is demoted to "Show more
+      options". So an identity-only ("sparse") MSIX ships alongside the
+      binaries and is registered at install time. installer\sparse\
+      AppxManifest.xml explains what it declares; upstream already implements
+      IExplorerCommand and simply never registered it. Apart from branding, the
+      one C++ change is in GetState, which keeps the packaged verb out of the
+      classic menu so the entry shows there once (MAINTAINING.md Part 3.12).
+
+      Present only when Build-Package.ps1 had a certificate to sign with
+      (-d Sparse=1 for per-machine, -d SparseUser=1 for per-user). Without it
+      the package still installs and still gets the classic menu - the Windows
+      11 entry is the only thing missing.
+
+      Both registrations are kept deliberately. They drive the same CLSID, and
+      keeping the classic one is what makes the entry survive for users who
+      have applied the "restore the old context menu" registry tweak.
+    -->
+    <ComponentGroup Id="SparsePackage" Directory="INSTALLFOLDER">
+      <Component>
+        <File Source="7-ZSTar.msix" KeyPath="yes" />
+      </Component>
+      <Component>
+        <!-- Public half of the signing certificate. Self-signed, so it has to
+             be trusted locally before deployment will accept the package;
+             SparseTrustCert below does that with the install's own elevation
+             (per-machine) or standard user context (per-user).
+             Ships as a file rather than being embedded in the custom action so
+             that what is trusted can be inspected before and after. -->
+        <File Source="7-ZSTar.cer" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!--
+      Directory-type custom actions: the working directory is INSTALLFOLDER,
+      which is what lets the command line name the script relatively. Deferred
+      custom actions cannot expand [INSTALLFOLDER] in their own command line,
+      and the script defaults every path to its own directory, so nothing has
+      to be passed in.
+
+      Elevation differs by step and install scope:
+        TrustCert/UntrustCert  Impersonate="no"  (per-machine) - LocalMachine\TrustedPeople
+                                                               needs the elevated service.
+                               Impersonate="yes" (per-user)    - CurrentUser\TrustedPeople
+                                                               without elevation, which
+                                                               deployment does not trust
+                                                               (see the note at the top).
+        Register/Unregister    Impersonate="yes" (both)        - Appx registration is per
+                                                               user; as SYSTEM it would
+                                                               register for the wrong one.
+
+      Return="ignore" throughout: failing to get the Windows 11 entry must not
+      fail the installation, because everything else - including the classic
+      context menu - is already in place by then. That does hide failures, and
+      an /l*v log does not help: measured, the MSI captures nothing a
+      Directory-type custom action writes to stdout. So the script keeps its
+      own log, %TEMP%\7-ZSTar-shell-setup.log - C:\Windows\Temp for the
+      elevated pair, the user's temp for the impersonated pair.
+    -->
+    <CustomAction Id="SparseTrustCert" Directory="INSTALLFOLDER"
+                  ExeCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;Setup-ShellIntegration.ps1&quot; -TrustCert -CertStore &quot;$(var.SparseCertStore)&quot;"
+                  Execute="deferred" Impersonate="$(var.SparseCertImpersonate)" Return="ignore" />
+    <CustomAction Id="SparseRegister" Directory="INSTALLFOLDER"
+                  ExeCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;Setup-ShellIntegration.ps1&quot; -Register"
+                  Execute="deferred" Impersonate="yes" Return="ignore" />
+    <CustomAction Id="SparseUnregister" Directory="INSTALLFOLDER"
+                  ExeCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;Setup-ShellIntegration.ps1&quot; -Unregister"
+                  Execute="deferred" Impersonate="yes" Return="ignore" />
+    <CustomAction Id="SparseUntrustCert" Directory="INSTALLFOLDER"
+                  ExeCommand="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;Setup-ShellIntegration.ps1&quot; -UntrustCert -CertStore &quot;$(var.SparseCertStore)&quot;"
+                  Execute="deferred" Impersonate="$(var.SparseCertImpersonate)" Return="ignore" />
+
+    <!--
+      Opt-out: msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0
+
+      Trusting a self-signed certificate machine-wide is a decision somebody
+      may reasonably decline, and declining should not cost them the whole
+      installer. With SPARSE=0 the files are still laid down but nothing is
+      trusted and nothing is registered, so 7-ZSTar behaves the way it does on
+      Windows 10: present, under "Show more options". Setup-ShellIntegration.ps1
+      -TrustCert -Register turns it on later without reinstalling.
+
+      Secure="yes" puts it in SecureCustomProperties. Without that, a property
+      set on the command line does not survive the handoff to the elevated
+      half of a per-machine install, and the condition below would be judged
+      against an empty value there.
+    -->
+    <Property Id="SPARSE" Secure="yes" />
+
+    <InstallExecuteSequence>
+      <!-- Before RemoveFiles, or the script it runs has already been deleted.
+           Not gated on SPARSE: an uninstall has to clean up whatever an
+           earlier install left, whatever it was told at the time. Both modes
+           are no-ops when there is nothing registered or trusted.
+
+           &Main=2 as well as REMOVE=ALL: AllowAbsent="no" stops the wizard
+           offering to drop the Main feature, but it does not stop
+           `msiexec /x ... REMOVE=Main` on the command line. That path deletes
+           the three files through normal component tracking while REMOVE is
+           "Main", not "ALL" - which would strip the package from disk and
+           leave its registration and our certificate behind. The feature
+           action state catches both. -->
+      <Custom Action="SparseUnregister" Before="RemoveFiles"
+              Condition="REMOVE=&quot;ALL&quot; OR &amp;Main=2" />
+      <Custom Action="SparseUntrustCert" After="SparseUnregister"
+              Condition="REMOVE=&quot;ALL&quot; OR &amp;Main=2" />
+      <!-- After InstallFiles, so the .msix, the .cer and the script exist.
+           NOT REMOVE covers install, repair and the install half of a major
+           upgrade; the uninstall half runs with REMOVE=ALL and is skipped.
+           An unset SPARSE is the empty string, which is not "0", so the
+           default is on. -->
+      <Custom Action="SparseTrustCert" After="InstallFiles"
+              Condition="NOT REMOVE AND SPARSE &lt;&gt; &quot;0&quot;" />
+      <Custom Action="SparseRegister" After="SparseTrustCert"
+              Condition="NOT REMOVE AND SPARSE &lt;&gt; &quot;0&quot;" />
+    </InstallExecuteSequence>
+  </Fragment>
+  <?endif ?>
+
+  <Fragment>
+    <ComponentGroup Id="Docs" Directory="INSTALLFOLDER">
+      <Component>
+        <File Source="LICENSE" KeyPath="yes" />
+      </Component>
+      <Component>
+        <File Source="COPYING" KeyPath="yes" />
+      </Component>
+      <Component>
+        <File Source="LICENSE-EXCEPTIONS.md" KeyPath="yes" />
+      </Component>
+      <Component>
+        <!-- Upstream's own licence statement, from its binary package: "Redistributions
+             in binary form must reproduce related license information from this file." -->
+        <File Source="LICENSE-7-Zip.txt" KeyPath="yes" />
+      </Component>
+      <Component>
+        <File Source="NOTICE" KeyPath="yes" />
+      </Component>
+      <Component>
+        <File Source="README.md" KeyPath="yes" />
+      </Component>
+      <Component>
+        <!-- Upstream's compiled help, vendored verbatim (Help\UPSTREAM.md).
+             HelpUtils.cpp opens "<directory of the running module>\7-zip.chm",
+             so this belongs in INSTALLFOLDER next to 7zFM.exe - a Help\
+             subfolder would leave F1 falling back to the web. -->
+        <File Source="7-zip.chm" KeyPath="yes" />
+      </Component>
+      <Component>
+        <File Source="CHANGELOG.md" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <!--
+      Upstream's translations, vendored under Lang/ (see Lang/UPSTREAM.md).
+      Harvested rather than listed: the set is whatever that upstream release
+      shipped, and re-vendoring a version with one more language should not
+      need an edit here. Component GUIDs are derived from the key path, so they
+      stay stable across builds for files that do not move.
+
+      Absolute path via -d StageDir rather than a relative one: WiX v7 changed
+      what Files/@Include is relative to, and an absolute path means that
+      change cannot silently repoint this glob when we eventually upgrade.
+    -->
+    <!-- The .txt files are not harvested here: each one is its own feature,
+         emitted into obj\Languages.wxs by Build-Package.ps1. What stays is
+         en.ttt, which is not a selectable language - LangPage.cpp:91 opens it
+         to learn how many strings a complete translation has, and without it
+         the picker's "N%" figures come from a hardcoded constant instead. It
+         rides with the parent feature so no individual choice can drop it. -->
+    <ComponentGroup Id="Languages" Directory="LANGFOLDER">
+      <Files Include="$(var.StageDir)\Lang\*.ttt" />
+    </ComponentGroup>
+  </Fragment>
+
+</Wix>

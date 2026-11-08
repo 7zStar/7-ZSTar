@@ -1,0 +1,6 @@
+#include "../../MyVersionInfo.rc"
+
+MY_VERSION_INFO_DLL("7z Standalone Plugin", "7za")
+
+// 7-ZSTar: own 7z format icon; upstream's Icons/7z.ico is left untouched.
+101  ICON  "../../Archive/Icons/7zstar/7z.ico"

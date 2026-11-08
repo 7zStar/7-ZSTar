@@ -1,0 +1,196 @@
+name:     zstdmt
+version:  n/a (mcmilk's own multi-threading wrapper library, not an
+          upstream-versioned project; tracks mcmilk/7-Zip-zstd's own commits)
+source:   https://github.com/mcmilk/7-Zip-zstd (upstream fork this whole
+          project's M6a milestone is porting codecs from)
+imported: 2026-08-02
+via:      mcmilk/7-Zip-zstd checkout 260a6a7 (its C/zstdmt/ tree, unchanged).
+license:  LICENSE (BSD; "Copyright (c) 2016 - 2017, Tino Reichardt")
+patches:  NOT pristine any more -- do not re-vendor this directory by
+          re-copying the `via:` checkout. Doing so would silently revert
+          everything below: none of it fails to build, and most of it
+          leaves every test green, because it is either OOM-only or only
+          shows up under a heap checker; the brotli detection,
+          truncated-stream and oversize-header vectors under
+          build/testdata/ pin the rest.
+
+          (a) MERGED UPSTREAM (2026-08-04) -- these four are now in
+              mcmilk/7-Zip-zstd master (8046864f), so a re-vendor from a
+              checkout at or after that commit brings them along and they
+              need no special handling:
+                #532 / PR #535  writelist_done|busy drained before the free
+                                loop; decompress threads==1 no longer
+                                returns past the cleanup.
+                                lz4/lz5/lizard -mt_{compress,decompress}.c
+                #536 / PR #539  free(in.buf) on every early return of
+                                pt_compress().
+                                brotli/lz4/lz5/lizard -mt_compress.c
+                #537 / PR #540  st_decompress() reports truncated input
+                                instead of succeeding.
+                                lz4/lz5/lizard -mt_decompress.c
+                #538 / PR #541  brotli decides raw vs. mt-container from
+                                the stream's first four bytes instead of
+                                from the caller's thread count; mutexes and
+                                lists always initialized.
+                                brotli-mt_decompress.c
+              (#530 / PR #533 and #531 / PR #534 are part of the same
+              merged series but land in CPP/7zip/, not here.)
+
+              Also merged upstream, and taken from there on 2026-10-23:
+                #564 (3e1ea83, with 82b8c37 and 48a3721 on the CPP side)
+                                a stream that ends early is reported as the
+                                new *MT_error_end_of_data ("Unexpected end
+                                of data") instead of read_fail / data_error
+                                / frame_decompress: pt_read() classifies a
+                                short read, st_decompress() an input that
+                                ran out mid-frame. New enum value in the
+                                four *-mt.h (after data_error, where
+                                upstream put it), its string in the four
+                                *-mt_common.c.
+                                all four *-mt_decompress.c
+                Applied as upstream wrote it, except where its hunks meet
+                (c) below: pt_read()'s realloc() failure path keeps (c)'s
+                temporary-and-reset and only takes upstream's single
+                `error:` exit, and brotli's pt_read() -- whose frames == 0
+                case is (c)'s parked header -- was hand-merged with the
+                same classification. How the codes reach 7-Zip is NOT
+                upstream's: upstream returns ERROR_HANDLE_EOF /
+                ERROR_INVALID_DATA as HRESULTs; here the four
+                CPP/7zip/Compress/*Decoder.cpp return S_FALSE and set
+                NeedsMoreInput() (see there). Upstream's C/7zTypes.h
+                change (non-Windows ERROR_HANDLE_EOF) and its zstd parts
+                (mcmilk's own ZstdDecoder, plus the gh-567 follow-up
+                f2233f1) do not apply: this project's zstd decoder is
+                official 7-Zip's.
+
+          (b) SENT, NOW MERGED -- all four PRs were merged upstream
+              (PR #546 on 2026-08-05, #548 on 2026-08-06, #544 on
+              2026-09-02, #550 on 2026-09-27), so a re-vendor from a
+              mcmilk checkout at or after 2026-09-27 brings them along.
+              They were applied here byte-identically to the PR branches;
+              the merged form was not compared line by line, so diff
+              these sites on the next re-vendor:
+                #543 / PR #544  `@level` and `@threads` ranges in the four
+                                *-mt.h and the four *-mt_compress.c struct
+                                comments corrected (the CPP-side -mx clamp
+                                that PR also carries is not in this
+                                directory).
+                #545 / PR #546  all eight *MT_create{C,D}Ctx() validate
+                                their parameters before allocating the
+                                context; brotli's unlocked writelist move
+                                on the pt_read() failure path removed.
+                                all eight *-mt_{compress,decompress}.c
+                #547 / PR #548  pt_decompress() no longer hands back a
+                                writelist entry it never acquired
+                                (error_unlock_nowl label).
+                                all four *-mt_decompress.c
+                #549 / PR #550  lz5/lizard st_decompress() decodes every
+                                frame of a concatenated raw stream, using
+                                lz4's loop shape.
+                                lz5/lizard -mt_decompress.c
+
+          (c) 7-ZSTar ONLY -- these will NOT arrive via any upstream merge.
+              Each carries a `7-ZSTar:` comment at the site, so
+              `git grep -n "7-ZSTar:" C/zstdmt/` lists them all:
+                - free(wl) on the wl->out.buf OOM path in pt_compress(),
+                  in all four *-mt_compress.c. Upstream left this out of
+                  PR #539 on purpose to keep that diff narrow.
+                - pthread_mutex_destroy() x2 on BROTLIMT_createDCtx()'s
+                  err_cwork path in brotli-mt_decompress.c, needed because
+                  (a)'s #538 made the matching init unconditional.
+                - *MT_decompressDCtx() checks ctx for NULL before the
+                  initializers that dereference it, in all four
+                  *-mt_decompress.c. Upstream has this recorded as a known
+                  defect but has not sent a fix.
+                - realloc() results go through a temporary, and the
+                  (buf, allocated) pair is reset together on failure, at
+                  both sites in all four *-mt_decompress.c. Also recorded
+                  upstream, also unfixed there.
+                - brotli's container probe covers the whole 16-byte first
+                  frame header (all fixed fields: magic, +4 == 8,
+                  +12 == BROTLIMT_MAGICNUMBER), not just the 4-byte magic,
+                  and hands every probed byte back to the raw decoder on
+                  any mismatch; pt_read()'s frames == 0 case consumes the
+                  parked header (ctx->frame0_hdr) instead of re-reading
+                  its tail. Narrows the ~2^-32 raw-stream false positive
+                  that #541's 4-byte probe left behind to ~2^-80.
+                  brotli-mt_decompress.c, plus a @threads doc note in
+                  brotli-mt.h. Worth offering upstream only if they keep
+                  #541's content detection -- as of 2026-08-05 they are
+                  weighing a revert (see #538).
+                - BROTLIMT_createDCtx() takes a `threadsset` flag, and
+                  (threadsset != 0, threads == 0) forces the raw decoder
+                  in BROTLIMT_decompressDCtx() instead of probing the
+                  content. This is the escape hatch out of detection, so
+                  a raw stream that does collide with the container
+                  header stays readable; the entry above only makes such
+                  a collision rarer, and upstream's measurements put the
+                  hatch, not the probe width, as the load-bearing half
+                  (see #538).
+                  brotli-mt_decompress.c + brotli-mt.h.
+                  Ported from sebres' b4e36ba7 in mcmilk/7-Zip-zstd, but
+                  NOT byte-identical to it and deliberately so, twice
+                  over: (1) that fork's -mmt=off already arrives as
+                  threads == 0 while its unforced case arrives as a real
+                  count, so it needs no flag to tell the two apart -- on
+                  official 7-Zip both arrive as 0 and the flag is what
+                  separates them; (2) sebres also skips detection when a
+                  count >= 1 is forced, which would make -mmt=4 decide
+                  how a file is read. In mcmilk's fork -mmt selects the
+                  brotli format and that follows; here -mmt is official
+                  7-Zip's CPU knob, so a forced count is accepted and
+                  then ignored by the routing. Same reason this cannot
+                  simply be re-vendored if sebres' commit lands upstream:
+                  merge it, but keep the routing as it is here.
+                  The CPP side narrows it further -- only an explicit
+                  -mmt=0 reaches the hatch, not the -mmt=off / -mmt-
+                  spellings official 7-Zip also folds onto a forced
+                  count of 1, since those cannot be told from -mmt=1 and
+                  honouring them would stop that from reading mcmilk's
+                  mt containers. That decision lives in
+                  CPP/7zip/Archive/BrotliHandler.cpp's ForceRawStream();
+                  this directory only sees the resulting pair.
+                - Every per-frame size a decoder reads from a header is
+                  bounded before it is allocated, against
+                  MT_FRAME_SIZE_MAX / MT_FRAME_CSIZE_MAX (256 MiB, plus
+                  1/256 for the compressed size), defined in memmt.h
+                  with the reasoning: the skippable header's compressed
+                  size in all four pt_read(), the LZ4-frame content size
+                  in lz4/lz5/lizard pt_decompress() (which also requires
+                  the FLG Content Size bit, without which +6 is block
+                  data), and brotli's 64 KiB hint, which is now widened
+                  to size_t before the shift (the U16 promoted to int
+                  overflowed from 0x8000). Out of range is data_error.
+                  None of the formats limits a frame, so 256 MiB is a
+                  policy: 7-ZSTar and 7-Zip-zstd write <= 4 MiB (brotli
+                  <= 11 MiB) per frame, and only zstdmt's CLI with
+                  `-b` > 256 writes more. build/testdata/oversize-*
+                  pin this (Test-Smoke.ps1). As of 2026-11-03 neither
+                  mcmilk/7-Zip-zstd nor mcmilk/zstdmt bounds these
+                  fields (zstdmt 0c33b99f only added the in->size < 14
+                  check present here).
+                  all four *-mt_decompress.c + memmt.h.
+                - brotli's st_decompress() writes what decoded before the
+                  input ended, then reports end_of_data as it always did.
+                  New st_drain_output(): the output buffer first, then the
+                  decoder's ring buffer through BrotliDecoderHasMoreOutput()
+                  / BrotliDecoderTakeOutput(), because on NEEDS_MORE_INPUT
+                  the decoder only pushes what fits in the output buffer.
+                  build/testdata/trunc-prefix.br pins it (Test-Smoke.ps1).
+                  Not offered upstream yet. brotli-mt_decompress.c.
+
+          Re-vendoring procedure: diff the new upstream tree against this
+          one, keep every hunk listed under (c), and keep any hunk under
+          (b) whose PR is still open (none, as of 2026-10-23). (a) needs
+          nothing.
+notes:    Generic block-splitting multi-threading harness (memmt.h, list.h,
+          threading.h scaffolding) with one thin per-codec wrapper pair
+          each for brotli-mt_*.c, lizard-mt_*.c, lz4-mt_*.c, lz5-mt_*.c
+          (compress/decompress/common, 3 files x 4 codecs = 12 files) plus
+          zstd-mt_threading.c. zstd itself does *not* use this library --
+          zstd's own multithreading (ZSTDMT) is built into C/zstd/ itself
+          (zstd_compress's ZSTD_c_nbWorkers parameter, see C/zstd/UPSTREAM.txt
+          and CPP/7zip/Compress/ZstdEncoder.cpp) and predates/bypasses this
+          wrapper entirely -- zstd-mt_threading.c here is a leftover shared
+          threading primitive some of the other four codecs' *-mt_*.c files
+          depend on, not zstd-specific glue.

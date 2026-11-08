@@ -1,0 +1,16 @@
+name:     lz5
+version:  1.5.0
+source:   https://github.com/inikep/lz5 (upstream; project later renamed/
+          merged into Lizard -- this is the standalone lz5 codec as
+          vendored by mcmilk, distinct from C/lizard/)
+imported: 2026-08-02
+via:      mcmilk/7-Zip-zstd checkout 260a6a7 (its vendored C/lz5/ tree, flat
+          layout of upstream lib/, MSVC-nmake friendly).
+license:  LICENSE (BSD 2-Clause; upstream's LICENSE file header text says
+          "LZ4 Library" verbatim -- a copy-paste artifact from lz5's lz4
+          ancestry, kept unmodified as shipped upstream)
+patches:  none
+notes:    version macros verified in lz5.h (LZ5_VERSION_MAJOR/MINOR/RELEASE
+          = 1.5.0). Multithreading comes from C/zstdmt/lz5-mt_*.c (mcmilk's
+          own MT wrapper, see C/zstdmt/UPSTREAM.txt), not from this library
+          directly.

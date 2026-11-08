@@ -1,0 +1,14 @@
+name:     zstd
+version:  1.5.7
+source:   https://github.com/facebook/zstd (upstream)
+imported: 2026-08-02
+via:      mcmilk/7-Zip-zstd checkout 260a6a7 (its vendored C/zstd tree, flat
+          layout of upstream lib/{common,compress,decompress}, MSVC-nmake
+          friendly; includes upstream threading.c/zstdmt_compress.c so zstd
+          multithreading is self-contained)
+license:  LICENSE (BSD-3-Clause), COPYING (GPLv2) - dual; this project uses
+          the BSD-3-Clause branch (license-choice: BSD-3-Clause)
+patches:  none
+notes:    version macros verified in zstd.h (ZSTD_VERSION_MAJOR/MINOR/RELEASE
+          = 1.5.7). AdjustZS.sh is mcmilk's import helper script, kept for
+          reference of how the flat tree was produced.

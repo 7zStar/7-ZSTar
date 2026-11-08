@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Component GUIDs of the registry-keyed components, which differ by install
+  scope. Included by 7-ZSTar.wxs and by the obj\Associations-<arch>.wxs that
+  Build-Package.ps1 generates. See installer/GUIDS.md.
+
+  WiX derives a registry-keyed component's automatic GUID from its root, key
+  and value name. These components are authored as HKMU or HKCR, the same in
+  both packages, so left automatic they came out with the same GUID in the
+  per-machine and the per-user MSI. Windows Installer counts a component's
+  clients across install contexts, so with both scopes installed, whichever
+  was uninstalled first logged "Disallowing uninstallation of component: {...}
+  since another client exists" for each of them and left its registry values
+  behind - among them the Path value the other scope's package searches for
+  (OTHERSCOPEDETECTED), which then blocked every later install of that scope.
+
+  Per-machine keeps the automatic GUIDs it has always had. Per-user gets its
+  own fixed ones, one set for the 32-bit package and one for the 64-bit ones
+  (x64, arm64): a 32-bit and a 64-bit component must not share a component
+  code, which is also why WiX folds the bitness into the automatic GUIDs.
+  Permanently fixed, like the UpgradeCodes: do not regenerate.
+-->
+<Include>
+  <?ifdef PerUser ?>
+    <?if $(sys.BUILDARCH) = "x86" ?>
+      <?define InstallPathGuid = "{E2FB7B8D-E69E-4F72-94CE-AD300FE800DA}" ?>
+      <?define MenuAllFilesGuid = "{09DA7E0D-0092-406B-9E9E-E1B86EFA0E6B}" ?>
+      <?define MenuDirectoryGuid = "{80655B82-01BB-4EAE-928D-85EF4DA20D91}" ?>
+      <?define MenuFolderGuid = "{2CECE114-EF2C-427A-9D72-BDE6D7A9B407}" ?>
+      <?define DropDirectoryGuid = "{66FCCB15-9724-4CE2-BB72-F3EC78F3D420}" ?>
+      <?define DropDriveGuid = "{91FDB448-89E1-4204-9910-E7C98F9532DC}" ?>
+      <?define AssocProgIdsGuid = "{7E1231DA-A938-4553-B826-5DC4EA9A1BC8}" ?>
+      <?define AssocOpenWithGuid = "{99A03418-BB92-4E79-B1B0-537F9043F1ED}" ?>
+      <?define AssocCapabilitiesGuid = "{92043236-A2D3-4446-AA69-2FD2F469DE12}" ?>
+    <?else ?>
+      <?define InstallPathGuid = "{002D4F52-8980-4C36-96C5-FF7064D73103}" ?>
+      <?define MenuAllFilesGuid = "{9C06E266-CEE8-491D-B34C-C2ED732BC0AD}" ?>
+      <?define MenuDirectoryGuid = "{95DD3E4D-DCE7-4B95-97E4-2A1771AB015D}" ?>
+      <?define MenuFolderGuid = "{7E8ED003-2FE9-4270-A9CF-6568F433D934}" ?>
+      <?define DropDirectoryGuid = "{59FB4C34-CD6F-4317-AD6C-D6F70C9E6095}" ?>
+      <?define DropDriveGuid = "{8831AD71-8CDF-4557-A53E-AFBAEBF56B06}" ?>
+      <?define AssocProgIdsGuid = "{98F59B89-0E6F-4784-A71A-748F8A51D1A4}" ?>
+      <?define AssocOpenWithGuid = "{A8DBA1B5-F54C-4A44-A20F-533A2F30F3E2}" ?>
+      <?define AssocCapabilitiesGuid = "{1C2897A5-F363-49ED-85EE-9943B3574084}" ?>
+    <?endif ?>
+  <?else ?>
+    <?define InstallPathGuid = "*" ?>
+    <?define MenuAllFilesGuid = "*" ?>
+    <?define MenuDirectoryGuid = "*" ?>
+    <?define MenuFolderGuid = "*" ?>
+    <?define DropDirectoryGuid = "*" ?>
+    <?define DropDriveGuid = "*" ?>
+    <?define AssocProgIdsGuid = "*" ?>
+    <?define AssocOpenWithGuid = "*" ?>
+    <?define AssocCapabilitiesGuid = "*" ?>
+  <?endif ?>
+</Include>

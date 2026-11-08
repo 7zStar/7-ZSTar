@@ -1,0 +1,34 @@
+name:     lizard
+version:  2.1.0
+source:   https://github.com/inikep/lizard (upstream)
+imported: 2026-08-02
+via:      mcmilk/7-Zip-zstd checkout 260a6a7 (its vendored C/lizard/ tree,
+          flat layout of upstream lib/, MSVC-nmake friendly; liz_*.c files
+          are Lizard's own vendored copy of zstd's FSE/HUF entropy coder,
+          prefixed to avoid filename collisions with C/zstd/'s own
+          fse_*.c/huf_*.c objects in the shared $O build output directory).
+license:  LICENSE (BSD 2-Clause)
+patches:  one upstream commit made after the v2.1 release, which has no
+          successor release; applied unchanged on 2026-10-23 (mcmilk's
+          master does not have it either).
+          - d3becc7e80d3eb01147c2f63bed2e23fac533f19 (2025-10-09, issue #41):
+            Lizard_writeBlock() also rejects start > oend before writing an
+            uncompressed block (lizard_compress.c). LizardF_compressFrameBound
+            under-estimates a 1-byte input (24 bytes, 29 written). Not
+            reachable through C/zstdmt, which always sizes the output for a
+            whole 4 MiB chunk; taken so the vendored copy matches upstream.
+          A re-vendor of a later upstream release drops it.
+notes:    version macros verified in lizard_compress.h (LIZARD_VERSION_MAJOR/
+          MINOR/RELEASE = 2.1.0). AdjustLiz.sh is mcmilk's import helper
+          script, kept for reference. Compiled objects: lizard_compress.c,
+          lizard_decompress.c, lizard_frame.c (core codec) + liz_entropy_common.c,
+          liz_fse_compress.c, liz_fse_decompress.c, liz_huf_compress.c,
+          liz_huf_decompress.c (entropy backend) -- 8 files total, matching
+          upstream's own lib/ compiled set. Multithreading comes from
+          C/zstdmt/lizard-mt_*.c (mcmilk's own MT wrapper, see
+          C/zstdmt/UPSTREAM.txt), not from this library directly. 7-ZSTar's
+          GUI exposes Lizard as a single method/level range (see
+          CompressDialog.cpp); upstream/mcmilk's 4 compression-mode families
+          (fastLZ4, LIZv1, fastLZ4+Huffman, LIZv1+Huffman, selected via the
+          coder-properties level byte 10-49) remain fully reachable via
+          -m0=lizard:<level> on the command line.

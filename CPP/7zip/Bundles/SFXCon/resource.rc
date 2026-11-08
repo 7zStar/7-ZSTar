@@ -1,0 +1,11 @@
+#include "../../MyVersionInfo.rc"
+
+MY_VERSION_INFO_APP("7z Console SFX", "7z.sfx")
+
+// 7-ZSTar: application icon (see SFXWin/resource.rc). Upstream's
+// SFXCon/7z.ico is left untouched.
+101 ICON "../../UI/FileManager/7zstar.ico"
+
+#ifndef UNDER_CE
+1  24  MOVEABLE PURE   "../../UI/Console/Console.manifest"
+#endif

@@ -1,0 +1,175 @@
+name: build
+
+# Builds every supported architecture and uploads the release artifacts.
+# Runs on pushes and PRs so a broken build is caught before it reaches a tag.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**/*.md', 'docs/**']
+  pull_request:
+    paths-ignore: ['**/*.md', 'docs/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # windows-2022 ships VS 2022 Enterprise including
+    # Microsoft.VisualStudio.Component.VC.Tools.ARM64, so no extra toolchain
+    # install step is needed for the arm64 leg.
+    runs-on: windows-2022
+    # A clean local build takes about 10 minutes per platform on 22 threads;
+    # a hosted runner has 4. Generous, but it stops a hung job from burning
+    # a private repository's minutes for the default six hours.
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x64, x86, arm64]
+
+    # Actions are pinned to a commit, not a moving tag: a tag can be re-pointed
+    # (actions/checkout's v4 was, on 2026-07-20). Dependabot keeps the pins and
+    # their version comments current - see .github/dependabot.yml.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build
+        shell: pwsh
+        run: build\Build.ps1 -Platform ${{ matrix.platform }}
+
+      # x86 binaries run fine on an x64 runner through WOW64, so both native
+      # and 32-bit get the full functional suite. Only arm64 is skipped - it
+      # genuinely cannot execute here, and that leg proves compile+package
+      # only until an arm64 runner is available.
+      - name: Smoke tests
+        if: matrix.platform != 'arm64'
+        shell: pwsh
+        run: build\Test-Smoke.ps1 -Platform ${{ matrix.platform }}
+
+      # wix build's -ext only looks in the local extension cache - it never
+      # downloads - so the two extensions Build-Package.ps1 names must be added
+      # here, at the same version as the CLI. Called by full path because a
+      # dotnet tool installed in this step is not guaranteed to be on PATH yet.
+      - name: Install WiX
+        shell: pwsh
+        run: |
+          dotnet tool install --global wix --version 6.0.2
+          $wix = Join-Path $env:USERPROFILE '.dotnet\tools\wix.exe'
+          & $wix extension add -g WixToolset.UI.wixext/6.0.2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $wix extension add -g WixToolset.Util.wixext/6.0.2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # The per-machine MSI carries a signed sparse MSIX (the Windows 11
+      # first-level context menu), and a runner has no signing certificate.
+      # -CreateSigningCert makes a throwaway self-signed one for CN=7-ZSTar
+      # project in this job's Cert:\CurrentUser\My, signs the MSIX with it and
+      # ships its public half inside the MSI. The private key never leaves the
+      # runner and nothing is stored in GitHub secrets. A different certificate
+      # on every run is harmless: uninstalling removes every TrustedPeople
+      # certificate with that subject, and an upgrade removes the old version
+      # first. makeappx and signtool come from the Windows SDKs on the image
+      # (10.0.17763 to 10.0.26100 on windows-2022); Build-Package.ps1 throws if
+      # it cannot find them, so a missing SDK fails this step.
+      - name: Package (msi + zip)
+        shell: pwsh
+        run: installer\Build-Package.ps1 -Platform ${{ matrix.platform }} -CreateSigningCert
+
+      # Writes only its own -user.msi into installer\dist, so the per-machine
+      # package from the step above stays. No certificate: the per-user package
+      # carries no sparse package.
+      - name: Package (per-user msi)
+        shell: pwsh
+        run: installer\Build-Package.ps1 -Platform ${{ matrix.platform }} -PerUser
+
+      # Both scopes are in dist\ now, which is what the shared-component-GUID
+      # check needs (installer\GUIDS.md); it exits non-zero on any failure.
+      # -RequireSparse also fails the job if the per-machine MSI came out
+      # without its sparse package, which Build-Package.ps1 would only warn about.
+      - name: Check the packages' registry tables
+        shell: pwsh
+        run: installer\Test-MsiRegistry.ps1 -RequireSparse
+
+      # A private repository on the Free plan has 500 MB for artifacts. One run
+      # uploads about 37 MB (per platform: the per-machine msi, the per-user
+      # msi and the zip - 12.7, 11.7 and 12.4 MB for x64, x86 and arm64 when
+      # built locally on 2026-11-03), so keep them a week, not ninety days.
+      # Billing against that quota has not been measured.
+      - name: Upload packages
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: 7-ZSTar-${{ matrix.platform }}
+          path: |
+            installer/dist/*.msi
+            installer/dist/*.zip
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: build-logs-${{ matrix.platform }}
+          path: build/logs/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # Native Linux 7zz, built through the fork's own gcc makefile
+  # (build/linux/README.md). Independent of the Windows matrix above: it shares
+  # no files with it and neither job waits for the other. The runner image
+  # already carries gcc/g++ and make, so only the tools the two test scripts
+  # compare against are installed.
+  linux:
+    runs-on: ubuntu-24.04
+    # The build takes about 40 seconds on 4 cores; this only stops a hang.
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install test tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zstd brotli lz4 libarchive-tools
+
+      # The log is kept in a file so that the warning count can be asserted
+      # separately: the makefile builds with -Werror -Wall -Wextra, but a
+      # warning that ever slipped past would otherwise only scroll by.
+      - name: Build
+        run: |
+          cd CPP/7zip/Bundles/Alone2
+          make -j"$(nproc)" -f makefile.7zstar.gcc 2>&1 | tee /tmp/build.log; test "${PIPESTATUS[0]}" -eq 0
+          warnings=$(grep -ci warning /tmp/build.log || true)
+          echo "warning lines in the build log: ${warnings}"
+          test "${warnings}" -eq 0
+
+      - name: Smoke tests
+        run: bash build/linux/test-smoke.sh CPP/7zip/Bundles/Alone2/b/g/7zz
+
+      - name: Interoperability check
+        run: bash build/linux/interop-check.sh all --7zz CPP/7zip/Bundles/Alone2/b/g/7zz
+
+      # The artifact is a zip, which does not keep the executable bit: run
+      # chmod +x after downloading it.
+      - name: Upload 7zz
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: 7-ZSTar-linux-x64
+          path: CPP/7zip/Bundles/Alone2/b/g/7zz
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: build-log-linux
+          path: /tmp/build.log
+          if-no-files-found: ignore
+          retention-days: 7

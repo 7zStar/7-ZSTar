@@ -1,0 +1,100 @@
+7-ZSTar
+Copyright (c) 1999-2026 Igor Pavlov (upstream 7-Zip)
+Copyright (c) 2026 7-ZSTar contributors
+
+7-ZSTar is a fork of 7-Zip (https://www.7-zip.org/, https://github.com/ip7z/7zip)
+by Igor Pavlov, based on upstream version 26.05.
+
+Licensed as a whole under the GNU Lesser General Public License v3 (LICENSE).
+Some files carry additional or different licenses - see LICENSE-EXCEPTIONS.md.
+
+This product includes software developed by third parties:
+
+- RAR decompression code: created using source code of the unRAR program by
+  Alexander Roshal, with the unRAR license restriction (DOC/unRarLicense.txt).
+- LZFSE decompression: derived from the LZFSE compression library by Apple Inc.
+  (BSD 3-Clause).
+- zstd decoder (C/ZstdDec.c): developed by Igor Pavlov using the original zstd
+  decoder by Facebook, Inc. / Meta Platforms as reference (BSD 3-Clause).
+- XXH64 (C/Xxh64.c): derived from the original XXH64 code by Yann Collet
+  (BSD 2-Clause).
+
+Both BSD licences require binary redistributions to reproduce the copyright
+notices, so here they are as upstream states them in LICENSE-7-Zip.txt:
+
+    BSD 3-Clause (LZFSE and the zstd decoder):
+      Copyright (c) 2015-2016, Apple Inc. All rights reserved.
+      Copyright (c) Facebook, Inc. All rights reserved.
+      Copyright (c) 2023-2026 Igor Pavlov.
+
+    BSD 2-Clause (XXH64):
+      Copyright (c) 2012-2021 Yann Collet.
+      Copyright (c) 2023-2026 Igor Pavlov.
+
+The C++ layer driving brotli, lz4, lz5, lizard and fast-lzma2 - 22 encoder,
+decoder and handler files under CPP/7zip/Compress/ and CPP/7zip/Archive/ - was
+ported from mcmilk/7-Zip-zstd, Copyright (c) Tino Reichardt. That project is
+itself a fork of 7-Zip and states its license as "the same as the Mainline
+7-Zip, which means most of the code is GNU LGPL v2.1-or-later", which is what
+permits redistribution here under LGPL v3. Each ported file says so in its own
+header, so this lists exactly those 22 and nothing else:
+
+    git grep -l "Ported from mcmilk/7-Zip-zstd"
+
+Searching for the project's name instead is misleading: seven further files
+under CPP/ mention 7-Zip-zstd without being ports of it - the five
+*Register.cpp files, MethodProps.cpp and 7zip.mak - and they say why. They
+match mcmilk's coder ids and property names so that archives interoperate.
+Those are this project's own code, or upstream's, not Tino Reichardt's.
+
+The zstd C++ files are not among them. ZstdDecoder.cpp and ZstdHandler.cpp are
+upstream 7-Zip's own (upstream ships zstd decoding); ZstdEncoder.cpp,
+ZstdEncoderProps.* and ZstdRegister.cpp were written for this project against
+the encoder API upstream had already stubbed out. They deliberately match
+7-Zip-zstd's `.7z` coder id (0x4F71101) and its five-byte coder-properties
+layout, so archives interoperate - that is format compatibility, not shared
+code.
+
+Vendored libraries - seven compressors and xxHash. Each keeps its original
+license file in its own directory, and the copyright lines below are quoted
+from those files rather than paraphrased; LICENSE-EXCEPTIONS.md holds the
+summary table. build\Test-Smoke.ps1 checks these quotes against the licence
+files they come from, so re-vendoring an upstream release means updating both
+this list and the $licenceQuotes table there:
+
+- zstd (C/zstd/) - "Copyright (c) Meta Platforms, Inc. and affiliates."
+  BSD 3-Clause, dual-licensed with GPLv2 (C/zstd/COPYING); BSD branch chosen
+- xxHash (C/hashes/) - "Copyright (C) 2012-2023 Yann Collet" (BSD 2-Clause,
+  stated in C/hashes/xxhash.h - the directory has no separate license file)
+- brotli (C/brotli/) - "Copyright (c) 2009, 2010, 2013-2016 by the Brotli
+  Authors." (MIT)
+- lz4 (C/lz4/) - "Copyright (c) 2011-2020, Yann Collet" (BSD 2-Clause)
+- lz5 (C/lz5/) - "Copyright (c) 2011-2015, Yann Collet" (BSD 2-Clause; the
+  license file is headed "LZ4 Library", which is upstream lz5's own artefact)
+- lizard (C/lizard/) - "Copyright (C) 2011-2016, Yann Collet." and
+  "Copyright (C) 2016-2017, Przemyslaw Skibinski" (BSD 2-Clause)
+- fast-lzma2 (C/fast-lzma2/) - "Copyright 2018-present Conor McCarthy"
+  BSD 3-Clause, dual-licensed with GPLv2 (C/fast-lzma2/COPYING); BSD chosen
+- zstdmt multithreading wrappers (C/zstdmt/) - "Copyright (c) 2016 - 2017,
+  Tino Reichardt" (BSD 2-Clause)
+
+Only library sources are vendored: none of these directories contains the
+programs/ or tests/ trees that carry GPL terms in some of the upstream
+projects, so no GPL-licensed file is compiled into 7-ZSTar.
+
+Assets taken from 7-Zip's binary release, which is the only place upstream
+publishes them - they are not in its source tree. Their terms are the ones
+stated in that package's own licence file, reproduced here as LICENSE-7-Zip.txt:
+"All other files: the GNU LGPL".
+
+- Lang/ - 7-Zip's translations. Every string is upstream's work apart from the
+  product name, which is rewritten to 7-ZSTar (Lang/UPSTREAM.md).
+- Help/7-zip.chm - 7-Zip's compiled help file, byte-identical to upstream's
+  (Help/UPSTREAM.md).
+- LICENSE-7-Zip.txt - upstream's licence statement itself, byte-identical.
+  It is installed rather than merely cited because it says: "Redistributions
+  in binary form must reproduce related license information from this file."
+
+Toolbar art - the bitmaps in CPP/7zip/UI/FileManager/7zstar/ were cut from one
+AI-generated image, then cropped and resized. No exclusive right is claimed
+in that generated image; see LICENSE-EXCEPTIONS.md.

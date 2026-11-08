@@ -1,0 +1,8 @@
+# makefile.7zstar.gcc -- 7-ZSTar: new file (Linux gcc port).
+# Build: cd CPP/7zip/Bundles/Alone2 && make -j"$(nproc)" -f makefile.7zstar.gcc
+# cmpl_gcc.mak = var_gcc.mak + warn_gcc.mak + makefile.gcc (the latter is found
+# in make's working directory, i.e. this directory); 7zstar_gcc.mak then adds the
+# fork's objects. No upstream makefile is modified.
+# Output: b/g/7zz (override the directory with O=...).
+include ../../cmpl_gcc.mak
+include ../../7zstar_gcc.mak

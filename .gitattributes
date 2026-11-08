@@ -1,0 +1,47 @@
+# 7-ZSTar: every rule down to the "Upstream's own rules" line below is this
+# project's. Upstream added a .gitattributes of its own in 26.03; its rules
+# are kept, unchanged, at the end.
+
+# Store text normalized (LF) in git like upstream; check out as CRLF on Windows.
+* text=auto eol=crlf
+
+# Never translate line endings for these.
+*.patch -text
+*.png binary
+*.ico binary
+# Help\7-zip.chm: upstream's compiled help, vendored byte-for-byte.
+*.chm binary
+*.bmp binary
+*.gif binary
+*.7z binary
+*.zip binary
+# .br test vectors (build/testdata/): fake-magic.br is 64 bytes with no NUL,
+# so content sniffing alone classifies it as text - and the eol=crlf rule
+# above would then rewrite any 0x0A byte a future vector happens to contain.
+*.br binary
+# The truncated-stream vectors next to them, for the same reason.
+*.lz4 binary
+*.lz5 binary
+*.liz binary
+
+# Vendored upstream translations: keep them byte-identical to what upstream
+# shipped. The rule above would check them out as CRLF, and Lang/rebrand.py
+# --check compares them byte for byte against a fresh unpack of upstream's
+# release - so on any machine but the one that vendored them, every file
+# would look like it had drifted.
+Lang/*.txt -text
+Lang/*.ttt -text
+
+# Assembly and gcc makefiles keep LF where upstream uses LF.
+*.S text eol=lf
+makefile.gcc text eol=lf
+# 7-ZSTar: Linux gcc port -- the fork's own makefiles, same LF treatment.
+makefile.7zstar.gcc text eol=lf
+7zstar_gcc.mak text eol=lf
+# 7-ZSTar: shell scripts must stay LF - with CRLF the shebang line becomes
+# "bash\r" and the script dies with "bad interpreter" on Linux.
+*.sh text eol=lf
+
+# Upstream's own rules (added in 26.03).
+*.dsp text eol=crlf
+*.dsw text eol=crlf

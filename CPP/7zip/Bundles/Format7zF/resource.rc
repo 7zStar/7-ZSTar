@@ -1,0 +1,62 @@
+#include "../../MyVersionInfo.rc"
+
+MY_VERSION_INFO_DLL("7z Plugin" , "7z")
+
+// 7-ZSTar: every format icon now comes from Archive/Icons/7zstar/ instead of
+// Archive/Icons/. Upstream's own icon files are left byte-identical, so
+// merging a new 7-Zip release never produces a binary conflict here.
+// Indices 0-26 keep upstream's numbering; 27+ are ours.
+0  ICON  "../../Archive/Icons/7zstar/7z.ico"
+1  ICON  "../../Archive/Icons/7zstar/zip.ico"
+2  ICON  "../../Archive/Icons/7zstar/bz2.ico"
+3  ICON  "../../Archive/Icons/7zstar/rar.ico"
+4  ICON  "../../Archive/Icons/7zstar/arj.ico"
+5  ICON  "../../Archive/Icons/7zstar/z.ico"
+6  ICON  "../../Archive/Icons/7zstar/lzh.ico"
+7  ICON  "../../Archive/Icons/7zstar/cab.ico"
+8  ICON  "../../Archive/Icons/7zstar/iso.ico"
+9  ICON  "../../Archive/Icons/7zstar/split.ico"
+10  ICON  "../../Archive/Icons/7zstar/rpm.ico"
+11  ICON  "../../Archive/Icons/7zstar/deb.ico"
+12  ICON  "../../Archive/Icons/7zstar/cpio.ico"
+13  ICON  "../../Archive/Icons/7zstar/tar.ico"
+14  ICON  "../../Archive/Icons/7zstar/gz.ico"
+15  ICON  "../../Archive/Icons/7zstar/wim.ico"
+16  ICON  "../../Archive/Icons/7zstar/lzma.ico"
+17  ICON  "../../Archive/Icons/7zstar/dmg.ico"
+18  ICON  "../../Archive/Icons/7zstar/hfs.ico"
+19  ICON  "../../Archive/Icons/7zstar/xar.ico"
+20  ICON  "../../Archive/Icons/7zstar/vhd.ico"
+21  ICON  "../../Archive/Icons/7zstar/fat.ico"
+22  ICON  "../../Archive/Icons/7zstar/ntfs.ico"
+23  ICON  "../../Archive/Icons/7zstar/xz.ico"
+24  ICON  "../../Archive/Icons/7zstar/squashfs.ico"
+25  ICON  "../../Archive/Icons/7zstar/apfs.ico"
+26  ICON  "../../Archive/Icons/7zstar/zst.ico"
+
+// 7-ZSTar: codecs added in M6a.
+27  ICON  "../../Archive/Icons/7zstar/br.ico"
+28  ICON  "../../Archive/Icons/7zstar/lz4.ico"
+29  ICON  "../../Archive/Icons/7zstar/lz5.ico"
+30  ICON  "../../Archive/Icons/7zstar/liz.ico"
+
+// 7-ZSTar: two-layer variants for the chained tar.* short extensions, so .tzst
+// reads as "tar inside zstd" instead of looking identical to a plain .zst.
+// Windows associates only the last extension, so .tar.zst itself still
+// resolves to the .zst icon - the short forms are where the distinction lands.
+31  ICON  "../../Archive/Icons/7zstar/tgz.ico"
+32  ICON  "../../Archive/Icons/7zstar/tbz2.ico"
+33  ICON  "../../Archive/Icons/7zstar/txz.ico"
+34  ICON  "../../Archive/Icons/7zstar/tzst.ico"
+35  ICON  "../../Archive/Icons/7zstar/taz.ico"
+36  ICON  "../../Archive/Icons/7zstar/tlz.ico"
+37  ICON  "../../Archive/Icons/7zstar/tbr.ico"
+38  ICON  "../../Archive/Icons/7zstar/tlz4.ico"
+39  ICON  "../../Archive/Icons/7zstar/tlz5.ico"
+40  ICON  "../../Archive/Icons/7zstar/tliz.ico"
+
+
+STRINGTABLE
+BEGIN
+  100 "7z:0 zip:1 rar:3 001:9 cab:7 iso:8 xz:23 txz:33 lzma:16 tlz:36 tar:13 cpio:12 bz2:2 bzip2:2 tbz2:32 tbz:32 tz2:32 gz:14 gzip:14 tgz:31 tpz:31 zst:26 tzst:34 z:5 taz:35 lzh:6 lha:6 rpm:10 deb:11 arj:4 vhd:20 vhdx:20 wim:15 swm:15 esd:15 fat:21 ntfs:22 dmg:17 hfs:18 xar:19 squashfs:24 apfs:25 br:27 brotli:27 tbr:37 lz4:28 tlz4:38 lz5:29 tlz5:39 liz:30 tliz:40"
+END

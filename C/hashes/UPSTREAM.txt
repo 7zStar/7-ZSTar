@@ -1,0 +1,21 @@
+name:     xxHash
+version:  (bundled with mcmilk/7-Zip-zstd's vendored zstd tree; header declares
+          the xxHash API used by zstd's checksum/dictionary-ID features)
+source:   https://github.com/Cyan4973/xxHash (upstream)
+imported: 2026-08-02
+via:      mcmilk/7-Zip-zstd checkout 260a6a7 (its C/hashes/xxhash.{c,h})
+license:  BSD 2-Clause (see license header in xxhash.h)
+patches:  none
+notes:    required because C/zstd/zstd_internal.h (and a few other C/zstd/*.c)
+          #include "../hashes/xxhash.h" -- that relative path assumes a sibling
+          C/hashes/ directory next to C/zstd/, matching mcmilk's own layout
+          (their AdjustZS.sh flattening moved xxhash out of lib/common/ into a
+          shared C/hashes/ used by multiple codecs). Our C/zstd/ vendoring only
+          brought in the zstd tree itself (see C/zstd/UPSTREAM.txt), so this
+          dependency was missing until M2 (zstd encoder) needed to actually
+          compile zstd_compress*.c / zstd_ldm.c, which pull this header in.
+          xxhash.c is upstream's own tiny "#define XXH_IMPLEMENTATION" TU that
+          instantiates the header-only library once; only XXH64 is actually
+          used by zstd (XXH_STATIC_LINKING_ONLY is requested for XXH64_state_t).
+          No symbol collision with this project's own C/Xxh64.* (different
+          naming: Xxh64_*/Z7_XXH64_* here vs upstream's XXH64_*).

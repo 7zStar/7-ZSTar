@@ -1,0 +1,48 @@
+# build output directories (per-target, per-platform)
+x64/
+x86/
+arm64/
+arm/
+ia64/
+
+# build driver logs
+build/logs/
+
+# written by build/Build.ps1
+C/7zBuildDate.h
+
+# object/debug leftovers
+*.obj
+*.pdb
+*.ipdb
+*.iobj
+*.res
+*.exp
+*.suo
+*.user
+
+# packaging staging
+out/
+_tmp/
+
+# docs/logo/icongen.py
+__pycache__/
+*.pyc
+
+# installer/Build-Package.ps1 output (staging tree, built .msi/.zip, and the
+# License.rtf it generates from LICENSE + COPYING for the wizard's EULA page)
+installer/stage/
+installer/dist/
+installer/obj/
+*.wixpdb
+
+# arm64 build output. clang-cl preprocesses Asm/arm64/*.S and drops the result
+# next to the makefile being built rather than into the per-platform output
+# directory, so `Build.ps1 -Clean` (which wipes only <target>/<platform>/)
+# leaves them behind. Scoped to CPP/ deliberately: the real assembly sources
+# live in Asm/ and must stay tracked.
+CPP/**/*.asm
+
+# 7-ZSTar: Linux gcc port build output (makefile.gcc -> _o/, var_gcc.mak -> b/g/).
+CPP/**/_o/
+CPP/**/b/

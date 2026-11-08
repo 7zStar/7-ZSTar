@@ -1,0 +1,274 @@
+{
+ "_en": {
+  "donate": "Donate",
+  "website": "Website"
+ },
+ "af": {
+  "donate": "Skenk",
+  "website": "Webwerf"
+ },
+ "ar": {
+  "donate": "تبرع",
+  "website": "موقع ويب"
+ },
+ "ast": {
+  "donate": "Donar",
+  "website": "Sitiu web"
+ },
+ "az": {
+  "donate": "İanə",
+  "website": "Veb sayt"
+ },
+ "be": {
+  "donate": "Падтрымаць",
+  "website": "Сайт"
+ },
+ "bg": {
+  "donate": "Дарение",
+  "website": "Уебсайт"
+ },
+ "bn": {
+  "donate": "অনুদান",
+  "website": "ওয়েবসাইট"
+ },
+ "br": {
+  "donate": "Donezon",
+  "website": "Lec'hienn"
+ },
+ "ca": {
+  "donate": "Donatiu",
+  "website": "Lloc web"
+ },
+ "cs": {
+  "donate": "Podpořit",
+  "website": "Web"
+ },
+ "cy": {
+  "donate": "Cyfrannu",
+  "website": "Gwefan"
+ },
+ "da": {
+  "donate": "Donér",
+  "website": "Websted"
+ },
+ "de": {
+  "donate": "Spenden",
+  "website": "Website"
+ },
+ "el": {
+  "donate": "Δωρεά",
+  "website": "Ιστότοπος"
+ },
+ "eo": {
+  "donate": "Donaci",
+  "website": "Retejo"
+ },
+ "es": {
+  "donate": "Donar",
+  "website": "Sitio web"
+ },
+ "et": {
+  "donate": "Anneta",
+  "website": "Veebisait"
+ },
+ "eu": {
+  "donate": "Dohaintza",
+  "website": "Webgunea"
+ },
+ "fa": {
+  "donate": "حمایت",
+  "website": "وب\u200cسایت"
+ },
+ "fi": {
+  "donate": "Lahjoita",
+  "website": "Sivusto"
+ },
+ "fr": {
+  "donate": "Don",
+  "website": "Site web"
+ },
+ "fy": {
+  "donate": "Donearje",
+  "website": "Webside"
+ },
+ "ga": {
+  "donate": "Síntiús",
+  "website": "Suíomh"
+ },
+ "gl": {
+  "donate": "Doar",
+  "website": "Sitio web"
+ },
+ "gu": {
+  "donate": "દાન",
+  "website": "વેબસાઇટ"
+ },
+ "he": {
+  "donate": "תרומה",
+  "website": "אתר"
+ },
+ "hi": {
+  "donate": "दान",
+  "website": "वेबसाइट"
+ },
+ "hr": {
+  "donate": "Doniraj",
+  "website": "Web"
+ },
+ "hu": {
+  "donate": "Adomány",
+  "website": "Weboldal"
+ },
+ "hy": {
+  "donate": "Աջակցել",
+  "website": "Կայք"
+ },
+ "id": {
+  "donate": "Donasi",
+  "website": "Situs web"
+ },
+ "is": {
+  "donate": "Styrkja",
+  "website": "Vefsvæði"
+ },
+ "it": {
+  "donate": "Dona",
+  "website": "Sito web"
+ },
+ "ja": {
+  "donate": "寄付",
+  "website": "ウェブサイト"
+ },
+ "ka": {
+  "donate": "შემოწირულობა",
+  "website": "ვებსაიტი"
+ },
+ "ko": {
+  "donate": "후원",
+  "website": "웹사이트"
+ },
+ "lt": {
+  "donate": "Paremti",
+  "website": "Svetainė"
+ },
+ "lv": {
+  "donate": "Ziedot",
+  "website": "Vietne"
+ },
+ "mk": {
+  "donate": "Донирај",
+  "website": "Веб-сајт"
+ },
+ "mn": {
+  "donate": "Хандив",
+  "website": "Вэбсайт"
+ },
+ "mr": {
+  "donate": "देणगी",
+  "website": "वेबसाइट"
+ },
+ "ms": {
+  "donate": "Derma",
+  "website": "Laman web"
+ },
+ "nb": {
+  "donate": "Doner",
+  "website": "Nettsted"
+ },
+ "ne": {
+  "donate": "दान",
+  "website": "वेबसाइट"
+ },
+ "nl": {
+  "donate": "Doneer",
+  "website": "Website"
+ },
+ "nn": {
+  "donate": "Doner",
+  "website": "Nettstad"
+ },
+ "pa-in": {
+  "donate": "ਦਾਨ",
+  "website": "ਵੈੱਬਸਾਈਟ"
+ },
+ "pl": {
+  "donate": "Wesprzyj",
+  "website": "Strona WWW"
+ },
+ "pt": {
+  "donate": "Doar",
+  "website": "Sítio web"
+ },
+ "pt-br": {
+  "donate": "Doar",
+  "website": "Site"
+ },
+ "ro": {
+  "donate": "Donează",
+  "website": "Site web"
+ },
+ "ru": {
+  "donate": "Поддержать",
+  "website": "Сайт"
+ },
+ "si": {
+  "donate": "පරිත්\u200dයාග",
+  "website": "වෙබ් අඩවිය"
+ },
+ "sk": {
+  "donate": "Prispieť",
+  "website": "Web"
+ },
+ "sl": {
+  "donate": "Doniraj",
+  "website": "Spletišče"
+ },
+ "sr-spc": {
+  "donate": "Донирај",
+  "website": "Веб-сајт"
+ },
+ "sr-spl": {
+  "donate": "Doniraj",
+  "website": "Veb-sajt"
+ },
+ "sv": {
+  "donate": "Donera",
+  "website": "Webbplats"
+ },
+ "sw": {
+  "donate": "Changia",
+  "website": "Tovuti"
+ },
+ "ta": {
+  "donate": "நன்கொடை",
+  "website": "இணையதளம்"
+ },
+ "th": {
+  "donate": "บริจาค",
+  "website": "เว็บไซต์"
+ },
+ "tr": {
+  "donate": "Bağış",
+  "website": "Web sitesi"
+ },
+ "uk": {
+  "donate": "Підтримати",
+  "website": "Вебсайт"
+ },
+ "va": {
+  "donate": "Donatiu",
+  "website": "Lloc web"
+ },
+ "vi": {
+  "donate": "Ủng hộ",
+  "website": "Trang web"
+ },
+ "zh-cn": {
+  "donate": "赞助",
+  "website": "网站"
+ },
+ "zh-tw": {
+  "donate": "贊助",
+  "website": "網站"
+ }
+}

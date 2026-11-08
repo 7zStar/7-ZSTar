@@ -1,0 +1,115 @@
+n	file	tool	exit	verify	first_line	top_level	command
+1	single/text512k.txt.zst	zstd 1.5.5	0	sha256 OK		text512k.txt 	zstd -d -q -o "OUT/text512k.txt" windows/single/text512k.txt.zst
+2	single/text512k.txt.zst	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.zst -C OUT
+3	single/text512k.txt.zst	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Unrecognized archive format		bsdtar -xf windows/single/text512k.txt.zst -C OUT
+4	single/text512k.txt.zst	7zz 26.05	0	sha256 OK		text512k.txt 	7zz x -y -oOUT windows/single/text512k.txt.zst
+5	single/text512k.txt.br	brotli 1.1.0	0	sha256 OK		text512k.txt 	brotli -d -o "OUT/text512k.txt" windows/single/text512k.txt.br
+6	single/text512k.txt.br	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.br -C OUT
+7	single/text512k.txt.br	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Unrecognized archive format		bsdtar -xf windows/single/text512k.txt.br -C OUT
+8	single/text512k.txt.br	7zz 26.05	2	no output file	ERROR: windows/single/text512k.txt.br -- Cannot open the file as archive		7zz x -y -oOUT windows/single/text512k.txt.br
+9	single/text512k.txt.lz4	lz4 1.9.4	0	sha256 OK		text512k.txt 	lz4 -d -q windows/single/text512k.txt.lz4 "OUT/text512k.txt"
+10	single/text512k.txt.lz4	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.lz4 -C OUT
+11	single/text512k.txt.lz4	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Unrecognized archive format		bsdtar -xf windows/single/text512k.txt.lz4 -C OUT
+12	single/text512k.txt.lz4	7zz 26.05	2	no output file	ERROR: windows/single/text512k.txt.lz4 -- Cannot open the file as archive		7zz x -y -oOUT windows/single/text512k.txt.lz4
+13	single/text512k.txt.lz5	專用 CLI	-	無工具	無 apt 套件，依規定不自編	-	-
+14	single/text512k.txt.lz5	(附加) zstd 1.5.5	1	sha256 MISMATCH	zstd: windows/single/text512k.txt.lz5: unsupported format 	text512k.txt 	zstd -dc windows/single/text512k.txt.lz5 > "OUT/text512k.txt"
+15	single/text512k.txt.lz5	(附加) lz4 1.9.4	1	sha256 MISMATCH		text512k.txt 	lz4 -dc windows/single/text512k.txt.lz5 > "OUT/text512k.txt"
+16	single/text512k.txt.lz5	(附加) lz4 1.9.4 (-t)	1	-	Stream followed by undecodable data at position 16 		lz4 -t windows/single/text512k.txt.lz5
+17	single/text512k.txt.lz5	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.lz5 -C OUT
+18	single/text512k.txt.lz5	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Zstd decompression failed: Unknown frame descriptor		bsdtar -xf windows/single/text512k.txt.lz5 -C OUT
+19	single/text512k.txt.lz5	7zz 26.05	2	no output file	ERROR: windows/single/text512k.txt.lz5 -- Cannot open the file as archive		7zz x -y -oOUT windows/single/text512k.txt.lz5
+20	single/text512k.txt.liz	專用 CLI	-	無工具	無 apt 套件，依規定不自編	-	-
+21	single/text512k.txt.liz	(附加) zstd 1.5.5	1	sha256 MISMATCH	zstd: windows/single/text512k.txt.liz: unsupported format 	text512k.txt 	zstd -dc windows/single/text512k.txt.liz > "OUT/text512k.txt"
+22	single/text512k.txt.liz	(附加) lz4 1.9.4	1	sha256 MISMATCH		text512k.txt 	lz4 -dc windows/single/text512k.txt.liz > "OUT/text512k.txt"
+23	single/text512k.txt.liz	(附加) lz4 1.9.4 (-t)	1	-	Stream followed by undecodable data at position 16 		lz4 -t windows/single/text512k.txt.liz
+24	single/text512k.txt.liz	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.liz -C OUT
+25	single/text512k.txt.liz	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Zstd decompression failed: Unknown frame descriptor		bsdtar -xf windows/single/text512k.txt.liz -C OUT
+26	single/text512k.txt.liz	7zz 26.05	2	no output file	ERROR: windows/single/text512k.txt.liz -- Cannot open the file as archive		7zz x -y -oOUT windows/single/text512k.txt.liz
+27	single/text512k.txt.xz	xz 5.4.5	0	sha256 OK		text512k.txt 	xz -dc windows/single/text512k.txt.xz > "OUT/text512k.txt"
+28	single/text512k.txt.xz	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.xz -C OUT
+29	single/text512k.txt.xz	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Unrecognized archive format		bsdtar -xf windows/single/text512k.txt.xz -C OUT
+30	single/text512k.txt.xz	7zz 26.05	0	sha256 OK		text512k.txt 	7zz x -y -oOUT windows/single/text512k.txt.xz
+31	single/text512k.txt.gz	gzip 1.12	0	sha256 OK		text512k.txt 	gzip -dc windows/single/text512k.txt.gz > "OUT/text512k.txt"
+32	single/text512k.txt.gz	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.gz -C OUT
+33	single/text512k.txt.gz	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Unrecognized archive format		bsdtar -xf windows/single/text512k.txt.gz -C OUT
+34	single/text512k.txt.gz	7zz 26.05	0	sha256 OK		text512k.txt 	7zz x -y -oOUT windows/single/text512k.txt.gz
+35	single/text512k.txt.bz2	bzip2 1.0.8	0	sha256 OK		text512k.txt 	bzip2 -dc windows/single/text512k.txt.bz2 > "OUT/text512k.txt"
+36	single/text512k.txt.bz2	GNU tar 1.35 (自動偵測)	2	no output file	tar: This does not look like a tar archive		tar -xf windows/single/text512k.txt.bz2 -C OUT
+37	single/text512k.txt.bz2	bsdtar 3.7.2	1	no output file	bsdtar: Error opening archive: Unrecognized archive format		bsdtar -xf windows/single/text512k.txt.bz2 -C OUT
+38	single/text512k.txt.bz2	7zz 26.05	0	sha256 OK		text512k.txt 	7zz x -y -oOUT windows/single/text512k.txt.bz2
+39	chain/corpus.tar.zst	zstd 1.5.5 | GNU tar 1.35	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	zstd -dc windows/chain/corpus.tar.zst | tar -xf - -C OUT
+40	chain/corpus.tar.zst	GNU tar 1.35 (--zstd)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar --zstd -xf windows/chain/corpus.tar.zst -C OUT
+41	chain/corpus.tar.zst	GNU tar 1.35 (自動偵測)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar -xf windows/chain/corpus.tar.zst -C OUT
+42	chain/corpus.tar.zst	bsdtar 3.7.2	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/chain/corpus.tar.zst -C OUT
+43	chain/corpus.tar.zst	7zz 26.05 (一步)	0	0/9 sha256 OK		corpus.tar 	7zz x -y -oOUT windows/chain/corpus.tar.zst
+44	chain/corpus.tar.zst	7zz 26.05 (兩步)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	7zz x -y -o"OUT/s1" windows/chain/corpus.tar.zst > /dev/null && 7zz x -y -oOUT OUT/s1/*.tar
+45	chain/corpus.tar.br	brotli 1.1.0 | GNU tar 1.35	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	brotli -dc windows/chain/corpus.tar.br | tar -xf - -C OUT
+46	chain/corpus.tar.br	GNU tar 1.35 (-I brotli)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar -I brotli -xf windows/chain/corpus.tar.br -C OUT
+47	chain/corpus.tar.br	GNU tar 1.35 (自動偵測)	2	0/9 sha256 OK	tar: This does not look like a tar archive		tar -xf windows/chain/corpus.tar.br -C OUT
+48	chain/corpus.tar.br	bsdtar 3.7.2	1	0/9 sha256 OK	bsdtar: Error opening archive: Unrecognized archive format		bsdtar -xf windows/chain/corpus.tar.br -C OUT
+49	chain/corpus.tar.br	7zz 26.05 (一步)	2	0/9 sha256 OK	ERROR: windows/chain/corpus.tar.br -- Cannot open the file as archive		7zz x -y -oOUT windows/chain/corpus.tar.br
+50	chain/corpus.tar.lz4	lz4 1.9.4 | GNU tar 1.35	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	lz4 -dc windows/chain/corpus.tar.lz4 | tar -xf - -C OUT
+51	chain/corpus.tar.lz4	GNU tar 1.35 (-I lz4)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar -I lz4 -xf windows/chain/corpus.tar.lz4 -C OUT
+52	chain/corpus.tar.lz4	GNU tar 1.35 (自動偵測)	2	0/9 sha256 OK	tar: This does not look like a tar archive		tar -xf windows/chain/corpus.tar.lz4 -C OUT
+53	chain/corpus.tar.lz4	bsdtar 3.7.2	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/chain/corpus.tar.lz4 -C OUT
+54	chain/corpus.tar.lz4	7zz 26.05 (一步)	2	0/9 sha256 OK	ERROR: windows/chain/corpus.tar.lz4 -- Cannot open the file as archive		7zz x -y -oOUT windows/chain/corpus.tar.lz4
+55	chain/corpus.tar.lz5	專用 CLI	-	無工具	無 apt 套件，依規定不自編	-	-
+56	chain/corpus.tar.lz5	(附加) zstd 1.5.5 | GNU tar 1.35	2	0/9 sha256 OK	zstd: windows/chain/corpus.tar.lz5: unsupported format 		zstd -dc windows/chain/corpus.tar.lz5 | tar -xf - -C OUT
+57	chain/corpus.tar.lz5	(附加) lz4 1.9.4 | GNU tar 1.35	2	0/9 sha256 OK	tar: This does not look like a tar archive		lz4 -dc windows/chain/corpus.tar.lz5 | tar -xf - -C OUT
+58	chain/corpus.tar.lz5	GNU tar 1.35 (自動偵測)	2	0/9 sha256 OK	tar: This does not look like a tar archive		tar -xf windows/chain/corpus.tar.lz5 -C OUT
+59	chain/corpus.tar.lz5	bsdtar 3.7.2	1	0/9 sha256 OK	bsdtar: Error opening archive: Zstd decompression failed: Unknown frame descriptor		bsdtar -xf windows/chain/corpus.tar.lz5 -C OUT
+60	chain/corpus.tar.lz5	7zz 26.05 (一步)	2	0/9 sha256 OK	ERROR: windows/chain/corpus.tar.lz5 -- Cannot open the file as archive		7zz x -y -oOUT windows/chain/corpus.tar.lz5
+61	chain/corpus.tar.liz	專用 CLI	-	無工具	無 apt 套件，依規定不自編	-	-
+62	chain/corpus.tar.liz	(附加) zstd 1.5.5 | GNU tar 1.35	2	0/9 sha256 OK	zstd: windows/chain/corpus.tar.liz: unsupported format 		zstd -dc windows/chain/corpus.tar.liz | tar -xf - -C OUT
+63	chain/corpus.tar.liz	(附加) lz4 1.9.4 | GNU tar 1.35	2	0/9 sha256 OK	tar: This does not look like a tar archive		lz4 -dc windows/chain/corpus.tar.liz | tar -xf - -C OUT
+64	chain/corpus.tar.liz	GNU tar 1.35 (自動偵測)	2	0/9 sha256 OK	tar: This does not look like a tar archive		tar -xf windows/chain/corpus.tar.liz -C OUT
+65	chain/corpus.tar.liz	bsdtar 3.7.2	1	0/9 sha256 OK	bsdtar: Error opening archive: Zstd decompression failed: Unknown frame descriptor		bsdtar -xf windows/chain/corpus.tar.liz -C OUT
+66	chain/corpus.tar.liz	7zz 26.05 (一步)	2	0/9 sha256 OK	ERROR: windows/chain/corpus.tar.liz -- Cannot open the file as archive		7zz x -y -oOUT windows/chain/corpus.tar.liz
+67	chain/corpus.tar.gz	gzip 1.12 | GNU tar 1.35	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	gzip -dc windows/chain/corpus.tar.gz | tar -xf - -C OUT
+68	chain/corpus.tar.gz	GNU tar 1.35 (--gzip)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar --gzip -xf windows/chain/corpus.tar.gz -C OUT
+69	chain/corpus.tar.gz	GNU tar 1.35 (自動偵測)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar -xf windows/chain/corpus.tar.gz -C OUT
+70	chain/corpus.tar.gz	bsdtar 3.7.2	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/chain/corpus.tar.gz -C OUT
+71	chain/corpus.tar.gz	7zz 26.05 (一步)	0	0/9 sha256 OK		corpus.tar 	7zz x -y -oOUT windows/chain/corpus.tar.gz
+72	chain/corpus.tar.gz	7zz 26.05 (兩步)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	7zz x -y -o"OUT/s1" windows/chain/corpus.tar.gz > /dev/null && 7zz x -y -oOUT OUT/s1/*.tar
+73	chain/corpus.tar.xz	xz 5.4.5 | GNU tar 1.35	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	xz -dc windows/chain/corpus.tar.xz | tar -xf - -C OUT
+74	chain/corpus.tar.xz	GNU tar 1.35 (--xz)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar --xz -xf windows/chain/corpus.tar.xz -C OUT
+75	chain/corpus.tar.xz	GNU tar 1.35 (自動偵測)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar -xf windows/chain/corpus.tar.xz -C OUT
+76	chain/corpus.tar.xz	bsdtar 3.7.2	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/chain/corpus.tar.xz -C OUT
+77	chain/corpus.tar.xz	7zz 26.05 (一步)	0	0/9 sha256 OK		corpus.tar 	7zz x -y -oOUT windows/chain/corpus.tar.xz
+78	chain/corpus.tar.xz	7zz 26.05 (兩步)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	7zz x -y -o"OUT/s1" windows/chain/corpus.tar.xz > /dev/null && 7zz x -y -oOUT OUT/s1/*.tar
+79	chain/corpus.tar.bz2	bzip2 1.0.8 | GNU tar 1.35	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bzip2 -dc windows/chain/corpus.tar.bz2 | tar -xf - -C OUT
+80	chain/corpus.tar.bz2	GNU tar 1.35 (--bzip2)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar --bzip2 -xf windows/chain/corpus.tar.bz2 -C OUT
+81	chain/corpus.tar.bz2	GNU tar 1.35 (自動偵測)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	tar -xf windows/chain/corpus.tar.bz2 -C OUT
+82	chain/corpus.tar.bz2	bsdtar 3.7.2	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/chain/corpus.tar.bz2 -C OUT
+83	chain/corpus.tar.bz2	7zz 26.05 (一步)	0	0/9 sha256 OK		corpus.tar 	7zz x -y -oOUT windows/chain/corpus.tar.bz2
+84	chain/corpus.tar.bz2	7zz 26.05 (兩步)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	7zz x -y -o"OUT/s1" windows/chain/corpus.tar.bz2 > /dev/null && 7zz x -y -oOUT OUT/s1/*.tar
+85	7z/corpus-zstd.7z	7zz 26.05 (t)	2	-	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt		7zz t windows/7z/corpus-zstd.7z
+86	7z/corpus-zstd.7z	7zz 26.05 (x)	2	1/9 sha256 OK	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt	empty.txt sub 	7zz x -y -oOUT windows/7z/corpus-zstd.7z
+87	7z/corpus-zstd.7z	bsdtar 3.7.2 (-tf)	0	-			bsdtar -tf windows/7z/corpus-zstd.7z
+88	7z/corpus-zstd.7z	bsdtar 3.7.2 (-xf)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/7z/corpus-zstd.7z -C OUT
+89	7z/corpus-brotli.7z	7zz 26.05 (t)	2	-	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt		7zz t windows/7z/corpus-brotli.7z
+90	7z/corpus-brotli.7z	7zz 26.05 (x)	2	1/9 sha256 OK	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt	empty.txt sub 	7zz x -y -oOUT windows/7z/corpus-brotli.7z
+91	7z/corpus-brotli.7z	bsdtar 3.7.2 (-tf)	0	-			bsdtar -tf windows/7z/corpus-brotli.7z
+92	7z/corpus-brotli.7z	bsdtar 3.7.2 (-xf)	1	1/9 sha256 OK	a.txt: Unknown codec ID: 4f71102: Unknown error -1	a.txt empty.txt sub 	bsdtar -xf windows/7z/corpus-brotli.7z -C OUT
+93	7z/corpus-lz4.7z	7zz 26.05 (t)	2	-	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt		7zz t windows/7z/corpus-lz4.7z
+94	7z/corpus-lz4.7z	7zz 26.05 (x)	2	1/9 sha256 OK	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt	empty.txt sub 	7zz x -y -oOUT windows/7z/corpus-lz4.7z
+95	7z/corpus-lz4.7z	bsdtar 3.7.2 (-tf)	0	-			bsdtar -tf windows/7z/corpus-lz4.7z
+96	7z/corpus-lz4.7z	bsdtar 3.7.2 (-xf)	1	1/9 sha256 OK	a.txt: Unknown codec ID: 4f71104: Unknown error -1	a.txt empty.txt sub 	bsdtar -xf windows/7z/corpus-lz4.7z -C OUT
+97	7z/corpus-lz5.7z	7zz 26.05 (t)	2	-	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt		7zz t windows/7z/corpus-lz5.7z
+98	7z/corpus-lz5.7z	7zz 26.05 (x)	2	1/9 sha256 OK	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt	empty.txt sub 	7zz x -y -oOUT windows/7z/corpus-lz5.7z
+99	7z/corpus-lz5.7z	bsdtar 3.7.2 (-tf)	0	-			bsdtar -tf windows/7z/corpus-lz5.7z
+100	7z/corpus-lz5.7z	bsdtar 3.7.2 (-xf)	1	1/9 sha256 OK	a.txt: Unknown codec ID: 4f71105: Unknown error -1	a.txt empty.txt sub 	bsdtar -xf windows/7z/corpus-lz5.7z -C OUT
+101	7z/corpus-lizard.7z	7zz 26.05 (t)	2	-	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt		7zz t windows/7z/corpus-lizard.7z
+102	7z/corpus-lizard.7z	7zz 26.05 (x)	2	1/9 sha256 OK	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt	empty.txt sub 	7zz x -y -oOUT windows/7z/corpus-lizard.7z
+103	7z/corpus-lizard.7z	bsdtar 3.7.2 (-tf)	0	-			bsdtar -tf windows/7z/corpus-lizard.7z
+104	7z/corpus-lizard.7z	bsdtar 3.7.2 (-xf)	1	1/9 sha256 OK	a.txt: Unknown codec ID: 4f71106: Unknown error -1	a.txt empty.txt sub 	bsdtar -xf windows/7z/corpus-lizard.7z -C OUT
+105	7z/corpus-flzma2.7z	7zz 26.05 (t)	0	-			7zz t windows/7z/corpus-flzma2.7z
+106	7z/corpus-flzma2.7z	7zz 26.05 (x)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	7zz x -y -oOUT windows/7z/corpus-flzma2.7z
+107	7z/corpus-flzma2.7z	bsdtar 3.7.2 (-tf)	0	-			bsdtar -tf windows/7z/corpus-flzma2.7z
+108	7z/corpus-flzma2.7z	bsdtar 3.7.2 (-xf)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/7z/corpus-flzma2.7z -C OUT
+109	7z/corpus-lzma2.7z	7zz 26.05 (t)	0	-			7zz t windows/7z/corpus-lzma2.7z
+110	7z/corpus-lzma2.7z	7zz 26.05 (x)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	7zz x -y -oOUT windows/7z/corpus-lzma2.7z
+111	7z/corpus-lzma2.7z	bsdtar 3.7.2 (-tf)	0	-			bsdtar -tf windows/7z/corpus-lzma2.7z
+112	7z/corpus-lzma2.7z	bsdtar 3.7.2 (-xf)	0	9/9 sha256 OK		SHA256SUMS a.txt b-crlf.txt empty.txt long-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx	bsdtar -xf windows/7z/corpus-lzma2.7z -C OUT
+113	7z/corpus-zstd-mt4.7z	7zz 26.05 (t)	2	-	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt		7zz t windows/7z/corpus-zstd-mt4.7z
+114	7z/corpus-brotli-mt4.7z	7zz 26.05 (t)	2	-	ERROR: Unsupported Method : a.txt -- ERROR: Unsupported Method : b-crlf.txt		7zz t windows/7z/corpus-brotli-mt4.7z
