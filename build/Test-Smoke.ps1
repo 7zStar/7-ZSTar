@@ -43,6 +43,7 @@ $freshTargets = @($SevenZip)
 $freshDll = Join-Path $RepoRoot "CPP\7zip\Bundles\Format7zF\$Platform\7z.dll"
 $freshFm = Join-Path $RepoRoot "CPP\7zip\UI\FileManager\$Platform\7zFM.exe"
 if (Test-Path $freshDll) { $freshTargets += $freshDll }
+elseif (Test-Path (Join-Path $BinDir '7z.dll')) { $freshTargets += (Join-Path $BinDir '7z.dll') }   # the borrowed one is all there is
 if (Test-Path (Join-Path $BinDir '7zFM.exe')) { $freshTargets += (Join-Path $BinDir '7zFM.exe') }
 elseif (Test-Path $freshFm) { $freshTargets += $freshFm }
 Assert-ArtifactFresh -Path $freshTargets -Skip:$SkipFreshnessCheck -Caller 'Test-Smoke.ps1'

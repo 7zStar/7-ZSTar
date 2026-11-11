@@ -66,7 +66,7 @@ function MakeStamp([string]$HostExe, [string]$Artifact, [string]$Kind) {
 param($Artifact, $Kind)
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'SourceStamp.ps1')
-Write-SourceStamp -StampPath (Get-SourceStampPath $Artifact) -Fingerprint (Get-SourceFingerprint -Kind $Kind)
+Write-SourceStamp -StampPath (Get-SourceStampPath $Artifact) -Fingerprint (Get-SourceFingerprint -Kind $Kind) -ArtifactFiles $Artifact
 '@)
     $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
     try {
@@ -166,10 +166,35 @@ try {
         [IO.File]::WriteAllText($stampFile, $saved)
         Expect "$hn stamp restored is fresh" 0 (RunAssert $hx $a)
 
+        # Judged by content, not by time: a bare touch changes nothing...
         (Get-Item (PathOf $exe)).LastWriteTime = (Get-Date).AddMinutes(5)
-        Expect "$hn artifact rewritten after stamping is refused" 1 (RunAssert $hx $a)
-        (Get-Item (PathOf $exe)).LastWriteTime = (Get-Date).AddMinutes(-5)
-        Expect "$hn artifact older than its stamp is fine" 0 (RunAssert $hx $a)
+        Expect "$hn touching the artifact (same bytes) is fine" 0 (RunAssert $hx $a)
+        # ...and an old file copied back with its old mtime kept is still caught.
+        $origBytes = [IO.File]::ReadAllBytes((PathOf $exe))
+        $origTime = (Get-Item (PathOf $exe)).LastWriteTime
+        [IO.File]::WriteAllBytes((PathOf $exe), [Text.Encoding]::ASCII.GetBytes("OLD binary`n"))
+        (Get-Item (PathOf $exe)).LastWriteTime = $origTime.AddDays(-3)
+        Expect "$hn different bytes under an old mtime are refused" 1 (RunAssert $hx $a)
+        [IO.File]::WriteAllBytes((PathOf $exe), $origBytes)
+        Expect "$hn original bytes back is fresh again" 0 (RunAssert $hx $a)
+        Put 'CPP/UI/Console/x64/other.exe' "not built by the stamped build`n"
+        Expect "$hn a file the stamp does not list is refused" 1 (RunAssert $hx @(PathOf 'CPP\UI\Console\x64\other.exe'))
+        Remove-Item (PathOf 'CPP\UI\Console\x64\other.exe') -Force
+
+        # A long-lived process must not keep an old verdict after the source changes.
+        [IO.File]::WriteAllText((PathOf 'build\_cache.ps1'), @'
+param($Artifact)
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
+Assert-ArtifactFresh -Path $Artifact | Out-Null          # fresh: must not throw
+Add-Content -LiteralPath (Join-Path (Split-Path $PSScriptRoot -Parent) 'CPP\b.cpp') -Value '// edited mid-process'
+try { Assert-ArtifactFresh -Path $Artifact | Out-Null; exit 2 } catch { exit 0 }   # must throw now
+'@)
+        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        try { $script:LastOutput = (& $hx -NoProfile -ExecutionPolicy Bypass -File (PathOf 'build\_cache.ps1') -Artifact (PathOf $exe) 2>&1 | Out-String); $cc = $LASTEXITCODE }
+        finally { $ErrorActionPreference = $prev }
+        Expect "$hn same process: check, edit source, check again is refused" 0 $cc
+        GitC @('checkout', '--', 'CPP/b.cpp')
 
         Expect "$hn missing artifact is refused" 1 (RunAssert $hx @(PathOf 'CPP\UI\Console\x64\nope.exe'))
         Expect "$hn one stale among several refuses the lot" 1 (RunAssert $hx @($a[0], (PathOf 'CPP\UI\Console\x64\nope.exe')))
@@ -179,6 +204,12 @@ try {
         MakeStamp $hx (PathOf $msi) 'package'
         $m = @(PathOf $msi)
         Expect "$hn fresh package passes" 0 (RunAssert $hx $m)
+        $msiBytes = [IO.File]::ReadAllBytes((PathOf $msi)); $msiTime = (Get-Item (PathOf $msi)).LastWriteTime
+        [IO.File]::WriteAllBytes((PathOf $msi), [Text.Encoding]::ASCII.GetBytes("old`n"))
+        (Get-Item (PathOf $msi)).LastWriteTime = $msiTime.AddDays(-9)
+        Expect "$hn an old msi copied over the stamped one is refused" 1 (RunAssert $hx $m)
+        [IO.File]::WriteAllBytes((PathOf $msi), $msiBytes)
+        Expect "$hn the stamped msi back is fresh again" 0 (RunAssert $hx $m)
         Put 'installer/Test-x.ps1' "# test changed`n"
         Put 'installer/GUIDS.md' "notes changed`n"
         Expect "$hn test script / notes in installer\ are not packed, stay fresh" 0 (RunAssert $hx $m)

@@ -296,7 +296,7 @@ if (-not $SkipZip -and -not $PerUser) {
     Compress-Archive -Path (Join-Path $Stage '*') -DestinationPath $zipPath -CompressionLevel Optimal
     $zipSize = [math]::Round((Get-Item $zipPath).Length / 1MB, 2)
     Write-Host "  zip  $([IO.Path]::GetFileName($zipPath))  ${zipSize} MB"
-    if ($pkgFp) { Write-SourceStamp -StampPath (Get-SourceStampPath $zipPath) -Fingerprint $pkgFp }
+    if ($pkgFp) { Write-SourceStamp -StampPath (Get-SourceStampPath $zipPath) -Fingerprint $pkgFp -ArtifactFiles @($zipPath) }
 }
 
 # --- msi -------------------------------------------------------------------
@@ -749,7 +749,7 @@ if (-not $SkipMsi) {
 
     $msiSize = [math]::Round((Get-Item $msiPath).Length / 1MB, 2)
     Write-Host "  msi  $([IO.Path]::GetFileName($msiPath))  ${msiSize} MB"
-    if ($pkgFp) { Write-SourceStamp -StampPath (Get-SourceStampPath $msiPath) -Fingerprint $pkgFp }
+    if ($pkgFp) { Write-SourceStamp -StampPath (Get-SourceStampPath $msiPath) -Fingerprint $pkgFp -ArtifactFiles @($msiPath) }
 }
 
 $produced = @()

@@ -660,7 +660,11 @@ directory that feeds a binary goes into `binary` **and** `package`; a new file
 or directory that `installer/Build-Package.ps1` copies into the package (its
 `$Docs` list, a new vendored folder) goes into `package`. Forgetting is silent -
 nothing fails, the stamp just stops covering that input. After a mainline merge,
-check whether upstream added a top-level directory. `build/Test-SourceStamp.ps1`
+check whether upstream added a top-level directory. One built-in blind spot:
+`.gitignore` excludes every directory named `x86/`, `arm64/` and so on (build
+output), which also matches `Asm/x86/` and `Asm/arm64/`. Edits to tracked files
+there are seen; a brand-new file there is not, until it is tracked with
+`git add -f`. `build/Test-SourceStamp.ps1`
 holds the rules' tests (scratch repo, exit codes only); it keeps its own copy of
 the document list, so extend it together with the library.
 

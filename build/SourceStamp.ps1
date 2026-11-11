@@ -31,7 +31,6 @@
 $script:SrcStampDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $script:SrcStampRepoRoot = Split-Path -Parent $script:SrcStampDir
 $script:SrcStampFileName = '.srcstamp'
-$script:SrcStampCache = @{}
 
 # Paths are repo-relative with forward slashes (the form `git ls-files` prints).
 # An entry matches a file when it equals the path or is a directory prefix.
@@ -75,15 +74,19 @@ function Get-SourceFingerprint {
         lines that belong to the kind. Returns an object with Fingerprint,
         Files and Head. Throws when git is missing or RepoRoot is not a work
         tree - callers that can live without a stamp catch that.
+
+        Not cached: a long-lived process that checks, then edits source, then
+        checks again must see the edit. (Assert-ArtifactFresh caches within
+        one call only.) Side effect worth knowing: `git add -A` writes a blob
+        object for every edited or untracked file into the real object
+        database. They are unreachable and `git gc` collects them; the index
+        and the work tree are not touched.
     #>
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)][ValidateSet('binary', 'package')][string]$Kind,
         [string]$RepoRoot = $script:SrcStampRepoRoot
     )
-
-    $cacheKey = "$RepoRoot|$Kind"
-    if ($script:SrcStampCache.ContainsKey($cacheKey)) { return $script:SrcStampCache[$cacheKey] }
 
     if (-not (Get-Command git -CommandType Application -ErrorAction SilentlyContinue)) {
         throw 'git was not found on PATH; the source fingerprint needs it.'
@@ -138,9 +141,7 @@ function Get-SourceFingerprint {
     try { $hash = ($sha.ComputeHash($bytes) | ForEach-Object { $_.ToString('x2') }) -join '' }
     finally { $sha.Dispose() }
 
-    $result = [pscustomobject]@{ Kind = $Kind; Fingerprint = $hash; Files = $kept.Count; Head = $headId }
-    $script:SrcStampCache[$cacheKey] = $result
-    return $result
+    return [pscustomobject]@{ Kind = $Kind; Fingerprint = $hash; Files = $kept.Count; Head = $headId }
 }
 
 function Get-SourceStampPath {
@@ -152,20 +153,42 @@ function Get-SourceStampPath {
     return Join-Path (Split-Path -Parent $Artifact) $script:SrcStampFileName
 }
 
+function Get-ArtifactDigest {
+    param([Parameter(Mandatory)][string]$Path)
+    [ordered]@{
+        length = (Get-Item -LiteralPath $Path).Length
+        sha256 = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+}
+
 function Write-SourceStamp {
+    <#
+    .SYNOPSIS
+        Record which source the given artifact files were made from.
+    .DESCRIPTION
+        Besides the fingerprint, the stamp lists each artifact by file name
+        with its length and SHA256. A directory stamp (one per build target)
+        lists every file the target produced; a sidecar lists its one file.
+        The check compares those, so an old file copied back over a stamped one
+        is caught even when the copy kept its old modification time.
+    #>
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)][string]$StampPath,
-        [Parameter(Mandatory)]$Fingerprint
+        [Parameter(Mandatory)]$Fingerprint,
+        [string[]]$ArtifactFiles = @()
     )
+    $arts = [ordered]@{}
+    foreach ($f in $ArtifactFiles) { $arts[(Split-Path -Leaf $f)] = Get-ArtifactDigest $f }
     $o = [ordered]@{
         kind        = $Fingerprint.Kind
         fingerprint = $Fingerprint.Fingerprint
         files       = $Fingerprint.Files
         head        = $Fingerprint.Head
         created     = (Get-Date).ToString('s')
+        artifacts   = $arts
     }
-    $json = $o | ConvertTo-Json -Compress
+    $json = $o | ConvertTo-Json -Compress -Depth 5
     [IO.File]::WriteAllText($StampPath, $json, (New-Object Text.UTF8Encoding $false))
 }
 
@@ -180,8 +203,9 @@ function Assert-ArtifactFresh {
         Throw unless every artifact was made from the source as it is now.
     .DESCRIPTION
         For each artifact: its stamp must exist, parse, carry the fingerprint
-        the work tree has now for the stamp's kind, and the artifact must not
-        have been rewritten after it was stamped. -Skip turns all of that off
+        the work tree has now for the stamp's kind, and list the artifact with
+        the length and SHA256 it has now (so a file swapped after stamping is
+        caught whatever its modification time). -Skip turns all of that off
         for a deliberate case (an unpacked release, a downloaded .msi): it
         prints a warning and appends a line to build\logs\freshness-skips.log.
     #>
@@ -210,6 +234,7 @@ function Assert-ArtifactFresh {
 
     $problems = New-Object Collections.Generic.List[string]
     $okKinds = @{}
+    $nowByKind = @{}   # one fingerprint per kind per call, not per artifact
     foreach ($artifact in $Path) {
         $leaf = Split-Path -Leaf $artifact
         if (-not (Test-Path -LiteralPath $artifact)) { $problems.Add("${leaf}: file not found ($artifact)"); continue }
@@ -227,7 +252,10 @@ function Assert-ArtifactFresh {
             continue
         }
         try {
-            $now = Get-SourceFingerprint -Kind $rec.kind -RepoRoot $RepoRoot
+            if (-not $nowByKind.ContainsKey($rec.kind)) {
+                $nowByKind[$rec.kind] = Get-SourceFingerprint -Kind $rec.kind -RepoRoot $RepoRoot
+            }
+            $now = $nowByKind[$rec.kind]
         } catch {
             $problems.Add("${leaf}: cannot compute the current source fingerprint ($($_.Exception.Message))")
             continue
@@ -237,10 +265,16 @@ function Assert-ArtifactFresh {
                           "source now $($now.Fingerprint.Substring(0, 12)) at HEAD $($now.Head.Substring(0, [Math]::Min(9, $now.Head.Length)))).")
             continue
         }
-        $stampTime = (Get-Item -LiteralPath $stampPath).LastWriteTime
-        $artTime = (Get-Item -LiteralPath $artifact).LastWriteTime
-        if ($artTime -gt $stampTime.AddSeconds(5)) {
-            $problems.Add("${leaf}: rewritten after it was stamped (file $($artTime.ToString('s')), stamp $($stampTime.ToString('s'))).")
+        # The source matches; is this file the one that was stamped?
+        $entry = $null
+        if ($rec.artifacts) { $entry = $rec.artifacts.PSObject.Properties[$leaf] }
+        if (-not $entry) {
+            $problems.Add("${leaf}: not listed in its stamp ($stampPath) - it was not produced by the build that was stamped.")
+            continue
+        }
+        $have = Get-ArtifactDigest $artifact
+        if ([int64]$entry.Value.length -ne [int64]$have.length -or $entry.Value.sha256 -ne $have.sha256) {
+            $problems.Add("${leaf}: contents differ from what was stamped (stamped $($entry.Value.length) bytes, now $($have.length)); the file was replaced after the build.")
             continue
         }
         $okKinds[$rec.kind] = $now.Fingerprint
@@ -248,7 +282,7 @@ function Assert-ArtifactFresh {
 
     if ($problems.Count -gt 0) {
         throw ("Stale or unverifiable build artifact" + $(if ($problems.Count -gt 1) { 's' }) +
-               " (rebuild with build\Build.ps1 / installer\Build-Package.ps1, or pass -SkipFreshnessCheck on purpose):`n  " +
+               " (rebuild with build\Build.ps1 / installer\Build-Package.ps1 - every target this script reads, not just some of them after a -Targets build; or pass -SkipFreshnessCheck on purpose):`n  " +
                ($problems -join "`n  "))
     }
     $summary = ($okKinds.GetEnumerator() | ForEach-Object { "$($_.Key) $($_.Value.Substring(0, 12))" }) -join ', '

@@ -86,8 +86,16 @@ binaries cover `C`, `CPP`, `Asm`; packages add `installer` (except `Test-*.ps1`
 and `GUIDS.md`), `Lang`, `Help` and the documents `Build-Package.ps1` packs. A
 change outside those sets (the website, `docs\`, a README) leaves artifacts
 fresh. A mismatch, a missing stamp (anything built before the stamps existed
-included) or an artifact rewritten after it was stamped makes the consumer
-throw. The fix is to rebuild.
+included), or a file whose length or SHA256 differs from what the stamp lists
+(an old build copied back over a new one, even with its old modification time
+kept) makes the consumer throw. The fix is to rebuild.
+
+Two things that trip people: after `Build.ps1 -Targets X` only X is stamped
+current, so a consumer that reads other targets (`Test-Smoke` reads the console,
+`Format7zF` and `FileManager` outputs) refuses until those are rebuilt too; and
+`Test-MsiRegistry.ps1` with no `-Msi` checks every `.msi` in `installer\dist`, so
+one stale or unstamped package there stops the run - pass `-Msi` for one file,
+or rebuild all platforms.
 
 `-SkipFreshnessCheck` on any consumer lets one through on purpose (an unpacked
 release, a downloaded `.msi`): it warns and appends a line to

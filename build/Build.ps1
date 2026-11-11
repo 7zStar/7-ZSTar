@@ -177,7 +177,12 @@ foreach ($t in $selected) {
         Pop-Location
     }
     if ($ok -and $srcFp -and (Test-Path -LiteralPath (Split-Path $stampPath -Parent))) {
-        Write-SourceStamp -StampPath $stampPath -Fingerprint $srcFp
+        # List what the target produced (length + SHA256), so a file swapped
+        # in afterwards is caught too. Objects and intermediates are not listed.
+        $outputs = @(Get-ChildItem -LiteralPath (Split-Path $stampPath -Parent) -File |
+                     Where-Object { $_.Extension -in '.exe', '.dll', '.sfx' } |
+                     ForEach-Object { $_.FullName })
+        Write-SourceStamp -StampPath $stampPath -Fingerprint $srcFp -ArtifactFiles $outputs
         $stamped++
     }
     $dt = ($sw.Elapsed - $t0).TotalSeconds
