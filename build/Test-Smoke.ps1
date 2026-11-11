@@ -2,7 +2,7 @@
 #
 #   pwsh build\Test-Smoke.ps1                 # test the x64 build output
 #   pwsh build\Test-Smoke.ps1 -Platform x86
-#   pwsh build\Test-Smoke.ps1 -BinDir <dir>   # test an unpacked release instead
+#   pwsh build\Test-Smoke.ps1 -BinDir <dir> -SkipFreshnessCheck   # an unpacked release (it has no stamp)
 #
 # Exits non-zero if any check fails, so CI can gate on it.
 #
@@ -42,8 +42,15 @@ if (-not (Test-Path $SevenZip)) { throw "7z.exe not found: $SevenZip" }
 $freshTargets = @($SevenZip)
 $freshDll = Join-Path $RepoRoot "CPP\7zip\Bundles\Format7zF\$Platform\7z.dll"
 $freshFm = Join-Path $RepoRoot "CPP\7zip\UI\FileManager\$Platform\7zFM.exe"
-if (Test-Path $freshDll) { $freshTargets += $freshDll }
-elseif (Test-Path (Join-Path $BinDir '7z.dll')) { $freshTargets += (Join-Path $BinDir '7z.dll') }   # the borrowed one is all there is
+if (Test-Path $freshDll) {
+    $freshTargets += $freshDll
+} elseif (-not $PSBoundParameters.ContainsKey('BinDir')) {
+    # A 7z.dll left in the Console directory by an earlier run is a copy of
+    # some older Format7zF build; the Console stamp lists it but did not make it.
+    throw "Format7zF output missing: $freshDll. Build it first (build\Build.ps1); a 7z.dll left in $BinDir by an earlier run is not evidence."
+} elseif (Test-Path (Join-Path $BinDir '7z.dll')) {
+    $freshTargets += (Join-Path $BinDir '7z.dll')   # an explicit -BinDir brings its own
+}
 if (Test-Path (Join-Path $BinDir '7zFM.exe')) { $freshTargets += (Join-Path $BinDir '7zFM.exe') }
 elseif (Test-Path $freshFm) { $freshTargets += $freshFm }
 Assert-ArtifactFresh -Path $freshTargets -Skip:$SkipFreshnessCheck -Caller 'Test-Smoke.ps1'

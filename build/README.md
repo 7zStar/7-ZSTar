@@ -106,7 +106,7 @@ For anything that picks artifacts up outside these scripts - a VM acceptance run
 copying an `.msi` to a guest, say - gate on the exit code:
 
 ```powershell
-pwsh build\Assert-Fresh.ps1 installer\dist\7-ZSTar-26.05.1-x64.msi   # 0 fresh, 1 stale
+pwsh build\Assert-Fresh.ps1 installer\dist\7-ZSTar-26.05.1-x64.msi   # 0 fresh, 1 stale/unverifiable, 2 the check itself failed
 pwsh build\Test-SourceStamp.ps1                                       # the check's own tests
 ```
 

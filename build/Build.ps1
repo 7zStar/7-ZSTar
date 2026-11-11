@@ -177,8 +177,12 @@ foreach ($t in $selected) {
         Pop-Location
     }
     if ($ok -and $srcFp -and (Test-Path -LiteralPath (Split-Path $stampPath -Parent))) {
-        # List what the target produced (length + SHA256), so a file swapped
-        # in afterwards is caught too. Objects and intermediates are not listed.
+        # List the .exe/.dll/.sfx files in the target's output directory
+        # (length + SHA256), so a file swapped in afterwards is caught too.
+        # That can include a file the target did not build - Test-Smoke copies
+        # Format7zF's 7z.dll into the Console directory - which is why the
+        # test scripts hold the original in the Format7zF directory and refuse
+        # to fall back to that copy.
         $outputs = @(Get-ChildItem -LiteralPath (Split-Path $stampPath -Parent) -File |
                      Where-Object { $_.Extension -in '.exe', '.dll', '.sfx' } |
                      ForEach-Object { $_.FullName })

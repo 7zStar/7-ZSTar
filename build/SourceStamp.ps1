@@ -49,6 +49,14 @@ $script:SrcStampKinds = @{
     }
 }
 
+function ConvertTo-FullPath {
+    # Test-Path / Get-FileHash resolve against PowerShell's location, the
+    # [IO.File] methods against the process directory; the two differ after a
+    # `cd`. Everything below works on absolute paths so they cannot disagree.
+    param([Parameter(Mandatory)][string]$Path)
+    $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
+}
+
 function Invoke-SrcStampGit {
     param([string]$RepoRoot, [string[]]$GitArgs)
     # Windows PowerShell 5.1 turns native stderr output into a terminating
@@ -178,8 +186,12 @@ function Write-SourceStamp {
         [Parameter(Mandatory)]$Fingerprint,
         [string[]]$ArtifactFiles = @()
     )
+    $StampPath = ConvertTo-FullPath $StampPath
     $arts = [ordered]@{}
-    foreach ($f in $ArtifactFiles) { $arts[(Split-Path -Leaf $f)] = Get-ArtifactDigest $f }
+    foreach ($f in $ArtifactFiles) {
+        $f = ConvertTo-FullPath $f
+        $arts[(Split-Path -Leaf $f)] = Get-ArtifactDigest $f
+    }
     $o = [ordered]@{
         kind        = $Fingerprint.Kind
         fingerprint = $Fingerprint.Fingerprint
@@ -194,7 +206,7 @@ function Write-SourceStamp {
 
 function Remove-SourceStamp {
     param([Parameter(Mandatory)][string]$StampPath)
-    Remove-Item -LiteralPath $StampPath -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath (ConvertTo-FullPath $StampPath) -Force -ErrorAction SilentlyContinue
 }
 
 function Assert-ArtifactFresh {
@@ -208,6 +220,11 @@ function Assert-ArtifactFresh {
         caught whatever its modification time). -Skip turns all of that off
         for a deliberate case (an unpacked release, a downloaded .msi): it
         prints a warning and appends a line to build\logs\freshness-skips.log.
+
+        A verdict of "stale or unverifiable" is a terminating error whose
+        FullyQualifiedErrorId is 'SourceStampStale' (build\Assert-Fresh.ps1
+        turns it into exit 1); any other exception is a defect in this code,
+        not a verdict (Assert-Fresh.ps1 exits 2).
     #>
     [CmdletBinding()]
     param(
@@ -236,6 +253,7 @@ function Assert-ArtifactFresh {
     $okKinds = @{}
     $nowByKind = @{}   # one fingerprint per kind per call, not per artifact
     foreach ($artifact in $Path) {
+        $artifact = ConvertTo-FullPath $artifact
         $leaf = Split-Path -Leaf $artifact
         if (-not (Test-Path -LiteralPath $artifact)) { $problems.Add("${leaf}: file not found ($artifact)"); continue }
         $stampPath = Get-SourceStampPath $artifact
@@ -247,6 +265,7 @@ function Assert-ArtifactFresh {
             $rec = [IO.File]::ReadAllText($stampPath) | ConvertFrom-Json
             if (-not $rec.kind -or -not $rec.fingerprint) { throw 'missing kind/fingerprint' }
             if ($rec.kind -notin 'binary', 'package') { throw "unknown kind '$($rec.kind)'" }
+            if ("$($rec.fingerprint)" -notmatch '^[0-9a-f]{64}$') { throw 'malformed fingerprint (want 64 hex digits)' }
         } catch {
             $problems.Add("${leaf}: unreadable stamp $stampPath ($($_.Exception.Message))")
             continue
@@ -261,8 +280,13 @@ function Assert-ArtifactFresh {
             continue
         }
         if ($now.Fingerprint -ne $rec.fingerprint) {
-            $problems.Add("${leaf}: made from different source (stamp $($rec.fingerprint.Substring(0, 12)) at HEAD $("$($rec.head)".Substring(0, [Math]::Min(9, "$($rec.head)".Length))) on $($rec.created); " +
-                          "source now $($now.Fingerprint.Substring(0, 12)) at HEAD $($now.Head.Substring(0, [Math]::Min(9, $now.Head.Length)))).")
+            $stampHead = "$($rec.head)"; $stampHead = $stampHead.Substring(0, [Math]::Min(9, $stampHead.Length))
+            $nowHead = $now.Head.Substring(0, [Math]::Min(9, $now.Head.Length))
+            # pwsh 7 turns the stamp's ISO string into a DateTime on the way in; print both hosts the same way.
+            $made = try { ([datetime]$rec.created).ToString('s') } catch { "$($rec.created)" }
+            $hint = if ($stampHead -eq $nowHead) { ' Same HEAD, so the difference is uncommitted: see git status -- C CPP Asm.' } else { '' }
+            $problems.Add("${leaf}: made from different source (stamp $($rec.fingerprint.Substring(0, 12)) at HEAD $stampHead on $made; " +
+                          "source now $($now.Fingerprint.Substring(0, 12)) at HEAD $nowHead).$hint")
             continue
         }
         # The source matches; is this file the one that was stamped?
@@ -281,9 +305,13 @@ function Assert-ArtifactFresh {
     }
 
     if ($problems.Count -gt 0) {
-        throw ("Stale or unverifiable build artifact" + $(if ($problems.Count -gt 1) { 's' }) +
-               " (rebuild with build\Build.ps1 / installer\Build-Package.ps1 - every target this script reads, not just some of them after a -Targets build; or pass -SkipFreshnessCheck on purpose):`n  " +
-               ($problems -join "`n  "))
+        $msg = ("Stale or unverifiable build artifact" + $(if ($problems.Count -gt 1) { 's' }) +
+                " (rebuild with build\Build.ps1 / installer\Build-Package.ps1 - every target this script reads, not just some of them after a -Targets build; or pass -SkipFreshnessCheck on purpose):`n  " +
+                ($problems -join "`n  "))
+        $err = New-Object Management.Automation.ErrorRecord (
+            (New-Object InvalidOperationException $msg), 'SourceStampStale',
+            [Management.Automation.ErrorCategory]::InvalidResult, $null)
+        $PSCmdlet.ThrowTerminatingError($err)
     }
     $summary = ($okKinds.GetEnumerator() | ForEach-Object { "$($_.Key) $($_.Value.Substring(0, 12))" }) -join ', '
     Write-Host ("  freshness OK: {0} artifact(s) match the current source ({1})" -f $Path.Count, $summary)

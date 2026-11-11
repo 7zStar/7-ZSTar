@@ -81,8 +81,15 @@ if (-not (Test-Path (Join-Path $BinDir '7z.dll'))) { throw "7z.dll not found nex
 # runs come from it: hold the console exe, and the build-tree dll it borrowed,
 # to the source stamp.
 $freshTargets = @($SevenZip)
-if (-not $PSBoundParameters.ContainsKey('BinDir') -and (Test-Path $dllSrc)) { $freshTargets += $dllSrc }
-else { $freshTargets += (Join-Path $BinDir '7z.dll') }   # no build-tree dll to hold: hold the one in use
+if ($PSBoundParameters.ContainsKey('BinDir')) {
+    $freshTargets += (Join-Path $BinDir '7z.dll')   # an explicit -BinDir brings its own
+} elseif (Test-Path $dllSrc) {
+    $freshTargets += $dllSrc
+} else {
+    # A 7z.dll left in the Console directory by an earlier run is a copy of some
+    # older Format7zF build; the Console stamp lists it but did not make it.
+    throw "Format7zF output missing: $dllSrc. Build it first (build\Build.ps1)."
+}
 Assert-ArtifactFresh -Path $freshTargets -Skip:$SkipFreshnessCheck -Caller 'Test-Interop.ps1'
 $banner = (& $SevenZip 2>&1 | Select-Object -First 3 | Where-Object { $_ -match '7-ZSTar' } | Select-Object -First 1)
 if (-not $banner) { throw "$SevenZip did not identify itself as 7-ZSTar (or failed to run)" }

@@ -35,7 +35,10 @@ $script:Fail = 0
 function GitC([string[]]$GitArgs) {
     $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
     try {
-        $out = & git -C $Work -c user.name=t -c user.email=t@example.invalid -c core.autocrlf=false @GitArgs 2>&1
+        # Overrides keep the scratch repo independent of the user's global git
+        # config (commit signing, hooks, line-ending conversion).
+        $out = & git -C $Work -c user.name=t -c user.email=t@example.invalid -c core.autocrlf=false `
+            -c commit.gpgsign=false -c core.hooksPath=$Work\.nohooks @GitArgs 2>&1
         if ($LASTEXITCODE -ne 0) { throw "git $($GitArgs -join ' ') failed: $out" }
     } finally { $ErrorActionPreference = $prev }
 }
@@ -58,8 +61,8 @@ function RunAssert([string]$HostExe, [string[]]$Artifacts, [switch]$Skip) {
     finally { $ErrorActionPreference = $prev }
     return $code
 }
-# Stamp an artifact the way the real producers do, in a child process so no
-# fingerprint cache survives between calls.
+# Stamp an artifact the way the real producers do, in a child process (so the
+# stamp comes from a clean session, and from a chosen host).
 function MakeStamp([string]$HostExe, [string]$Artifact, [string]$Kind) {
     $helper = PathOf 'build\_mkstamp.ps1'
     [IO.File]::WriteAllText($helper, @'
@@ -122,6 +125,55 @@ try {
         # binary kind -------------------------------------------------------
         Expect "$hn fresh binary passes" 0 (RunAssert $hx $a)
 
+        # A stamp written by the other host must read the same (5.1 <-> 7).
+        $otherHost = @($hosts.Values | Where-Object { $_ -ne $hx })[0]
+        if ($otherHost) {
+            MakeStamp $otherHost (PathOf $exe) 'binary'
+            Expect "$hn a stamp written by the other host is fresh" 0 (RunAssert $hx $a)
+            MakeStamp $hx (PathOf $exe) 'binary'
+        }
+
+        # A relative path resolves against where the caller is, not the process directory.
+        # (Assert-Fresh.ps1 makes paths absolute itself, which would hide the
+        # defect; the scripts that call Assert-ArtifactFresh directly, such as
+        # Test-MsiRegistry -Msi <relative>, do not - so call the library here.)
+        [IO.File]::WriteAllText((PathOf 'build\_rel.ps1'), @'
+param($Repo, $Rel)
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
+Set-Location -LiteralPath $Repo      # PowerShell's location moves; the process directory need not
+Assert-ArtifactFresh -Path $Rel | Out-Null
+exit 0
+'@)
+        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        try {
+            $script:LastOutput = (& $hx -NoProfile -ExecutionPolicy Bypass -File (PathOf 'build\_rel.ps1') -Repo $Work -Rel $exe 2>&1 | Out-String)
+            $relCode = $LASTEXITCODE
+        } finally { $ErrorActionPreference = $prev }
+        Expect "$hn a relative artifact path after Set-Location is fresh" 0 $relCode
+
+        # GIT_INDEX_FILE is the caller's again afterwards, set or not.
+        [IO.File]::WriteAllText((PathOf 'build\_env.ps1'), @'
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
+$env:GIT_INDEX_FILE = 'sentinel-index-value'
+Get-SourceFingerprint -Kind binary | Out-Null
+if ($env:GIT_INDEX_FILE -ne 'sentinel-index-value') { exit 3 }
+Remove-Item Env:\GIT_INDEX_FILE
+Get-SourceFingerprint -Kind binary | Out-Null
+if (Test-Path Env:\GIT_INDEX_FILE) { exit 4 }
+exit 0
+'@)
+        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        try { $script:LastOutput = (& $hx -NoProfile -ExecutionPolicy Bypass -File (PathOf 'build\_env.ps1') 2>&1 | Out-String); $envCode = $LASTEXITCODE }
+        finally { $ErrorActionPreference = $prev }
+        Expect "$hn GIT_INDEX_FILE is restored (set and unset)" 0 $envCode
+
+        Remove-Item (PathOf 'CPP\b.cpp') -Force
+        Expect "$hn a deleted tracked source file is stale" 1 (RunAssert $hx $a)
+        GitC @('checkout', '--', 'CPP/b.cpp')
+        Expect "$hn deleted file restored is fresh again" 0 (RunAssert $hx $a)
+
         Put 'CPP/b.cpp' "int b = 2;`n"
         $idxBefore = IndexHash
         Expect "$hn uncommitted source edit is stale" 1 (RunAssert $hx $a)
@@ -161,8 +213,11 @@ try {
 
         [IO.File]::WriteAllText($stampFile, '{not json')
         Expect "$hn corrupt stamp is refused" 1 (RunAssert $hx $a)
+        # Exit 1 is a verdict; a crash in the check would be 2, which these cases would catch.
         [IO.File]::WriteAllText($stampFile, '{"kind":"binary","fingerprint":"abc"}')
-        Expect "$hn stamp with a wrong fingerprint is refused" 1 (RunAssert $hx $a)
+        Expect "$hn stamp with a malformed fingerprint is refused (verdict, not a crash)" 1 (RunAssert $hx $a)
+        [IO.File]::WriteAllText($stampFile, '{"kind":"binary","fingerprint":"' + ('0' * 64) + '","artifacts":{}}')
+        Expect "$hn stamp with a well-formed but wrong fingerprint is refused" 1 (RunAssert $hx $a)
         [IO.File]::WriteAllText($stampFile, $saved)
         Expect "$hn stamp restored is fresh" 0 (RunAssert $hx $a)
 
