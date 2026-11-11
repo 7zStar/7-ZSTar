@@ -18,15 +18,34 @@ param(
     [string]$Platform = 'x64',
 
     # Directory holding 7z.exe + 7z.dll. Defaults to the Console build output.
-    [string]$BinDir
+    [string]$BinDir,
+
+    # Test binaries that carry no source stamp (an unpacked release, say) or
+    # whose stamp no longer matches the source. Off by default: a green run
+    # on stale binaries says nothing about the code in this tree. The skip is
+    # logged to build\logs\freshness-skips.log.
+    [switch]$SkipFreshnessCheck
 )
 
 $ErrorActionPreference = 'Stop'
 $RepoRoot = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
 
 if (-not $BinDir) { $BinDir = Join-Path $RepoRoot "CPP\7zip\UI\Console\$Platform" }
 $SevenZip = Join-Path $BinDir '7z.exe'
 if (-not (Test-Path $SevenZip)) { throw "7z.exe not found: $SevenZip" }
+
+# Everything below is only worth its green if the binaries come from the source
+# as it is now. Check every build-tree binary this run touches: the console
+# 7z.exe (unless -BinDir points elsewhere - then that directory is held to the
+# same rule), the 7z.dll it borrows, and the GUI the string checks read.
+$freshTargets = @($SevenZip)
+$freshDll = Join-Path $RepoRoot "CPP\7zip\Bundles\Format7zF\$Platform\7z.dll"
+$freshFm = Join-Path $RepoRoot "CPP\7zip\UI\FileManager\$Platform\7zFM.exe"
+if (Test-Path $freshDll) { $freshTargets += $freshDll }
+if (Test-Path (Join-Path $BinDir '7zFM.exe')) { $freshTargets += (Join-Path $BinDir '7zFM.exe') }
+elseif (Test-Path $freshFm) { $freshTargets += $freshFm }
+Assert-ArtifactFresh -Path $freshTargets -Skip:$SkipFreshnessCheck -Caller 'Test-Smoke.ps1'
 
 # 7z.exe loads 7z.dll from its own directory; the Console build output does not
 # contain one, so borrow the Format7zF bundle's when testing a build tree.

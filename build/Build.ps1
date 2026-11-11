@@ -21,6 +21,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $RepoRoot = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
 
 # Target directories (relative to repo root) in build order.
 # Alone7z first: it is the smallest full bundle and acts as a toolchain canary.
@@ -129,6 +130,21 @@ $dateObjects = 'AboutDialog.obj', 'Main.obj', 'SfxCon.obj', 'LzmaAlone.obj'
 $logDir = Join-Path $PSScriptRoot "logs\$Platform"
 New-Item -ItemType Directory -Force $logDir | Out-Null
 
+# Freshness stamps (build\SourceStamp.ps1): fingerprint the source BEFORE the
+# first target builds, so an edit made while the build runs leaves the stamp
+# behind the source and the consumers refuse it. Each target that builds
+# cleanly gets <target>\<platform>\.srcstamp; the packaging and test scripts
+# check it before they use the binaries. No git means no fingerprint: build
+# anyway, but say that nothing will be stamped (the consumers will then refuse
+# these binaries unless told -SkipFreshnessCheck).
+$srcFp = $null
+try {
+    $srcFp = Get-SourceFingerprint -Kind binary -RepoRoot $RepoRoot
+} catch {
+    Write-Warning "No source stamp will be written: $($_.Exception.Message)"
+}
+$stamped = 0
+
 $results = @()
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 foreach ($t in $selected) {
@@ -149,12 +165,20 @@ foreach ($t in $selected) {
 
     Write-Host ("[{0}/{1}] {2} ..." -f ($results.Count + 1), $selected.Count, $t) -NoNewline
     $t0 = $sw.Elapsed
+    # An old stamp must not outlive the start of a rebuild: if this one fails
+    # half way, the binaries are no longer what the old stamp vouched for.
+    $stampPath = Join-Path $dir "$Platform\$script:SrcStampFileName"
+    Remove-SourceStamp $stampPath
     Push-Location $dir
     try {
         & nmake /NOLOGO PLATFORM=$Platform 2>&1 | Out-File -FilePath $log -Encoding utf8
         $ok = ($LASTEXITCODE -eq 0)
     } finally {
         Pop-Location
+    }
+    if ($ok -and $srcFp -and (Test-Path -LiteralPath (Split-Path $stampPath -Parent))) {
+        Write-SourceStamp -StampPath $stampPath -Fingerprint $srcFp
+        $stamped++
     }
     $dt = ($sw.Elapsed - $t0).TotalSeconds
     $results += [pscustomobject]@{ Target = $t; Ok = $ok; Seconds = [math]::Round($dt, 1); Log = $log }
@@ -175,5 +199,8 @@ Write-Host ("=== Build summary ({0}, {1}s total) ===" -f $Platform, [math]::Roun
 $results | ForEach-Object {
     $mark = if ($_.Ok) { 'OK  ' } else { 'FAIL' }
     Write-Host ("{0} {1,-40} {2,6}s" -f $mark, $_.Target, $_.Seconds)
+}
+if ($srcFp) {
+    Write-Host ("Source stamp {0} written to {1} of {2} target(s)." -f $srcFp.Fingerprint.Substring(0, 12), $stamped, $results.Count)
 }
 if ($results | Where-Object { -not $_.Ok }) { exit 1 }

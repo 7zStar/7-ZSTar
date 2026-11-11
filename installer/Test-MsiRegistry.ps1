@@ -36,7 +36,13 @@ param(
     # without them - minus the Windows 11 first-level menu - so a CI run that
     # lost its certificate step would stay green. Per-user packages are left
     # alone: they carry no sparse package by default.
-    [switch]$RequireSparse
+    [switch]$RequireSparse,
+
+    # Check .msi files that carry no source stamp (a downloaded release, say)
+    # or whose stamp no longer matches the source. Off by default: the table
+    # checks below say nothing about this tree if the package is an old one.
+    # The skip is logged to build\logs\freshness-skips.log.
+    [switch]$SkipFreshnessCheck
 )
 
 $ErrorActionPreference = 'Stop'
@@ -50,6 +56,8 @@ if (-not $Msi) {
              ForEach-Object { $_.FullName })
     if (-not $Msi) { throw "No .msi in installer\dist. Build one first: pwsh installer\Build-Package.ps1" }
 }
+. (Join-Path (Split-Path $selfDir -Parent) 'build\SourceStamp.ps1')
+Assert-ArtifactFresh -Path $Msi -Skip:$SkipFreshnessCheck -Caller 'Test-MsiRegistry.ps1'
 
 # The authority for which file types exist and which icon each one uses. The
 # installer generates its ProgIDs from this same string, so comparing against

@@ -69,6 +69,43 @@ explicitly on the nmake command line; `CPP/Build.mak` selects ml64/ml/armasm64
 from it). On Build Tools installs vcvarsall prints a harmless
 `'vswhere.exe' is not recognized` line; ignore it.
 
+## Freshness stamps
+
+A binary or package built from yesterday's source looks exactly like one built
+from today's. So the producers record which source they were made from, and the
+consumers refuse anything that no longer matches:
+
+| Producer | Writes | Consumers that check it |
+|---|---|---|
+| `build\Build.ps1` | `<target>\<Platform>\.srcstamp` for each target that built | `installer\Build-Package.ps1` (the six binaries it packs), `Test-Smoke.ps1`, `Test-Interop.ps1` |
+| `installer\Build-Package.ps1` | `<file>.srcstamp` beside each `.msi` / `.zip` | `installer\Test-MsiRegistry.ps1`, `installer\Test-SparseIntegration.ps1` |
+
+The stamp is a content fingerprint of the **work tree** (uncommitted edits and
+new untracked files count; `.gitignore`d files do not), not a commit id:
+binaries cover `C`, `CPP`, `Asm`; packages add `installer` (except `Test-*.ps1`
+and `GUIDS.md`), `Lang`, `Help` and the documents `Build-Package.ps1` packs. A
+change outside those sets (the website, `docs\`, a README) leaves artifacts
+fresh. A mismatch, a missing stamp (anything built before the stamps existed
+included) or an artifact rewritten after it was stamped makes the consumer
+throw. The fix is to rebuild.
+
+`-SkipFreshnessCheck` on any consumer lets one through on purpose (an unpacked
+release, a downloaded `.msi`): it warns and appends a line to
+`build\logs\freshness-skips.log`. `Build-Package.ps1` writes no stamp beside
+packages it cut with the check skipped.
+
+For anything that picks artifacts up outside these scripts - a VM acceptance run
+copying an `.msi` to a guest, say - gate on the exit code:
+
+```powershell
+pwsh build\Assert-Fresh.ps1 installer\dist\7-ZSTar-26.05.1-x64.msi   # 0 fresh, 1 stale
+pwsh build\Test-SourceStamp.ps1                                       # the check's own tests
+```
+
+What a stamp does **not** prove: that nmake rebuilt everything it should have.
+It proves `Build.ps1` ran on this source. For edits nmake is known to miss
+(headers pulled in by `.rc` files, precompiled headers) use `Build.ps1 -Clean`.
+
 ## Targets (17)
 
 | Directory (under CPP\7zip) | Output |

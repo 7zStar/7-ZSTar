@@ -48,7 +48,18 @@
 param(
     # Defaults to the newest .msi in installer\dist.
     [string]$Msi,
-    [string]$OutDir
+    [string]$OutDir,
+
+    # Install an .msi that carries no source stamp (a downloaded release, say)
+    # or whose stamp no longer matches the source. Off by default: installing
+    # and uninstalling an old package tests nothing about this tree. The skip
+    # is logged to build\logs\freshness-skips.log.
+    [switch]$SkipFreshnessCheck,
+
+    # Set only by the unelevated run when it relaunches itself: it has already
+    # done the check (or logged the skip), so the elevated child does not
+    # repeat it - or log the skip a second time.
+    [switch]$FreshnessChecked
 )
 
 $ErrorActionPreference = 'Stop'
@@ -91,6 +102,13 @@ if (-not $Msi) {
 if (-not $OutDir) { $OutDir = Join-Path $selfDir 'obj\sparse-test' }
 New-Item -ItemType Directory -Force $OutDir | Out-Null
 
+# Before any UAC prompt or install: is this .msi the one the current source
+# produces? The elevated child skips it (see -FreshnessChecked).
+if (-not $FreshnessChecked) {
+    . (Join-Path (Split-Path $selfDir -Parent) 'build\SourceStamp.ps1')
+    Assert-ArtifactFresh -Path $Msi -Skip:$SkipFreshnessCheck -Caller 'Test-SparseIntegration.ps1'
+}
+
 function Test-Admin {
     $id = [Security.Principal.WindowsIdentity]::GetCurrent()
     (New-Object Security.Principal.WindowsPrincipal $id).IsInRole(
@@ -108,7 +126,7 @@ if (-not (Test-Admin)) {
     $host51 = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
     # Array form only; a single string gets re-parsed and paths keep quotes.
     $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $self,
-                 '-Msi', $Msi, '-OutDir', $OutDir)
+                 '-Msi', $Msi, '-OutDir', $OutDir, '-FreshnessChecked')
     $p = Start-Process -FilePath $host51 -Verb RunAs -ArgumentList $argList -Wait -PassThru
     Write-Host "elevated child exit=$($p.ExitCode)"
     $report = Join-Path $OutDir 'report.txt'

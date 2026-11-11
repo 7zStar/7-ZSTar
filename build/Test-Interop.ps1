@@ -49,11 +49,17 @@ param(
     [ValidateSet('x64', 'x86', 'arm64')]
     [string]$Platform = 'x64',
     [string]$BinDir,
-    [string]$InteropDir
+    [string]$InteropDir,
+
+    # Use binaries that carry no source stamp (an unpacked release, say) or
+    # whose stamp no longer matches the source. Off by default; the skip is
+    # logged to build\logs\freshness-skips.log. See build\SourceStamp.ps1.
+    [switch]$SkipFreshnessCheck
 )
 
 $ErrorActionPreference = 'Stop'
 $RepoRoot = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
 # .NET IO resolves relative paths against the process directory, cmdlets
 # against PowerShell's location; absolute paths keep the two in agreement.
 function Resolve-Full($p) { $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($p) }
@@ -71,6 +77,12 @@ if ($PSBoundParameters.ContainsKey('BinDir')) {
 $SevenZip = Join-Path $BinDir '7z.exe'
 if (-not (Test-Path $SevenZip)) { throw "7z.exe not found: $SevenZip" }
 if (-not (Test-Path (Join-Path $BinDir '7z.dll'))) { throw "7z.dll not found next to $SevenZip" }
+# The interop matrix proves nothing about this tree unless the binaries it
+# runs come from it: hold the console exe, and the build-tree dll it borrowed,
+# to the source stamp.
+$freshTargets = @($SevenZip)
+if (-not $PSBoundParameters.ContainsKey('BinDir') -and (Test-Path $dllSrc)) { $freshTargets += $dllSrc }
+Assert-ArtifactFresh -Path $freshTargets -Skip:$SkipFreshnessCheck -Caller 'Test-Interop.ps1'
 $banner = (& $SevenZip 2>&1 | Select-Object -First 3 | Where-Object { $_ -match '7-ZSTar' } | Select-Object -First 1)
 if (-not $banner) { throw "$SevenZip did not identify itself as 7-ZSTar (or failed to run)" }
 

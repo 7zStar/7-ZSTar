@@ -650,6 +650,20 @@ exactly once each and reference a non-empty `docs/donate-qr.png`; it neither
 reads the picture nor verifies the checksum. A QR that scans to a different
 address than the text beside it is the failure this guards against.
 
+### 3.16 The freshness stamp only watches the paths it is told about
+
+`build/SourceStamp.ps1` fingerprints a fixed list of paths (`$script:SrcStampKinds`):
+`C`, `CPP`, `Asm` for binaries, plus `installer`, `Lang`, `Help` and the packed
+documents for `.msi` / `.zip`. Anything outside the list can change without any
+artifact going stale, so the list must follow the build: a new top-level source
+directory that feeds a binary goes into `binary` **and** `package`; a new file
+or directory that `installer/Build-Package.ps1` copies into the package (its
+`$Docs` list, a new vendored folder) goes into `package`. Forgetting is silent -
+nothing fails, the stamp just stops covering that input. After a mainline merge,
+check whether upstream added a top-level directory. `build/Test-SourceStamp.ps1`
+holds the rules' tests (scratch repo, exit codes only); it keeps its own copy of
+the document list, so extend it together with the library.
+
 ---
 
 ## Part 4 — After any merge or re-vendor, in order

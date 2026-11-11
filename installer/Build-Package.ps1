@@ -50,7 +50,15 @@ param(
     # builds leave the package out by default, and this switch is kept only
     # for a certificate issued by a trusted CA, which Microsoft documents as
     # needing no local trust step at all (not measured here).
-    [switch]$SparseUser
+    [switch]$SparseUser,
+
+    # Package binaries that carry no source stamp or a stamp that no longer
+    # matches the source (build\SourceStamp.ps1). Off by default: packaging
+    # then stops, because an old build would otherwise ship as if it were new.
+    # Use only for a deliberate case; the skip is logged to
+    # build\logs\freshness-skips.log, and no .srcstamp is written beside the
+    # packages, so they cannot vouch for themselves later.
+    [switch]$SkipFreshnessCheck
 )
 
 $ErrorActionPreference = 'Stop'
@@ -70,6 +78,7 @@ if ($SparseUser) {
 }
 $RepoRoot = Split-Path $PSScriptRoot -Parent
 $Stage = Join-Path $PSScriptRoot "stage\$Platform"
+. (Join-Path $RepoRoot 'build\SourceStamp.ps1')
 
 # Identity/@Publisher in sparse\AppxManifest.xml is filled in from the signing
 # certificate's subject, but the certificate has to be found by *something*, so
@@ -184,6 +193,17 @@ if ($missing) {
            ($missing -join "`n  "))
 }
 
+# The binaries exist - but were they built from the source as it is now? An
+# old build packs just as happily as a new one. Fingerprint the packaging
+# inputs now, before anything is staged, so the stamp written beside each
+# package at the end says which source it was cut from; with the check skipped
+# nothing was verified, so no stamp is written and the package cannot vouch
+# for itself later.
+Assert-ArtifactFresh -Path @($Binaries.Values | ForEach-Object { Join-Path $RepoRoot $_ }) `
+    -Skip:$SkipFreshnessCheck -Caller 'Build-Package.ps1'
+$pkgFp = $null
+if (-not $SkipFreshnessCheck) { $pkgFp = Get-SourceFingerprint -Kind package -RepoRoot $RepoRoot }
+
 # Checked separately from $missing so the message can say where these come
 # from - they are not build output and rebuilding will not produce them.
 # *.ttt as well as *.txt: en.ttt is not a selectable language, it is the
@@ -269,12 +289,14 @@ Write-Host ("  staged $stagedCount files + $($LangFiles.Count) language files " 
 if (-not $SkipZip -and -not $PerUser) {
     $zipPath = Join-Path $OutputDir "7-ZSTar-$Version-$Platform.zip"
     if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+    Remove-SourceStamp (Get-SourceStampPath $zipPath)
     # Compress-Archive rather than the 7z.exe we just built: packaging must not
     # depend on the payload being runnable, so that a broken build still
     # produces an artifact to examine instead of failing at the packaging step.
     Compress-Archive -Path (Join-Path $Stage '*') -DestinationPath $zipPath -CompressionLevel Optimal
     $zipSize = [math]::Round((Get-Item $zipPath).Length / 1MB, 2)
     Write-Host "  zip  $([IO.Path]::GetFileName($zipPath))  ${zipSize} MB"
+    if ($pkgFp) { Write-SourceStamp -StampPath (Get-SourceStampPath $zipPath) -Fingerprint $pkgFp }
 }
 
 # --- msi -------------------------------------------------------------------
@@ -294,6 +316,7 @@ if (-not $SkipMsi) {
     }
     $msiPath = Join-Path $OutputDir $msiLeaf
     if (Test-Path $msiPath) { Remove-Item $msiPath -Force }
+    Remove-SourceStamp (Get-SourceStampPath $msiPath)
 
     # --- sparse package (Windows 11 first-level context menu) --------------
     #
@@ -726,6 +749,7 @@ if (-not $SkipMsi) {
 
     $msiSize = [math]::Round((Get-Item $msiPath).Length / 1MB, 2)
     Write-Host "  msi  $([IO.Path]::GetFileName($msiPath))  ${msiSize} MB"
+    if ($pkgFp) { Write-SourceStamp -StampPath (Get-SourceStampPath $msiPath) -Fingerprint $pkgFp }
 }
 
 $produced = @()
