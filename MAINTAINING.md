@@ -665,7 +665,14 @@ built-in blind spot: `.gitignore` excludes every directory named `x86/`,
 `arm64/`, `arm/` and so on (build output), which also matches `Asm/x86/`,
 `Asm/arm64/` and `Asm/arm/`. Edits to tracked files
 there are seen; a brand-new file there is not, until it is tracked with
-`git add -f`. `build/Test-SourceStamp.ps1`
+`git add -f`. Second blind spot, latent: `git ls-files` prints non-ASCII file
+names in the console's code page, so a name like that under `Lang/` or `Help/`
+would give a different fingerprint under cp950 than under UTF-8 and make
+artifacts look stale when producer and consumer ran in different consoles
+(measured). None of the watched paths has one today; if one appears, fix
+`Invoke-SrcStampGit` to force UTF-8 output before relying on the check - do
+not drop `core.quotePath=false`, which would make such paths silently
+unmatched. `build/Test-SourceStamp.ps1`
 holds the rules' tests (scratch repo, exit codes only); it keeps its own copy of
 the document list, so extend it together with the library.
 

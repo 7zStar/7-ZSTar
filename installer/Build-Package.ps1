@@ -204,7 +204,10 @@ if ($missing) {
 # checked, so a source edit landing in between makes the check fail instead of
 # leaving a package stamp that vouches for source the binaries were not built from.
 $pkgFp = $null
-if (-not $SkipFreshnessCheck) { $pkgFp = Get-SourceFingerprint -Kind package -RepoRoot $RepoRoot }
+if (-not $SkipFreshnessCheck) {
+    try { $pkgFp = Get-SourceFingerprint -Kind package -RepoRoot $RepoRoot }
+    catch { throw "$($_.Exception.Message) Build with git available, or pass -SkipFreshnessCheck on purpose (no source stamp is then written beside the packages)." }
+}
 Assert-ArtifactFresh -Path @($Binaries.Values | ForEach-Object { Join-Path $RepoRoot $_ }) `
     -Skip:$SkipFreshnessCheck -Caller 'Build-Package.ps1'
 
