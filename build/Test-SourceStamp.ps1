@@ -134,9 +134,7 @@ try {
         }
 
         # A relative path resolves against where the caller is, not the process directory.
-        # (Assert-Fresh.ps1 makes paths absolute itself, which would hide the
-        # defect; the scripts that call Assert-ArtifactFresh directly, such as
-        # Test-MsiRegistry -Msi <relative>, do not - so call the library here.)
+        # (Called through the library directly, as Test-MsiRegistry -Msi <relative> does.)
         [IO.File]::WriteAllText((PathOf 'build\_rel.ps1'), @'
 param($Repo, $Rel)
 $ErrorActionPreference = 'Stop'
@@ -206,6 +204,19 @@ exit 0
         Remove-Item $stampFile -Force
         Expect "$hn missing stamp is refused" 1 (RunAssert $hx $a)
 
+        # The verdict must stop a caller even when it runs with $ErrorActionPreference = 'Continue'.
+        [IO.File]::WriteAllText((PathOf 'build\_eap.ps1'), @'
+param($Artifact)
+$ErrorActionPreference = 'Continue'
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
+Assert-ArtifactFresh -Path $Artifact
+exit 5      # reached only if the stale verdict did not end the script
+'@)
+        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        try { $script:LastOutput = (& $hx -NoProfile -ExecutionPolicy Bypass -File (PathOf 'build\_eap.ps1') -Artifact (PathOf $exe) 2>&1 | Out-String); $eapCode = $LASTEXITCODE }
+        finally { $ErrorActionPreference = $prev }
+        Expect "$hn a stale verdict ends the caller even under ErrorActionPreference=Continue" 1 $eapCode
+
         if (Test-Path $log) { Remove-Item $log -Force }
         Expect "$hn -SkipFreshnessCheck lets the unstamped one through" 0 (RunAssert $hx $a -Skip)
         $logged = (Test-Path $log) -and ((Get-Content $log -Raw) -match [regex]::Escape('7z.exe'))
@@ -218,8 +229,16 @@ exit 0
         Expect "$hn stamp with a malformed fingerprint is refused (verdict, not a crash)" 1 (RunAssert $hx $a)
         [IO.File]::WriteAllText($stampFile, '{"kind":"binary","fingerprint":"' + ('0' * 64) + '","artifacts":{}}')
         Expect "$hn stamp with a well-formed but wrong fingerprint is refused" 1 (RunAssert $hx $a)
+        [IO.File]::WriteAllText($stampFile, ($saved -replace '"length":\d+', '"length":"abc"'))
+        Expect "$hn a non-numeric length in the stamp is refused (verdict, not a crash)" 1 (RunAssert $hx $a)
         [IO.File]::WriteAllText($stampFile, $saved)
         Expect "$hn stamp restored is fresh" 0 (RunAssert $hx $a)
+
+        # A failure of the check itself is exit 2, not a verdict: an artifact
+        # another process holds open cannot be hashed.
+        $lock = [IO.File]::Open((PathOf $exe), 'Open', 'Read', 'None')
+        try { $lockCode = RunAssert $hx $a } finally { $lock.Dispose() }
+        Expect "$hn a locked artifact is a failed check (exit 2), not a verdict" 2 $lockCode
 
         # Judged by content, not by time: a bare touch changes nothing...
         (Get-Item (PathOf $exe)).LastWriteTime = (Get-Date).AddMinutes(5)
@@ -293,7 +312,7 @@ try { Assert-ArtifactFresh -Path $Artifact | Out-Null; exit 2 } catch { exit 0 }
     Copy-Item (PathOf 'build\SourceStamp.ps1') (Join-Path $bare 'build\SourceStamp.ps1')
     Copy-Item (PathOf 'build\Assert-Fresh.ps1') (Join-Path $bare 'build\Assert-Fresh.ps1')
     Set-Content (Join-Path $bare 'x.exe') 'x'
-    Set-Content (Join-Path $bare '.srcstamp') '{"kind":"binary","fingerprint":"abc","head":"h","created":"2026-01-01T00:00:00"}'
+    Set-Content (Join-Path $bare '.srcstamp') ('{"kind":"binary","fingerprint":"' + ('0' * 64) + '","head":"h","created":"2026-01-01T00:00:00","artifacts":{}}')   # well-formed, so the refusal is about git
     $hx0 = @($hosts.Values)[0]
     $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
     try {

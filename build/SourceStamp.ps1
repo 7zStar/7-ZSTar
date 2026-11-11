@@ -234,6 +234,8 @@ function Assert-ArtifactFresh {
         [string]$RepoRoot = $script:SrcStampRepoRoot
     )
 
+    $Path = @($Path | ForEach-Object { ConvertTo-FullPath $_ })   # also what the skip log records
+
     if ($Skip) {
         Write-Warning ("Freshness check SKIPPED for: " + (($Path | ForEach-Object { Split-Path -Leaf $_ }) -join ', ') +
                        ". Nothing proves these match the current source.")
@@ -266,6 +268,13 @@ function Assert-ArtifactFresh {
             if (-not $rec.kind -or -not $rec.fingerprint) { throw 'missing kind/fingerprint' }
             if ($rec.kind -notin 'binary', 'package') { throw "unknown kind '$($rec.kind)'" }
             if ("$($rec.fingerprint)" -notmatch '^[0-9a-f]{64}$') { throw 'malformed fingerprint (want 64 hex digits)' }
+            if ($rec.artifacts) {
+                foreach ($p in $rec.artifacts.PSObject.Properties) {
+                    if ("$($p.Value.length)" -notmatch '^\d+$' -or "$($p.Value.sha256)" -notmatch '^[0-9a-f]{64}$') {
+                        throw "malformed artifact entry '$($p.Name)'"
+                    }
+                }
+            }
         } catch {
             $problems.Add("${leaf}: unreadable stamp $stampPath ($($_.Exception.Message))")
             continue
@@ -284,7 +293,7 @@ function Assert-ArtifactFresh {
             $nowHead = $now.Head.Substring(0, [Math]::Min(9, $now.Head.Length))
             # pwsh 7 turns the stamp's ISO string into a DateTime on the way in; print both hosts the same way.
             $made = try { ([datetime]$rec.created).ToString('s') } catch { "$($rec.created)" }
-            $hint = if ($stampHead -eq $nowHead) { ' Same HEAD, so the difference is uncommitted: see git status -- C CPP Asm.' } else { '' }
+            $hint = if ($stampHead -eq $nowHead) { " Same HEAD, so the difference is uncommitted: see git status -- $($script:SrcStampKinds[$rec.kind].Include -join ' ')." } else { '' }
             $problems.Add("${leaf}: made from different source (stamp $($rec.fingerprint.Substring(0, 12)) at HEAD $stampHead on $made; " +
                           "source now $($now.Fingerprint.Substring(0, 12)) at HEAD $nowHead).$hint")
             continue
@@ -311,7 +320,10 @@ function Assert-ArtifactFresh {
         $err = New-Object Management.Automation.ErrorRecord (
             (New-Object InvalidOperationException $msg), 'SourceStampStale',
             [Management.Automation.ErrorCategory]::InvalidResult, $null)
-        $PSCmdlet.ThrowTerminatingError($err)
+        # `throw`, not ThrowTerminatingError: the latter ends only the current
+        # statement when a caller runs with $ErrorActionPreference = 'Continue',
+        # and the script would go on to install the stale package.
+        throw $err
     }
     $summary = ($okKinds.GetEnumerator() | ForEach-Object { "$($_.Key) $($_.Value.Substring(0, 12))" }) -join ', '
     Write-Host ("  freshness OK: {0} artifact(s) match the current source ({1})" -f $Path.Count, $summary)
