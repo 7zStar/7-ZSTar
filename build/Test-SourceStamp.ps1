@@ -7,8 +7,9 @@
 # a copy of the library into it, and drives build\Assert-Fresh.ps1 as a child
 # process under both Windows PowerShell 5.1 and PowerShell 7 - the two hosts
 # the packaging and test scripts run under. Every verdict is the child's EXIT
-# CODE and nothing else: 0 = fresh, 1 = stale or unverifiable. Output text is
-# printed only to explain a failure.
+# CODE and nothing else: 0 = fresh, 1 = stale or unverifiable, 2 = the check
+# itself failed (not a verdict). Output text is printed only to explain a
+# failure - plus one case that pins WHY a refusal happened.
 #
 # Exits non-zero if any case fails.
 
@@ -204,18 +205,26 @@ exit 0
         Remove-Item $stampFile -Force
         Expect "$hn missing stamp is refused" 1 (RunAssert $hx $a)
 
-        # The verdict must stop a caller even when it runs with $ErrorActionPreference = 'Continue'.
+        # The verdict must stop a caller however it handles errors: Continue and
+        # SilentlyContinue as the caller's preference, and -ErrorAction on the call.
         [IO.File]::WriteAllText((PathOf 'build\_eap.ps1'), @'
-param($Artifact)
-$ErrorActionPreference = 'Continue'
+param($Artifact, $Mode)
 . (Join-Path $PSScriptRoot 'SourceStamp.ps1')
-Assert-ArtifactFresh -Path $Artifact
+if ($Mode -eq 'param') {
+    $ErrorActionPreference = 'Continue'
+    Assert-ArtifactFresh -Path $Artifact -ErrorAction SilentlyContinue
+} else {
+    $ErrorActionPreference = $Mode
+    Assert-ArtifactFresh -Path $Artifact
+}
 exit 5      # reached only if the stale verdict did not end the script
 '@)
-        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
-        try { $script:LastOutput = (& $hx -NoProfile -ExecutionPolicy Bypass -File (PathOf 'build\_eap.ps1') -Artifact (PathOf $exe) 2>&1 | Out-String); $eapCode = $LASTEXITCODE }
-        finally { $ErrorActionPreference = $prev }
-        Expect "$hn a stale verdict ends the caller even under ErrorActionPreference=Continue" 1 $eapCode
+        foreach ($mode in 'Continue', 'SilentlyContinue', 'param') {
+            $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+            try { $script:LastOutput = (& $hx -NoProfile -ExecutionPolicy Bypass -File (PathOf 'build\_eap.ps1') -Artifact (PathOf $exe) -Mode $mode 2>&1 | Out-String); $eapCode = $LASTEXITCODE }
+            finally { $ErrorActionPreference = $prev }
+            Expect "$hn a stale verdict ends the caller (error handling: $mode)" 1 $eapCode
+        }
 
         if (Test-Path $log) { Remove-Item $log -Force }
         Expect "$hn -SkipFreshnessCheck lets the unstamped one through" 0 (RunAssert $hx $a -Skip)
@@ -320,6 +329,8 @@ try { Assert-ArtifactFresh -Path $Artifact | Out-Null; exit 2 } catch { exit 0 }
         $code = $LASTEXITCODE
     } finally { $ErrorActionPreference = $prev }
     Expect 'outside a git work tree the check refuses' 1 $code
+    # Exit 1 alone would also pass for some other refusal; pin the reason.
+    Expect 'outside a git work tree: the reason is the missing work tree' 0 $(if ($script:LastOutput -match 'cannot compute the current source fingerprint') { 0 } else { 1 })
 } finally {
     Remove-Item -LiteralPath $Work -Recurse -Force -ErrorAction SilentlyContinue
     if ($bare) { Remove-Item -LiteralPath $bare -Recurse -Force -ErrorAction SilentlyContinue }

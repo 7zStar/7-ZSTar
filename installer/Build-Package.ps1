@@ -199,10 +199,14 @@ if ($missing) {
 # package at the end says which source it was cut from; with the check skipped
 # nothing was verified, so no stamp is written and the package cannot vouch
 # for itself later.
-Assert-ArtifactFresh -Path @($Binaries.Values | ForEach-Object { Join-Path $RepoRoot $_ }) `
-    -Skip:$SkipFreshnessCheck -Caller 'Build-Package.ps1'
+#
+# Order matters: the package fingerprint is taken BEFORE the binaries are
+# checked, so a source edit landing in between makes the check fail instead of
+# leaving a package stamp that vouches for source the binaries were not built from.
 $pkgFp = $null
 if (-not $SkipFreshnessCheck) { $pkgFp = Get-SourceFingerprint -Kind package -RepoRoot $RepoRoot }
+Assert-ArtifactFresh -Path @($Binaries.Values | ForEach-Object { Join-Path $RepoRoot $_ }) `
+    -Skip:$SkipFreshnessCheck -Caller 'Build-Package.ps1'
 
 # Checked separately from $missing so the message can say where these come
 # from - they are not build output and rebuilding will not produce them.

@@ -223,8 +223,10 @@ function Assert-ArtifactFresh {
 
         A verdict of "stale or unverifiable" is a terminating error whose
         FullyQualifiedErrorId is 'SourceStampStale' (build\Assert-Fresh.ps1
-        turns it into exit 1); any other exception is a defect in this code,
-        not a verdict (Assert-Fresh.ps1 exits 2).
+        turns it into exit 1). Any other exception means the check itself
+        failed (a defect, or an artifact another process holds open) - not a
+        verdict, and Assert-Fresh.ps1 exits 2; callers should refuse to
+        proceed on it as well.
     #>
     [CmdletBinding()]
     param(
@@ -255,7 +257,6 @@ function Assert-ArtifactFresh {
     $okKinds = @{}
     $nowByKind = @{}   # one fingerprint per kind per call, not per artifact
     foreach ($artifact in $Path) {
-        $artifact = ConvertTo-FullPath $artifact
         $leaf = Split-Path -Leaf $artifact
         if (-not (Test-Path -LiteralPath $artifact)) { $problems.Add("${leaf}: file not found ($artifact)"); continue }
         $stampPath = Get-SourceStampPath $artifact
@@ -270,7 +271,7 @@ function Assert-ArtifactFresh {
             if ("$($rec.fingerprint)" -notmatch '^[0-9a-f]{64}$') { throw 'malformed fingerprint (want 64 hex digits)' }
             if ($rec.artifacts) {
                 foreach ($p in $rec.artifacts.PSObject.Properties) {
-                    if ("$($p.Value.length)" -notmatch '^\d+$' -or "$($p.Value.sha256)" -notmatch '^[0-9a-f]{64}$') {
+                    if ("$($p.Value.length)" -notmatch '^\d{1,18}$' -or "$($p.Value.sha256)" -notmatch '^[0-9a-f]{64}$') {
                         throw "malformed artifact entry '$($p.Name)'"
                     }
                 }
@@ -322,7 +323,11 @@ function Assert-ArtifactFresh {
             [Management.Automation.ErrorCategory]::InvalidResult, $null)
         # `throw`, not ThrowTerminatingError: the latter ends only the current
         # statement when a caller runs with $ErrorActionPreference = 'Continue',
-        # and the script would go on to install the stale package.
+        # and the script would go on to install the stale package. And 'Stop'
+        # set here (function scope only): under 'SilentlyContinue' or
+        # `-ErrorAction SilentlyContinue` a bare throw is swallowed and the
+        # function falls through to print "freshness OK".
+        $ErrorActionPreference = 'Stop'
         throw $err
     }
     $summary = ($okKinds.GetEnumerator() | ForEach-Object { "$($_.Key) $($_.Value.Substring(0, 12))" }) -join ', '
