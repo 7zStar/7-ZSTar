@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark@3x.png">
-  <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
+  <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
+  <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · **Tiếng Việt** · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · **Tiếng Việt** · [Esperanto](README.eo.md)
 
 **Bản fork của 7-Zip thân thiện hơn với người dùng Windows 11 hiện đại: menu chuột phải ở cấp đầu tiên, nén zstd và tar.zst trong một lượt.**
 
-[Tải xuống](https://github.com/7zStar/7-ZSTar/releases/latest) · [Trang web](https://www.7zstar.com/vi/) · [Nhật ký thay đổi](CHANGELOG.md)
+[Tải xuống](https://github.com/7zStar/7-ZSTar/releases/latest) · [Trang web](https://www.7zstar.com/vi/) · [Nhật ký thay đổi](../../CHANGELOG.md)
 
 ## Vì sao chọn 7-ZSTar
 
@@ -56,16 +56,16 @@ Trong PowerShell, hãy đặt tham số định dạng trong dấu ngoặc kép,
 
 Mỗi loại đều có bản x64, x86 và arm64; hãy chọn bản khớp với Windows của bạn: trên Windows 64-bit, các gói x86 có thể không có menu chuột phải. Các bản arm64 chưa từng chạy trên phần cứng thật. 7-ZSTar cài song song với 7-Zip chính thức, hai bên không ảnh hưởng lẫn nhau.
 
-**Windows có thể cảnh báo về các bản tải xuống này.** Các trình cài đặt và chương trình không được ký mã (code-sign) bởi một tổ chức cấp chứng chỉ, nên Microsoft Defender SmartScreen có thể chặn chúng bằng một cảnh báo ở lần chạy đầu tiên, và trên máy Windows 11 bật Smart App Control thì các trình cài đặt `.msi` bị chặn hẳn, không có tùy chọn tiếp tục. Điều đó không có nghĩa là tệp có vấn đề: mỗi bản phát hành đều kèm một tệp `SHA256SUMS`, và bạn có thể kiểm tra xem tệp tải về có khớp với bản đã được công bố hay không. Cách kiểm tra, ý nghĩa của Smart App Control đối với bạn, và cách tiếp tục khi tệp đã khớp nằm trong [docs/INSTALL.md](docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
+**Windows có thể cảnh báo về các bản tải xuống này.** Các trình cài đặt và chương trình không được ký mã (code-sign) bởi một tổ chức cấp chứng chỉ, nên Microsoft Defender SmartScreen có thể chặn chúng bằng một cảnh báo ở lần chạy đầu tiên, và trên máy Windows 11 bật Smart App Control thì các trình cài đặt `.msi` bị chặn hẳn, không có tùy chọn tiếp tục. Điều đó không có nghĩa là tệp có vấn đề: mỗi bản phát hành đều kèm một tệp `SHA256SUMS`, và bạn có thể kiểm tra xem tệp tải về có khớp với bản đã được công bố hay không. Cách kiểm tra, ý nghĩa của Smart App Control đối với bạn, và cách tiếp tục khi tệp đã khớp nằm trong [docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
 
 **Về menu cấp đầu tiên:** Windows 11 chỉ cho các chương trình có danh tính gói (package identity) lên cấp đầu tiên, nên MSI cho mọi người dùng cài một gói MSIX nhỏ được ký bằng chứng chỉ tự ký và tin cậy chứng chỉ đó. Gỡ cài đặt sẽ xóa cả hai. Nếu bạn không muốn tin cậy chứng chỉ này, hãy cài bằng `msiexec /i 7-ZSTar-<phiên bản>-<kiến trúc>.msi SPARSE=0`, khi đó menu vẫn nằm trong “Xem thêm tùy chọn”. Gói chỉ được đăng ký cho tài khoản chạy trình cài đặt; các tài khoản khác phải đăng ký riêng.
 
-Toàn bộ chi tiết, gồm cả liên kết tệp và cách gỡ cài đặt, nằm trong [docs/INSTALL.md](docs/INSTALL.md) (hiện chỉ có tiếng Anh).
+Toàn bộ chi tiết, gồm cả liên kết tệp và cách gỡ cài đặt, nằm trong [docs/INSTALL.md](../INSTALL.md) (hiện chỉ có tiếng Anh).
 
 ## Hạn chế đã biết
 
 - **Bỏ chọn hộp kiểm tích hợp vào shell sẽ xóa đăng ký menu chuột phải.** Trong trình quản lý tệp (`7zFM`), mục **Công cụ > Tùy chọn > 7-ZSTar** có một hộp kiểm tên “Tích hợp 7-ZSTar vào menu ngữ cảnh”. Giống 7-Zip chính thức, bỏ chọn hộp kiểm này sẽ xóa đăng ký của phần mở rộng shell (khóa `CLSID`) mà trình cài đặt đã tạo, và mục 7-ZSTar biến mất khỏi menu chuột phải. Với gói cho mọi người dùng, bạn có thể chọn lại hộp kiểm khi trình quản lý tệp chạy với quyền quản trị viên. Với gói riêng bạn thì không được: chọn lại sẽ hiện “Quyền truy nhập bị từ chối” và mục đó vẫn mất. Để lấy lại, hãy chạy lại tệp `.msi` ban đầu rồi chọn *Repair* (sửa chữa).
-- **Menu cấp đầu tiên chỉ được đăng ký khi việc cài đặt chạy trong một phiên tương tác, đã đăng nhập.** Cài `.msi` cho mọi người dùng từ một phiên từ xa hoặc không tương tác (qua SSH, hoặc triển khai im lặng từ một công cụ quản lý) vẫn báo thành công, nhưng gói dành cho Windows 11 không được đăng ký, nên chỉ có menu cổ điển trong “Xem thêm tùy chọn” xuất hiện. Chi tiết nằm trong [docs/INSTALL.md](docs/INSTALL.md#the-windows-11-right-click-menu).
+- **Menu cấp đầu tiên chỉ được đăng ký khi việc cài đặt chạy trong một phiên tương tác, đã đăng nhập.** Cài `.msi` cho mọi người dùng từ một phiên từ xa hoặc không tương tác (qua SSH, hoặc triển khai im lặng từ một công cụ quản lý) vẫn báo thành công, nhưng gói dành cho Windows 11 không được đăng ký, nên chỉ có menu cổ điển trong “Xem thêm tùy chọn” xuất hiện. Chi tiết nằm trong [docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu).
 
 ## Yêu cầu hệ thống
 
@@ -77,13 +77,13 @@ Windows 7 hoặc Windows Server 2008 R2 trở lên (x64, x86); Windows 10 trở 
 
 ## Tài liệu
 
-Mỗi gói đều kèm `7-zip.chm`, tệp trợ giúp của 7-Zip chính thức, giữ nguyên không sửa: **Giúp đỡ > Nội dung** và phím F1 sẽ mở nó. Trong đó chỗ nào cũng ghi “7-Zip” và không nói về những gì 7-ZSTar bổ sung; về phần đó, hãy xem trang này và [CHANGELOG.md](CHANGELOG.md).
+Mỗi gói đều kèm `7-zip.chm`, tệp trợ giúp của 7-Zip chính thức, giữ nguyên không sửa: **Giúp đỡ > Nội dung** và phím F1 sẽ mở nó. Trong đó chỗ nào cũng ghi “7-Zip” và không nói về những gì 7-ZSTar bổ sung; về phần đó, hãy xem trang này và [CHANGELOG.md](../../CHANGELOG.md).
 
 Nếu tệp trợ giúp không nằm cạnh tệp thực thi, chính các mục đó sẽ mở phần này trên mạng (bằng tiếng Anh).
 
 ## Xây dựng từ mã nguồn
 
-Xem [build/README.md](build/README.md). Tóm tắt: VS2022 Build Tools (MSVC v143), rồi chạy `pwsh build\Build.ps1`. Trước khi hợp nhất một bản upstream mới, hãy đọc [MAINTAINING.md](MAINTAINING.md).
+Xem [build/README.md](../../build/README.md). Tóm tắt: VS2022 Build Tools (MSVC v143), rồi chạy `pwsh build\Build.ps1`. Trước khi hợp nhất một bản upstream mới, hãy đọc [MAINTAINING.md](../../MAINTAINING.md).
 
 <a id="donate"></a>
 
@@ -97,7 +97,7 @@ Mọi token trên Ethereum hoặc Polygon đều được đón nhận: ETH, POL
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
 ```
 
-<img src="docs/donate-qr.png" width="200" alt="Mã QR của địa chỉ ủng hộ">
+<img src="../donate-qr.png" width="200" alt="Mã QR của địa chỉ ủng hộ">
 
 - Chỉ nhận chuyển khoản trên Ethereum (ERC20) và Polygon. Nếu dùng được cả hai, nên chọn Polygon vì phí thường thấp hơn.
 - Đây là địa chỉ chính thức duy nhất, và tôi sẽ không bao giờ yêu cầu bạn chuyển sang địa chỉ khác.
@@ -107,7 +107,7 @@ Tặng 7-ZSTar một sao (Star) trên GitHub, hoặc giới thiệu cho bạn b�
 
 ## Giấy phép
 
-LGPL v3, xem [LICENSE](LICENSE). Một số phần đi kèm điều khoản khác: ví dụ giải nén RAR mang hạn chế unRAR, nên bản có hỗ trợ RAR không thuần LGPL v3. Danh sách đầy đủ nằm trong [LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md), thông báo bản quyền của mọi thành phần nằm trong [NOTICE](NOTICE).
+LGPL v3, xem [LICENSE](../../LICENSE). Một số phần đi kèm điều khoản khác: ví dụ giải nén RAR mang hạn chế unRAR, nên bản có hỗ trợ RAR không thuần LGPL v3. Danh sách đầy đủ nằm trong [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md), thông báo bản quyền của mọi thành phần nằm trong [NOTICE](../../NOTICE).
 
 ## Lời cảm ơn
 

@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark@3x.png">
-  <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
+  <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
+  <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](README.md) · **繁體中文** · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · **繁體中文** · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
 
 **對現代 Windows 11 使用者更友善的 7-Zip 分支版：右鍵選單第一層就有它，可以用 zstd 壓縮，一次做出 tar.zst。**
 
-[下載](https://github.com/7zStar/7-ZSTar/releases/latest) · [官方網站](https://www.7zstar.com) · [更新紀錄](CHANGELOG.md)
+[下載](https://github.com/7zStar/7-ZSTar/releases/latest) · [官方網站](https://www.7zstar.com) · [更新紀錄](../../CHANGELOG.md)
 
 ## 為什麼用 7-ZSTar
 
@@ -56,16 +56,16 @@ zip、7z、tar.zst 都用預設值壓縮。7-ZSTar 26.05.1 x64（7z.exe）、單
 
 三種都有 x64、x86、arm64 版，請選和 Windows 相同的架構：在 64 位元 Windows 上裝 x86 版，可能沒有右鍵選單。arm64 版還沒在實機上跑過。可以和官方 7-Zip 同時安裝，互不影響。
 
-**Windows 可能會對這些下載顯示警告。** 安裝程式和程式檔都沒有經過憑證授權單位簽發的程式碼簽署，所以第一次執行時，Microsoft Defender SmartScreen 可能會擋下來並顯示警告；在已開啟 Smart App Control 的 Windows 11 電腦上，`.msi` 安裝檔則會直接被封鎖，而且沒有任何可以繼續的選項。這不代表檔案有問題：每個 Release 都附有 `SHA256SUMS`，可以用來核對你下載的檔案是否和發布的一致。核對方法、Smart App Control 對你的影響，以及核對無誤後如何繼續安裝，見 [docs/INSTALL.md](docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control)（目前只有英文）。
+**Windows 可能會對這些下載顯示警告。** 安裝程式和程式檔都沒有經過憑證授權單位簽發的程式碼簽署，所以第一次執行時，Microsoft Defender SmartScreen 可能會擋下來並顯示警告；在已開啟 Smart App Control 的 Windows 11 電腦上，`.msi` 安裝檔則會直接被封鎖，而且沒有任何可以繼續的選項。這不代表檔案有問題：每個 Release 都附有 `SHA256SUMS`，可以用來核對你下載的檔案是否和發布的一致。核對方法、Smart App Control 對你的影響，以及核對無誤後如何繼續安裝，見 [docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control)（目前只有英文）。
 
 **關於第一層選單**：Windows 11 只讓帶有套件身分的程式進第一層，所以全機 MSI 會安裝一個自簽憑證簽署的小型 MSIX 套件，並信任這張憑證；解除安裝時一併移除。不想信任的話，用 `msiexec /i 7-ZSTar-<版本>-<架構>.msi SPARSE=0` 安裝，選單就會留在「顯示其他選項」裡。套件只替執行安裝的帳號註冊，其他帳號要另外註冊。
 
-完整說明（含檔案關聯與解除安裝）在 [docs/INSTALL.md](docs/INSTALL.md)，目前只有英文。
+完整說明（含檔案關聯與解除安裝）在 [docs/INSTALL.md](../INSTALL.md)，目前只有英文。
 
 ## 已知限制
 
 - **取消勾選「整合到右鍵選單」會移除右鍵選單的註冊。** 在檔案管理員（`7zFM`）的「工具 ▸ 選項 ▸ 7-ZSTar」分頁，有一個「將 7-ZSTar 整合到快顯功能表中」核取方塊。和官方 7-Zip 一樣，取消勾選會刪掉安裝程式建立的殼層擴充註冊（`CLSID` 鍵），7-ZSTar 就從右鍵選單消失。全機安裝版以系統管理員身分執行檔案管理員，可以再勾回來；個別使用者版勾不回來：再勾選會跳出「存取被拒」，選單也不會回來。要補回，請重新執行當初的 `.msi` 安裝檔，選「修復」。
-- **第一層選單只有在互動式登入的工作階段安裝時才會註冊。** 從遠端或非互動的工作階段安裝全機 `.msi`（例如透過 SSH，或管理工具的靜默部署），安裝仍會回報成功，但 Windows 11 套件沒有註冊，只會出現「顯示其他選項」裡的傳統選單。詳情見 [docs/INSTALL.md](docs/INSTALL.md#the-windows-11-right-click-menu)。
+- **第一層選單只有在互動式登入的工作階段安裝時才會註冊。** 從遠端或非互動的工作階段安裝全機 `.msi`（例如透過 SSH，或管理工具的靜默部署），安裝仍會回報成功，但 Windows 11 套件沒有註冊，只會出現「顯示其他選項」裡的傳統選單。詳情見 [docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu)。
 
 ## 系統需求
 
@@ -77,13 +77,13 @@ Windows 7 或 Windows Server 2008 R2 以上（x64、x86）；arm64 需要 Window
 
 ## 說明文件
 
-每個套件都附官方 7-Zip 的說明檔，從「說明」選單或按 F1 開啟，內容原封不動，所以寫的是「7-Zip」，也不含 7-ZSTar 新增的功能；新增的內容請看本頁與 [CHANGELOG.md](CHANGELOG.md)。
+每個套件都附官方 7-Zip 的說明檔，從「說明」選單或按 F1 開啟，內容原封不動，所以寫的是「7-Zip」，也不含 7-ZSTar 新增的功能；新增的內容請看本頁與 [CHANGELOG.md](../../CHANGELOG.md)。
 
 如果執行檔旁沒有說明檔，這些選項會改開本專案 GitHub 頁面的這一段（英文版）。
 
 ## 從原始碼建置
 
-見 [build/README.md](build/README.md)。簡單說：裝好 VS2022 Build Tools（MSVC v143），再執行 `pwsh build\Build.ps1`。要合併上游新版前，先讀 [MAINTAINING.md](MAINTAINING.md)。
+見 [build/README.md](../../build/README.md)。簡單說：裝好 VS2022 Build Tools（MSVC v143），再執行 `pwsh build\Build.ps1`。要合併上游新版前，先讀 [MAINTAINING.md](../../MAINTAINING.md)。
 
 <a id="donate"></a>
 
@@ -97,7 +97,7 @@ Ethereum 或 Polygon 鏈上的資產都收，ETH、POL、USDT、USDC 或其他�
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
 ```
 
-<img src="docs/donate-qr.png" width="200" alt="贊助地址的 QR Code">
+<img src="../donate-qr.png" width="200" alt="贊助地址的 QR Code">
 
 - 只收 Ethereum（ERC20）和 Polygon 鏈上的轉帳。若兩者都有，建議用 Polygon，手續費通常比較低。
 - 官方地址只有這一個，我不會要求任何人改轉到別的地址。
@@ -107,7 +107,7 @@ Ethereum 或 Polygon 鏈上的資產都收，ETH、POL、USDT、USDC 或其他�
 
 ## 授權
 
-LGPL v3，見 [LICENSE](LICENSE)。部分內容另有條款，例如 RAR 解壓縮受 unRAR 限制，因此含 RAR 支援的版本不是純 LGPL v3。完整清單見 [LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md)，各元件的版權聲明見 [NOTICE](NOTICE)。
+LGPL v3，見 [LICENSE](../../LICENSE)。部分內容另有條款，例如 RAR 解壓縮受 unRAR 限制，因此含 RAR 支援的版本不是純 LGPL v3。完整清單見 [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md)，各元件的版權聲明見 [NOTICE](../../NOTICE)。
 
 ## 致謝
 

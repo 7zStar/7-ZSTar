@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark@3x.png">
-  <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
+  <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
+  <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · **Deutsch** · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · **Deutsch** · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
 
 **Ein 7-Zip-Fork, der besser zu Windows 11 passt: Rechtsklickmenü auf der ersten Ebene, zstd-Kompression und tar.zst in einem Durchgang.**
 
-[Download](https://github.com/7zStar/7-ZSTar/releases/latest) · [Website](https://www.7zstar.com/de/) · [Changelog](CHANGELOG.md)
+[Download](https://github.com/7zStar/7-ZSTar/releases/latest) · [Website](https://www.7zstar.com/de/) · [Changelog](../../CHANGELOG.md)
 
 ## Warum 7-ZSTar
 
@@ -56,16 +56,16 @@ In PowerShell setzen Sie den Format-Schalter in Anführungszeichen, etwa `7z a "
 
 Alle drei gibt es als x64, x86 und arm64. Wählen Sie die Variante, die zu Ihrem Windows passt: Unter 64-Bit-Windows haben die x86-Pakete möglicherweise kein Rechtsklickmenü. Die arm64-Builds sind noch nicht auf echter Hardware gelaufen. 7-ZSTar lässt sich neben dem offiziellen 7-Zip installieren; beide beeinflussen sich nicht.
 
-**Windows kann bei diesen Downloads warnen.** Die Installationsprogramme und Programme sind nicht von einer Zertifizierungsstelle codesigniert, deshalb kann Microsoft Defender SmartScreen sie beim ersten Start mit einer Warnung stoppen, und auf einem Windows-11-PC mit aktivierter Smart App Control werden die `.msi`-Installer direkt blockiert, ohne Möglichkeit fortzufahren. Das heißt nicht, dass die Datei schlecht ist: Jedes Release enthält eine Datei `SHA256SUMS`, mit der Sie prüfen können, ob Ihr Download mit der veröffentlichten Datei übereinstimmt. Wie die Prüfung funktioniert, was Smart App Control für Sie bedeutet und wie Sie nach erfolgreichem Abgleich weitermachen, steht in [docs/INSTALL.md](docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
+**Windows kann bei diesen Downloads warnen.** Die Installationsprogramme und Programme sind nicht von einer Zertifizierungsstelle codesigniert, deshalb kann Microsoft Defender SmartScreen sie beim ersten Start mit einer Warnung stoppen, und auf einem Windows-11-PC mit aktivierter Smart App Control werden die `.msi`-Installer direkt blockiert, ohne Möglichkeit fortzufahren. Das heißt nicht, dass die Datei schlecht ist: Jedes Release enthält eine Datei `SHA256SUMS`, mit der Sie prüfen können, ob Ihr Download mit der veröffentlichten Datei übereinstimmt. Wie die Prüfung funktioniert, was Smart App Control für Sie bedeutet und wie Sie nach erfolgreichem Abgleich weitermachen, steht in [docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
 
 **Zum Menü auf der ersten Ebene:** Windows 11 lässt nur Programme mit Paketidentität auf die erste Ebene. Deshalb installiert das MSI für alle Benutzer ein kleines MSIX-Paket, das mit einem selbstsignierten Zertifikat signiert ist, und stuft dieses Zertifikat als vertrauenswürdig ein. Bei der Deinstallation wird beides entfernt. Wer dem Zertifikat nicht vertrauen möchte, installiert mit `msiexec /i 7-ZSTar-<Version>-<Architektur>.msi SPARSE=0`; dann bleibt das Menü unter „Weitere Optionen anzeigen“. Das Paket wird nur für das Konto registriert, das das Installationsprogramm ausführt; andere Konten registrieren es separat.
 
-Alle Details, auch zu Dateizuordnungen und zur Deinstallation, stehen in [docs/INSTALL.md](docs/INSTALL.md) (bisher nur auf Englisch).
+Alle Details, auch zu Dateizuordnungen und zur Deinstallation, stehen in [docs/INSTALL.md](../INSTALL.md) (bisher nur auf Englisch).
 
 ## Bekannte Einschränkungen
 
 - **Wer das Kontrollkästchen für die Shell-Integration abwählt, entfernt die Rechtsklick-Registrierung.** Im Dateimanager (`7zFM`) gibt es unter **Extras > Optionen > 7-ZSTar** das Kontrollkästchen „7-ZSTar in Kontextmenü integrieren“. Wie beim offiziellen 7-Zip löscht das Abwählen die vom Installationsprogramm angelegte Registrierung der Shell-Erweiterung (den `CLSID`-Schlüssel), und der Eintrag von 7-ZSTar verschwindet aus dem Rechtsklickmenü. Beim Paket für alle Benutzer können Sie das Kontrollkästchen wieder aktivieren, wenn der Dateimanager als Administrator läuft. Beim Paket für den aktuellen Benutzer geht das nicht: Erneutes Aktivieren zeigt „Zugriff verweigert“, und der Eintrag bleibt verschwunden. Um ihn zurückzuholen, führen Sie die ursprüngliche `.msi` erneut aus und wählen *Reparieren*.
-- **Das Menü auf der ersten Ebene wird nur registriert, wenn die Installation in einer interaktiven, angemeldeten Sitzung läuft.** Wer die `.msi` für alle Benutzer aus einer Remote- oder nicht interaktiven Sitzung installiert (über SSH oder als stille Verteilung per Verwaltungstool), bekommt trotzdem eine Erfolgsmeldung, aber das Windows-11-Paket wird nicht registriert; es erscheint nur das klassische Menü unter „Weitere Optionen anzeigen“. Einzelheiten stehen in [docs/INSTALL.md](docs/INSTALL.md#the-windows-11-right-click-menu).
+- **Das Menü auf der ersten Ebene wird nur registriert, wenn die Installation in einer interaktiven, angemeldeten Sitzung läuft.** Wer die `.msi` für alle Benutzer aus einer Remote- oder nicht interaktiven Sitzung installiert (über SSH oder als stille Verteilung per Verwaltungstool), bekommt trotzdem eine Erfolgsmeldung, aber das Windows-11-Paket wird nicht registriert; es erscheint nur das klassische Menü unter „Weitere Optionen anzeigen“. Einzelheiten stehen in [docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu).
 
 ## Systemanforderungen
 
@@ -77,13 +77,13 @@ Windows 7 oder Windows Server 2008 R2 und neuer (x64, x86); unter arm64 Windows 
 
 ## Dokumentation
 
-Jedes Paket enthält `7-zip.chm`, die Hilfedatei des offiziellen 7-Zip, unverändert: **Hilfe > Hilfethemen** und F1 öffnen sie. Darin steht überall „7-Zip“, und was 7-ZSTar ergänzt, wird nicht behandelt; dazu siehe diese Seite und [CHANGELOG.md](CHANGELOG.md).
+Jedes Paket enthält `7-zip.chm`, die Hilfedatei des offiziellen 7-Zip, unverändert: **Hilfe > Hilfethemen** und F1 öffnen sie. Darin steht überall „7-Zip“, und was 7-ZSTar ergänzt, wird nicht behandelt; dazu siehe diese Seite und [CHANGELOG.md](../../CHANGELOG.md).
 
 Liegt die Hilfedatei nicht neben der ausführbaren Datei, öffnen dieselben Einträge stattdessen diesen Abschnitt online (auf Englisch).
 
 ## Aus dem Quellcode bauen
 
-Siehe [build/README.md](build/README.md). Kurzfassung: VS2022 Build Tools (MSVC v143), dann `pwsh build\Build.ps1`. Bevor Sie eine neue Upstream-Version einpflegen, lesen Sie [MAINTAINING.md](MAINTAINING.md).
+Siehe [build/README.md](../../build/README.md). Kurzfassung: VS2022 Build Tools (MSVC v143), dann `pwsh build\Build.ps1`. Bevor Sie eine neue Upstream-Version einpflegen, lesen Sie [MAINTAINING.md](../../MAINTAINING.md).
 
 <a id="donate"></a>
 
@@ -97,7 +97,7 @@ Jeder Token auf Ethereum oder Polygon ist willkommen: ETH, POL, USDT, USDC oder 
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
 ```
 
-<img src="docs/donate-qr.png" width="200" alt="QR-Code der Spendenadresse">
+<img src="../donate-qr.png" width="200" alt="QR-Code der Spendenadresse">
 
 - Es werden nur Transfers über Ethereum (ERC20) und Polygon akzeptiert. Wenn Sie die Wahl haben, empfiehlt sich Polygon: Dort sind die Gebühren meist niedriger.
 - Das ist die einzige offizielle Adresse; ich bitte Sie nie, an eine andere zu senden.
@@ -107,7 +107,7 @@ Ein Stern auf GitHub oder eine Empfehlung an Freunde hilft auch.
 
 ## Lizenz
 
-LGPL v3, siehe [LICENSE](LICENSE). Einige Teile unterliegen anderen Bedingungen: Die RAR-Entpackung etwa trägt die unRAR-Einschränkung, ein Build mit RAR-Unterstützung ist also nicht rein LGPL v3. Die vollständige Liste steht in [LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md), die Urheberrechtshinweise aller Komponenten in [NOTICE](NOTICE).
+LGPL v3, siehe [LICENSE](../../LICENSE). Einige Teile unterliegen anderen Bedingungen: Die RAR-Entpackung etwa trägt die unRAR-Einschränkung, ein Build mit RAR-Unterstützung ist also nicht rein LGPL v3. Die vollständige Liste steht in [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md), die Urheberrechtshinweise aller Komponenten in [NOTICE](../../NOTICE).
 
 ## Danksagung
 

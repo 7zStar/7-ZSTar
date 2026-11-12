@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark@3x.png">
-  <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
+  <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
+  <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · **Esperanto**
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · **Esperanto**
 
 **7-Zip-disbranĉo pli amika al modernaj uzantoj de Windows 11: komandoj en la unua nivelo de la kunteksta menuo, zstd-densigo kaj tar.zst en unu trairo.**
 
-[Elŝuti](https://github.com/7zStar/7-ZSTar/releases/latest) · [Retejo](https://www.7zstar.com/eo/) · [Ŝanĝoprotokolo](CHANGELOG.md)
+[Elŝuti](https://github.com/7zStar/7-ZSTar/releases/latest) · [Retejo](https://www.7zstar.com/eo/) · [Ŝanĝoprotokolo](../../CHANGELOG.md)
 
 ## Kial 7-ZSTar
 
@@ -77,13 +77,13 @@ Windows 7 aŭ Windows Server 2008 R2 kaj pli novaj (x64, x86); ĉe arm64 Windows
 
 ## Dokumentaro
 
-Ĉiu pakaĵo enhavas `7-zip.chm`, la helpan dosieron de la oficiala 7-Zip, senŝanĝan: **Helpo > Enhavo...** kaj F1 malfermas ĝin. Ĝi diras "7-Zip" ĉie kaj ne priskribas tion, kion aldonas 7-ZSTar; pri tio vidu ĉi tiun paĝon kaj [CHANGELOG.md](CHANGELOG.md).
+Ĉiu pakaĵo enhavas `7-zip.chm`, la helpan dosieron de la oficiala 7-Zip, senŝanĝan: **Helpo > Enhavo...** kaj F1 malfermas ĝin. Ĝi diras "7-Zip" ĉie kaj ne priskribas tion, kion aldonas 7-ZSTar; pri tio vidu ĉi tiun paĝon kaj [CHANGELOG.md](../../CHANGELOG.md).
 
 Se la helpa dosiero ne troviĝas apud la plenumebla dosiero, samaj eroj malfermas ĉi tiun sekcion rete anstataŭe (en la angla).
 
 ## Konstruo el la fontkodo
 
-Vidu [build/README.md](build/README.md). Mallonge: VS2022 Build Tools (MSVC v143), poste `pwsh build\Build.ps1`. Antaŭ ol kunfandi novan eldonon de la originalo (upstream), legu [MAINTAINING.md](MAINTAINING.md).
+Vidu [build/README.md](../../build/README.md). Mallonge: VS2022 Build Tools (MSVC v143), poste `pwsh build\Build.ps1`. Antaŭ ol kunfandi novan eldonon de la originalo (upstream), legu [MAINTAINING.md](../../MAINTAINING.md).
 
 <a id="donate"></a>
 
@@ -97,7 +97,7 @@ Vidu [build/README.md](build/README.md). Mallonge: VS2022 Build Tools (MSVC v143
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
 ```
 
-<img src="docs/donate-qr.png" width="200" alt="QR-kodo de la donaca adreso">
+<img src="../donate-qr.png" width="200" alt="QR-kodo de la donaca adreso">
 
 - Oni akceptas nur transakciojn sur Ethereum (ERC20) kaj Polygon. Se vi povas uzi ambaŭ, Polygon kutime havas pli malaltajn transakciokostojn.
 - Ĉi tiu estas la sola oficiala adreso, kaj mi neniam petos vin sendi al iu alia adreso.
@@ -107,7 +107,7 @@ Se vi donas stelon al 7-ZSTar ĉe GitHub aŭ rekomendas ĝin al amiko, ankaŭ ti
 
 ## Permesilo
 
-LGPL v3, vidu [LICENSE](LICENSE). Iuj partoj havas aliajn kondiĉojn: ekzemple RAR-maldensigo portas la limigon unRAR, do kompilaĵo kun RAR-subteno ne estas pure LGPL v3. La kompleta listo troviĝas en [LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md), kaj la kopirajtaj avizoj de ĉiuj komponantoj en [NOTICE](NOTICE).
+LGPL v3, vidu [LICENSE](../../LICENSE). Iuj partoj havas aliajn kondiĉojn: ekzemple RAR-maldensigo portas la limigon unRAR, do kompilaĵo kun RAR-subteno ne estas pure LGPL v3. La kompleta listo troviĝas en [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md), kaj la kopirajtaj avizoj de ĉiuj komponantoj en [NOTICE](../../NOTICE).
 
 ## Dankoj
 

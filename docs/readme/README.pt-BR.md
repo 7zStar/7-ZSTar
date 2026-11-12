@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark@3x.png">
-  <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
+  <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
+  <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · **Português (Brasil)** · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · **Português (Brasil)** · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
 
 **Um fork do 7-Zip mais amigável para quem usa o Windows 11 hoje: menu do botão direito no primeiro nível, compactação zstd e tar.zst em uma única passada.**
 
-[Download](https://github.com/7zStar/7-ZSTar/releases/latest) · [Site](https://www.7zstar.com/pt-br/) · [Histórico de alterações](CHANGELOG.md)
+[Download](https://github.com/7zStar/7-ZSTar/releases/latest) · [Site](https://www.7zstar.com/pt-br/) · [Histórico de alterações](../../CHANGELOG.md)
 
 ## Por que o 7-ZSTar
 
@@ -56,16 +56,16 @@ No PowerShell, coloque a opção de formato entre aspas, como em `7z a "-ttar.zs
 
 Cada um vem em x64, x86 e arm64; escolha o que corresponde ao seu Windows: no Windows de 64 bits, os pacotes x86 podem ficar sem o menu do botão direito. Os builds arm64 ainda não foram executados em hardware real. O 7-ZSTar se instala ao lado do 7-Zip oficial, e um não afeta o outro.
 
-**O Windows pode exibir um aviso nesses downloads.** Os instaladores e programas não são assinados por uma autoridade certificadora, então o Microsoft Defender SmartScreen pode bloqueá-los com um aviso na primeira vez que você executar um, e em um PC com Windows 11 com o Smart App Control ativado os instaladores `.msi` são bloqueados de vez, sem opção de continuar. Isso não quer dizer que o arquivo seja ruim: cada release acompanha um arquivo `SHA256SUMS`, e com ele você pode conferir se o seu download é igual ao que foi publicado. Como conferir, o que o Smart App Control significa para você e como seguir em frente depois que tudo bater está em [docs/INSTALL.md](docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
+**O Windows pode exibir um aviso nesses downloads.** Os instaladores e programas não são assinados por uma autoridade certificadora, então o Microsoft Defender SmartScreen pode bloqueá-los com um aviso na primeira vez que você executar um, e em um PC com Windows 11 com o Smart App Control ativado os instaladores `.msi` são bloqueados de vez, sem opção de continuar. Isso não quer dizer que o arquivo seja ruim: cada release acompanha um arquivo `SHA256SUMS`, e com ele você pode conferir se o seu download é igual ao que foi publicado. Como conferir, o que o Smart App Control significa para você e como seguir em frente depois que tudo bater está em [docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
 
 **Sobre o menu do primeiro nível:** o Windows 11 só deixa chegar ao primeiro nível os programas com identidade de pacote; por isso o MSI para todos os usuários instala um pequeno pacote MSIX assinado com um certificado autoassinado e passa a confiar nesse certificado. A desinstalação remove os dois. Se você prefere não confiar nele, instale com `msiexec /i 7-ZSTar-<versão>-<arquitetura>.msi SPARSE=0` e o menu continua em “Mostrar mais opções”. O pacote é registrado apenas para a conta que executa o instalador; as outras contas o registram separadamente.
 
-Os detalhes completos, incluindo associações de arquivos e desinstalação, estão em [docs/INSTALL.md](docs/INSTALL.md) (por enquanto só em inglês).
+Os detalhes completos, incluindo associações de arquivos e desinstalação, estão em [docs/INSTALL.md](../INSTALL.md) (por enquanto só em inglês).
 
 ## Limitações conhecidas
 
 - **Desmarcar a caixa de integração com o shell remove o registro do menu do botão direito.** No gerenciador de arquivos (`7zFM`), em **Ferramentas > Opções > 7-ZSTar** há uma caixa chamada “Integrar o 7-ZSTar ao menu de contexto do shell”. Como no 7-Zip oficial, desmarcá-la apaga o registro da extensão de shell (a chave `CLSID`) que o instalador criou, e o item do 7-ZSTar some do menu do botão direito. Com o pacote para todos os usuários, você pode marcar a caixa de novo se o gerenciador de arquivos estiver sendo executado como administrador. Com o pacote por usuário, não dá: marcar de novo mostra “Acesso negado” e o item continua ausente. Para recuperá-lo, execute de novo o `.msi` original e escolha *Reparar*.
-- **O menu do primeiro nível só é registrado quando a instalação roda em uma sessão interativa, com um usuário conectado.** Instalar o `.msi` para todos os usuários a partir de uma sessão remota ou não interativa (por SSH, ou em uma implantação silenciosa feita por uma ferramenta de gerenciamento) ainda informa sucesso, mas o pacote do Windows 11 não é registrado, então só aparece o menu clássico em “Mostrar mais opções”. Os detalhes estão em [docs/INSTALL.md](docs/INSTALL.md#the-windows-11-right-click-menu).
+- **O menu do primeiro nível só é registrado quando a instalação roda em uma sessão interativa, com um usuário conectado.** Instalar o `.msi` para todos os usuários a partir de uma sessão remota ou não interativa (por SSH, ou em uma implantação silenciosa feita por uma ferramenta de gerenciamento) ainda informa sucesso, mas o pacote do Windows 11 não é registrado, então só aparece o menu clássico em “Mostrar mais opções”. Os detalhes estão em [docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu).
 
 ## Requisitos do sistema
 
@@ -77,13 +77,13 @@ O 7-ZSTar é um fork do 7-Zip mais amigável para quem usa o Windows 11 hoje. O 
 
 ## Documentação
 
-Todo pacote inclui o `7-zip.chm`, o arquivo de ajuda do 7-Zip oficial, sem modificações: **Ajuda > Conteúdo** e F1 o abrem. Ele diz “7-Zip” do começo ao fim e não cobre o que o 7-ZSTar acrescenta; para isso, veja esta página e o [CHANGELOG.md](CHANGELOG.md).
+Todo pacote inclui o `7-zip.chm`, o arquivo de ajuda do 7-Zip oficial, sem modificações: **Ajuda > Conteúdo** e F1 o abrem. Ele diz “7-Zip” do começo ao fim e não cobre o que o 7-ZSTar acrescenta; para isso, veja esta página e o [CHANGELOG.md](../../CHANGELOG.md).
 
 Se o arquivo de ajuda não estiver ao lado do executável, essas mesmas entradas abrem esta seção on-line (em inglês).
 
 ## Compilação
 
-Veja [build/README.md](build/README.md). Resumo: VS2022 Build Tools (MSVC v143) e depois `pwsh build\Build.ps1`. Antes de incorporar uma nova versão do upstream, leia o [MAINTAINING.md](MAINTAINING.md).
+Veja [build/README.md](../../build/README.md). Resumo: VS2022 Build Tools (MSVC v143) e depois `pwsh build\Build.ps1`. Antes de incorporar uma nova versão do upstream, leia o [MAINTAINING.md](../../MAINTAINING.md).
 
 <a id="donate"></a>
 
@@ -97,7 +97,7 @@ Qualquer token nas redes Ethereum ou Polygon é bem-vindo: ETH, POL, USDT, USDC 
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
 ```
 
-<img src="docs/donate-qr.png" width="200" alt="QR code do endereço de doação">
+<img src="../donate-qr.png" width="200" alt="QR code do endereço de doação">
 
 - Só são aceitas transferências nas redes Ethereum (ERC20) e Polygon. Se você puder usar qualquer uma das duas, a Polygon costuma ter taxas menores.
 - Este é o único endereço oficial, e eu nunca vou pedir que você envie para outro.
@@ -107,7 +107,7 @@ Dar uma estrela ao 7-ZSTar no GitHub ou indicá-lo a um amigo também ajuda.
 
 ## Licença
 
-LGPL v3, veja [LICENSE](LICENSE). Algumas partes têm outros termos: a descompactação de RAR, por exemplo, traz a restrição do unRAR, então um build com suporte a RAR não é puramente LGPL v3. A lista completa está em [LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md), e os avisos de direitos autorais de todos os componentes estão em [NOTICE](NOTICE).
+LGPL v3, veja [LICENSE](../../LICENSE). Algumas partes têm outros termos: a descompactação de RAR, por exemplo, traz a restrição do unRAR, então um build com suporte a RAR não é puramente LGPL v3. A lista completa está em [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md), e os avisos de direitos autorais de todos os componentes estão em [NOTICE](../../NOTICE).
 
 ## Agradecimentos
 

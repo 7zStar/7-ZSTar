@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark@3x.png">
-  <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
+  <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
+  <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · **日本語** · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · **日本語** · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
 
 **Windows 11ユーザーにとってもっと使いやすい7-Zipのフォーク。右クリックメニューの第1階層、zstd圧縮、一度で作れるtar.zst。**
 
-[ダウンロード](https://github.com/7zStar/7-ZSTar/releases/latest) · [Webサイト](https://www.7zstar.com/ja/) · [変更履歴](CHANGELOG.md)
+[ダウンロード](https://github.com/7zStar/7-ZSTar/releases/latest) · [Webサイト](https://www.7zstar.com/ja/) · [変更履歴](../../CHANGELOG.md)
 
 ## 7-ZSTarを選ぶ理由
 
@@ -56,16 +56,16 @@ PowerShellでは、フォーマット指定のスイッチを引用符で囲ん�
 
 どれもx64、x86、arm64があります。お使いのWindowsに合うものを選んでください。64ビット版Windowsでは、x86パッケージに右クリックメニューが付かない場合があります。arm64ビルドは、まだ実機では動かしていません。7-ZSTarは公式の7-Zipと並べてインストールでき、互いに影響しません。
 
-**Windowsがこれらのダウンロードに警告を表示することがあります。** インストーラーとプログラムは認証局の証明書でコード署名されていないため、初めて実行したときにMicrosoft Defender SmartScreenが警告を表示して止めることがあります。また、Smart App ControlをオンにしたWindows 11のPCでは、`.msi`インストーラーは続行する選択肢もなく完全にブロックされます。だからといってファイルに問題があるわけではありません。リリースごとに`SHA256SUMS`ファイルが付いており、ダウンロードしたファイルが公開されたものと一致するかを確認できます。確認の方法、Smart App Controlが利用者にどう影響するか、一致を確認できたあとに先へ進む方法は、[docs/INSTALL.md](docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control)にあります。
+**Windowsがこれらのダウンロードに警告を表示することがあります。** インストーラーとプログラムは認証局の証明書でコード署名されていないため、初めて実行したときにMicrosoft Defender SmartScreenが警告を表示して止めることがあります。また、Smart App ControlをオンにしたWindows 11のPCでは、`.msi`インストーラーは続行する選択肢もなく完全にブロックされます。だからといってファイルに問題があるわけではありません。リリースごとに`SHA256SUMS`ファイルが付いており、ダウンロードしたファイルが公開されたものと一致するかを確認できます。確認の方法、Smart App Controlが利用者にどう影響するか、一致を確認できたあとに先へ進む方法は、[docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control)にあります。
 
 **第1階層のメニューについて：** Windows 11では、パッケージIDを持つプログラムだけが第1階層に入れます。そのため、すべてのユーザー向けMSIは、自己署名証明書で署名した小さなMSIXパッケージをインストールし、その証明書を信頼済みにします。アンインストールすると、両方とも削除されます。この証明書を信頼したくない場合は、`msiexec /i 7-ZSTar-<バージョン>-<アーキテクチャ>.msi SPARSE=0`でインストールしてください。メニューは「その他のオプションを確認」の中に残ります。パッケージはインストーラーを実行したアカウントにだけ登録され、ほかのアカウントでは別途登録が必要です。
 
-ファイルの関連付けやアンインストールを含む詳しい説明は、[docs/INSTALL.md](docs/INSTALL.md)にあります（現時点では英語のみ）。
+ファイルの関連付けやアンインストールを含む詳しい説明は、[docs/INSTALL.md](../INSTALL.md)にあります（現時点では英語のみ）。
 
 ## 既知の制限
 
 - **シェル統合のチェックを外すと、右クリックの登録が削除されます。** ファイルマネージャー（`7zFM`）の**ツール > オプション > 7-ZSTar**に、「シェル コンテキストメニューに 7-ZSTar を登録」というチェックボックスがあります。公式の7-Zipと同じく、これを外すと、インストーラーが作成したシェル拡張の登録（`CLSID`キー）が削除され、右クリックメニューから7-ZSTarの項目が消えます。すべてのユーザー向けパッケージなら、ファイルマネージャーを管理者として実行すれば、もう一度チェックを入れられます。自分だけ向けパッケージではできません。再びチェックを入れても「アクセスが拒否されました」と表示され、項目は戻りません。元に戻すには、最初に使った`.msi`をもう一度実行して「修復」を選んでください。
-- **第1階層のメニューは、インストールが対話型のサインイン済みセッションで実行されたときにだけ登録されます。** すべてのユーザー向けの`.msi`をリモートや非対話型のセッション（SSH経由、または管理ツールからのサイレント展開）でインストールすると、成功と報告されますが、Windows 11用のパッケージは登録されず、「その他のオプションを確認」の中の従来のメニューだけが表示されます。詳しくは[docs/INSTALL.md](docs/INSTALL.md#the-windows-11-right-click-menu)を参照してください。
+- **第1階層のメニューは、インストールが対話型のサインイン済みセッションで実行されたときにだけ登録されます。** すべてのユーザー向けの`.msi`をリモートや非対話型のセッション（SSH経由、または管理ツールからのサイレント展開）でインストールすると、成功と報告されますが、Windows 11用のパッケージは登録されず、「その他のオプションを確認」の中の従来のメニューだけが表示されます。詳しくは[docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu)を参照してください。
 
 ## システム要件
 
@@ -77,13 +77,13 @@ Windows 7またはWindows Server 2008 R2以降（x64、x86）。arm64ではWindo
 
 ## ドキュメント
 
-すべてのパッケージには、公式7-Zipのヘルプファイル`7-zip.chm`が改変なしで入っています。**ヘルプ > ヘルプの表示**かF1で開けます。中身は全編が「7-Zip」の表記で、7-ZSTarが追加した機能には触れていません。それについては、このページと[CHANGELOG.md](CHANGELOG.md)をご覧ください。
+すべてのパッケージには、公式7-Zipのヘルプファイル`7-zip.chm`が改変なしで入っています。**ヘルプ > ヘルプの表示**かF1で開けます。中身は全編が「7-Zip」の表記で、7-ZSTarが追加した機能には触れていません。それについては、このページと[CHANGELOG.md](../../CHANGELOG.md)をご覧ください。
 
 ヘルプファイルが実行ファイルと同じフォルダーにない場合は、同じメニュー項目でこの節がオンラインで開きます（英語）。
 
 ## ソースからのビルド
 
-[build/README.md](build/README.md)を参照してください。要点は、VS2022 Build Tools（MSVC v143）を入れて、`pwsh build\Build.ps1`を実行することです。上流の新しいリリースを取り込む前に、[MAINTAINING.md](MAINTAINING.md)を読んでください。
+[build/README.md](../../build/README.md)を参照してください。要点は、VS2022 Build Tools（MSVC v143）を入れて、`pwsh build\Build.ps1`を実行することです。上流の新しいリリースを取り込む前に、[MAINTAINING.md](../../MAINTAINING.md)を読んでください。
 
 <a id="donate"></a>
 
@@ -97,7 +97,7 @@ EthereumまたはPolygon上のトークンなら何でも歓迎です。ETH、PO
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
 ```
 
-<img src="docs/donate-qr.png" width="200" alt="寄付アドレスのQRコード">
+<img src="../donate-qr.png" width="200" alt="寄付アドレスのQRコード">
 
 - Ethereum（ERC20）とPolygonでの送金のみ受け付けています。どちらも使える場合は、通常は手数料が安いPolygonをおすすめします。
 - 公式のアドレスはこの1つだけで、別のアドレスへの送金をお願いすることはありません。
@@ -107,7 +107,7 @@ GitHubで7-ZSTarにスターを付けたり、友人に紹介したりしてい�
 
 ## ライセンス
 
-LGPL v3。[LICENSE](LICENSE)を参照してください。一部には別の条件が付きます。たとえばRAR展開にはunRARの制限があるため、RARサポート付きのビルドは純粋なLGPL v3ではありません。完全な一覧は[LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md)に、各コンポーネントの著作権表示は[NOTICE](NOTICE)にあります。
+LGPL v3。[LICENSE](../../LICENSE)を参照してください。一部には別の条件が付きます。たとえばRAR展開にはunRARの制限があるため、RARサポート付きのビルドは純粋なLGPL v3ではありません。完全な一覧は[LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md)に、各コンポーネントの著作権表示は[NOTICE](../../NOTICE)にあります。
 
 ## 謝辞
 

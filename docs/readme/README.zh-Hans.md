@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark@3x.png">
-  <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
+  <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
+  <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](README.md) · [繁體中文](README.zh-Hant.md) · **简体中文** · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · **简体中文** · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
 
 **对现代 Windows 11 用户更友好的 7-Zip 分支版：右键菜单第一级就有它，支持 zstd 压缩，tar.zst 一次生成。**
 
-[下载](https://github.com/7zStar/7-ZSTar/releases/latest) · [官方网站](https://www.7zstar.com) · [更新日志](CHANGELOG.md)
+[下载](https://github.com/7zStar/7-ZSTar/releases/latest) · [官方网站](https://www.7zstar.com) · [更新日志](../../CHANGELOG.md)
 
 ## 为什么用 7-ZSTar
 
@@ -56,16 +56,16 @@ zip、7z、tar.zst 均使用默认设置。7-ZSTar 26.05.1 x64（7z.exe），单
 
 三种都提供 x64、x86、arm64 版本，请选择与 Windows 相同的架构：在 64 位 Windows 上安装 x86 版本，可能没有右键菜单。arm64 版本尚未在真机上运行过。可以和官方 7-Zip 同时安装，互不影响。
 
-**Windows 可能会对这些下载显示警告。** 安装程序和程序文件都没有经过证书颁发机构签发的代码签名，所以第一次运行时，Microsoft Defender SmartScreen 可能会拦截并显示警告；在已开启 Smart App Control 的 Windows 11 电脑上，`.msi` 安装文件则会被直接拦截，而且没有任何可以继续的选项。这并不代表文件有问题：每个 Release 都附有 `SHA256SUMS`，可以用来核对你下载的文件是否与发布的一致。核对方法、Smart App Control 对你的影响，以及核对无误后如何继续安装，见 [docs/INSTALL.md](docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control)（目前只有英文版）。
+**Windows 可能会对这些下载显示警告。** 安装程序和程序文件都没有经过证书颁发机构签发的代码签名，所以第一次运行时，Microsoft Defender SmartScreen 可能会拦截并显示警告；在已开启 Smart App Control 的 Windows 11 电脑上，`.msi` 安装文件则会被直接拦截，而且没有任何可以继续的选项。这并不代表文件有问题：每个 Release 都附有 `SHA256SUMS`，可以用来核对你下载的文件是否与发布的一致。核对方法、Smart App Control 对你的影响，以及核对无误后如何继续安装，见 [docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control)（目前只有英文版）。
 
 **关于第一级菜单**：Windows 11 只允许带有包标识的程序进入第一级，所以“为所有用户安装”的 MSI 会安装一个用自签名证书签署的小型 MSIX 包，并信任这张证书；卸载时一并移除。如果不想信任它，用 `msiexec /i 7-ZSTar-<版本>-<架构>.msi SPARSE=0` 安装，菜单就会留在“显示更多选项”里。这个包只为运行安装程序的账户注册，其他账户需要另行注册。
 
-完整说明（包括文件关联和卸载）见 [docs/INSTALL.md](docs/INSTALL.md)，目前只有英文版。
+完整说明（包括文件关联和卸载）见 [docs/INSTALL.md](../INSTALL.md)，目前只有英文版。
 
 ## 已知限制
 
 - **取消勾选“添加到右键菜单”会移除右键菜单的注册。** 在文件管理器（`7zFM`）的“工具 ▸ 选项 ▸ 7-ZSTar”页，有一个“添加 7-ZSTar 到右键菜单”复选框。和官方 7-Zip 一样，取消勾选会删掉安装程序创建的外壳扩展注册（`CLSID` 键），7-ZSTar 就从右键菜单消失。“为所有用户安装”的版本以管理员身份运行文件管理器，可以再勾回来；仅当前用户版勾不回来：再勾选会弹出“拒绝访问”，菜单也不会回来。要恢复，请重新运行当初的 `.msi` 安装文件，选择“修复”。
-- **只有在交互式登录的会话中安装，第一级菜单才会注册。** 从远程或非交互式会话安装“为所有用户安装”的 `.msi`（例如通过 SSH，或管理工具的静默部署），安装仍会报告成功，但 Windows 11 包没有注册，只会出现“显示更多选项”里的传统菜单。详情见 [docs/INSTALL.md](docs/INSTALL.md#the-windows-11-right-click-menu)。
+- **只有在交互式登录的会话中安装，第一级菜单才会注册。** 从远程或非交互式会话安装“为所有用户安装”的 `.msi`（例如通过 SSH，或管理工具的静默部署），安装仍会报告成功，但 Windows 11 包没有注册，只会出现“显示更多选项”里的传统菜单。详情见 [docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu)。
 
 ## 系统要求
 
@@ -77,13 +77,13 @@ Windows 7 或 Windows Server 2008 R2 及以上（x64、x86）；arm64 需要 Win
 
 ## 说明文档
 
-每个安装包都附带官方 7-Zip 的帮助文件，从“帮助”菜单或按 F1 打开，内容未做改动，所以写的是“7-Zip”，也不包含 7-ZSTar 新增的功能；新增内容请看本页和 [CHANGELOG.md](CHANGELOG.md)。
+每个安装包都附带官方 7-Zip 的帮助文件，从“帮助”菜单或按 F1 打开，内容未做改动，所以写的是“7-Zip”，也不包含 7-ZSTar 新增的功能；新增内容请看本页和 [CHANGELOG.md](../../CHANGELOG.md)。
 
 如果可执行文件旁边没有帮助文件，这些入口会改为打开本项目 GitHub 页面的这一段（英文版）。
 
 ## 从源代码构建
 
-见 [build/README.md](build/README.md)。简单来说：装好 VS2022 Build Tools（MSVC v143），再运行 `pwsh build\Build.ps1`。合并上游新版本之前，请先读 [MAINTAINING.md](MAINTAINING.md)。
+见 [build/README.md](../../build/README.md)。简单来说：装好 VS2022 Build Tools（MSVC v143），再运行 `pwsh build\Build.ps1`。合并上游新版本之前，请先读 [MAINTAINING.md](../../MAINTAINING.md)。
 
 <a id="donate"></a>
 
@@ -97,7 +97,7 @@ Ethereum 和 Polygon 链上的资产都收，ETH、POL、USDT、USDC 或其他�
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
 ```
 
-<img src="docs/donate-qr.png" width="200" alt="赞助地址的二维码">
+<img src="../donate-qr.png" width="200" alt="赞助地址的二维码">
 
 - 只接收 Ethereum（ERC20）和 Polygon 链上的转账。如果两条链都能用，建议用 Polygon，手续费通常更低。
 - 官方地址只有这一个，我不会要求任何人改转到别的地址。
@@ -107,7 +107,7 @@ Ethereum 和 Polygon 链上的资产都收，ETH、POL、USDT、USDC 或其他�
 
 ## 许可证
 
-LGPL v3，见 [LICENSE](LICENSE)。部分内容另有条款，例如 RAR 解压受 unRAR 限制，因此带 RAR 支持的版本不是纯 LGPL v3。完整清单见 [LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md)，各组件的版权声明见 [NOTICE](NOTICE)。
+LGPL v3，见 [LICENSE](../../LICENSE)。部分内容另有条款，例如 RAR 解压受 unRAR 限制，因此带 RAR 支持的版本不是纯 LGPL v3。完整清单见 [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md)，各组件的版权声明见 [NOTICE](../../NOTICE)。
 
 ## 致谢
 
