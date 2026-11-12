@@ -110,6 +110,10 @@ pwsh build\Assert-Fresh.ps1 installer\dist\7-ZSTar-26.05.1-x64.msi   # 0 fresh, 
 pwsh build\Test-SourceStamp.ps1                                       # the check's own tests
 ```
 
+CI runs `Test-SourceStamp.ps1` on the x64 leg of `.github/workflows/build.yml`
+(pushes to `main` and pull requests), before the build; `release.yml` does not
+repeat it.
+
 What a stamp does **not** prove: that nmake rebuilt everything it should have.
 It proves `Build.ps1` ran on this source. For edits nmake is known to miss
 (headers pulled in by `.rc` files, precompiled headers) use `Build.ps1 -Clean`.

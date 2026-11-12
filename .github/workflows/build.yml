@@ -37,6 +37,19 @@ jobs:
         with:
           persist-credentials: false
 
+      # Tests for the build-artifact freshness check (build\SourceStamp.ps1,
+      # build\Assert-Fresh.ps1) that every packaging and test step below relies
+      # on. It builds its own scratch git repository in %TEMP% and needs no
+      # build output, so it runs before Build; it drives both Windows
+      # PowerShell 5.1 and pwsh 7, which the image carries. Platform-neutral,
+      # so one leg is enough. release.yml does not repeat it: a tag is cut from
+      # a main commit this workflow already gated, and the release build still
+      # exercises the check itself through Build-Package.ps1 and the tests.
+      - name: Freshness check tests
+        if: matrix.platform == 'x64'
+        shell: pwsh
+        run: build\Test-SourceStamp.ps1
+
       - name: Build
         shell: pwsh
         run: build\Build.ps1 -Platform ${{ matrix.platform }}

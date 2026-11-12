@@ -674,7 +674,10 @@ artifacts look stale when producer and consumer ran in different consoles
 not drop `core.quotePath=false`, which would make such paths silently
 unmatched. `build/Test-SourceStamp.ps1`
 holds the rules' tests (scratch repo, exit codes only); it keeps its own copy of
-the document list, so extend it together with the library.
+the document list, so extend it together with the library. CI runs it on the
+x64 leg of `.github/workflows/build.yml` before the build, so a change to the
+library or its tests that breaks a case fails that push or pull request;
+`release.yml` does not run it again.
 
 ---
 
