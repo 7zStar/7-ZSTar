@@ -319,24 +319,61 @@ if (Test-Path $donateJson) {
 
 # --- donation address in the READMEs ---------------------------------------
 #
+# The English README.md sits at the repository root and the nine translations
+# in docs\readme\ (moved there 2026-11-12), so links differ by directory:
+# references are resolved against the file that holds them and compared as
+# full paths, never as literal strings.
+function Get-ReadmeFiles {
+    $all = @(Get-Item -LiteralPath (Join-Path $RepoRoot 'README.md') -ErrorAction SilentlyContinue)
+    $dir = Join-Path $RepoRoot 'docs\readme'
+    if (Test-Path -LiteralPath $dir) {
+        $all += @(Get-ChildItem -LiteralPath $dir -Filter 'README*.md' -File | Sort-Object Name)
+    }
+    return @($all | Where-Object { $_ })
+}
+function Get-LinkTargets([System.IO.FileInfo]$File, [string]$Text, [string]$LeafPattern) {
+    # Link targets (markdown "](...)" and HTML src="...") whose last path
+    # segment matches $LeafPattern, resolved to full paths. Anchors dropped.
+    # Relative targets resolve against the file's own directory; a GitHub
+    # "blob" URL into this repository (some READMEs link that way) resolves
+    # against the repository root. Other absolute URLs are skipped.
+    $out = @()
+    foreach ($m in [regex]::Matches($Text, '(?:\]\(|src=")([^)"\s#]+)(?:#[^)"\s]*)?')) {
+        $target = $m.Groups[1].Value
+        if (($target -split '/')[-1] -notmatch $LeafPattern) { continue }
+        $gh = [regex]::Match($target, '^https://github\.com/7zStar/7-ZSTar/blob/[^/]+/(.+)$')
+        if ($gh.Success) {
+            $out += [System.IO.Path]::GetFullPath((Join-Path $RepoRoot ($gh.Groups[1].Value -replace '/', '\')))
+            continue
+        }
+        if ($target -match '^[a-zA-Z][a-zA-Z0-9+.-]*:') { continue }
+        $out += [System.IO.Path]::GetFullPath((Join-Path $File.DirectoryName ($target -replace '/', '\')))
+    }
+    return $out
+}
+function Get-ReadmeLabel([System.IO.FileInfo]$File) {
+    return $File.FullName.Substring($RepoRoot.Length).TrimStart('\')
+}
+#
 # The wallet address is printed in every README and encoded in
 # docs\donate-qr.png. Transfers cannot be reversed, nothing else in the build
 # reads these files, and a typo in one copy (or a language added later with the
 # address retyped by hand) would send the money somewhere else with a green
 # build. This only proves the copies agree with each other and all point at the
 # QR picture; it is not an EIP-55 checksum check (PowerShell has no keccak).
-Check "all README*.md carry one identical donation address and the QR picture" {
-    $readmes = @(Get-ChildItem -LiteralPath $RepoRoot -Filter 'README*.md' -File | Sort-Object Name)
-    if ($readmes.Count -ne 10) { return "expected 10 README*.md in $RepoRoot, found $($readmes.Count): $(($readmes.Name) -join ', ')" }
-    $qr = Join-Path $RepoRoot 'docs\donate-qr.png'
+Check "all READMEs carry one identical donation address and the QR picture" {
+    $readmes = Get-ReadmeFiles
+    if ($readmes.Count -ne 10) { return "expected 10 READMEs (README.md + docs\readme\README*.md), found $($readmes.Count): $(($readmes | ForEach-Object { Get-ReadmeLabel $_ }) -join ', ')" }
+    $qr = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot 'docs\donate-qr.png'))
     if (-not (Test-Path -LiteralPath $qr) -or (Get-Item -LiteralPath $qr).Length -eq 0) { return "docs\donate-qr.png is missing or empty" }
     $addr = @{}
     foreach ($f in $readmes) {
         $t = Get-Content -LiteralPath $f.FullName -Raw -Encoding UTF8
         # [regex]::Matches is case-sensitive, and the capitals are the checksum.
         $m = [regex]::Matches($t, '0x[0-9a-fA-F]{40}')
-        if ($m.Count -ne 1) { return "$($f.Name) has $($m.Count) 0x addresses, expected exactly 1" }
-        if (-not $t.Contains('docs/donate-qr.png')) { return "$($f.Name) does not reference docs/donate-qr.png" }
+        if ($m.Count -ne 1) { return "$(Get-ReadmeLabel $f) has $($m.Count) 0x addresses, expected exactly 1" }
+        $qrRefs = @(Get-LinkTargets $f $t '^donate-qr\.png$')
+        if (-not ($qrRefs -contains $qr)) { return "$(Get-ReadmeLabel $f) does not link docs\donate-qr.png (found: $($qrRefs -join ', '))" }
         $addr[$f.Name] = $m[0].Value
     }
     $ref = $readmes[0]
@@ -352,9 +389,10 @@ Check "all README*.md carry one identical donation address and the QR picture" {
 # This compares counts only, so it says nothing about wording, but it catches a
 # missing section, a missing link to docs\INSTALL.md and a language bar that was
 # not extended when a language was added.
-Check "all README*.md have the same section count, INSTALL.md link count and a ten-item language bar" {
-    $readmes = @(Get-ChildItem -LiteralPath $RepoRoot -Filter 'README*.md' -File | Sort-Object Name)
-    if ($readmes.Count -ne 10) { return "expected 10 README*.md in $RepoRoot, found $($readmes.Count): $(($readmes.Name) -join ', ')" }
+Check "all READMEs have the same section count, INSTALL.md link count and a ten-item language bar" {
+    $readmes = Get-ReadmeFiles
+    if ($readmes.Count -ne 10) { return "expected 10 READMEs (README.md + docs\readme\README*.md), found $($readmes.Count): $(($readmes | ForEach-Object { Get-ReadmeLabel $_ }) -join ', ')" }
+    $install = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot 'docs\INSTALL.md'))
     # The bar's separator is U+00B7; kept out of this file so it stays ASCII.
     $sep = [regex]::Escape(" $([char]0xB7) ")
     $stat = @{}
@@ -363,10 +401,10 @@ Check "all README*.md have the same section count, INSTALL.md link count and a t
         # A "## " line inside a code fence is not a section.
         $prose = [regex]::Replace($t, '(?s)```.*?```', '')
         $bar = @(@($t -split "`r?`n")[5] -split $sep).Count
-        if ($bar -ne 10) { return "$($f.Name) line 6 has $bar language-bar items, expected 10" }
+        if ($bar -ne 10) { return "$(Get-ReadmeLabel $f) line 6 has $bar language-bar items, expected 10" }
         $stat[$f.Name] = @{
             Sections = [regex]::Matches($prose, '(?m)^## ').Count
-            InstallLinks = [regex]::Matches($prose, '\]\([^)\s]*docs/INSTALL\.md[^)\s]*\)').Count
+            InstallLinks = @(Get-LinkTargets $f $prose '^INSTALL\.md$' | Where-Object { $_ -eq $install }).Count
         }
     }
     foreach ($what in 'Sections', 'InstallLinks') {
