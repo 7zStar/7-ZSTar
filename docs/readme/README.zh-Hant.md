@@ -1,4 +1,4 @@
-<!-- translated-from: README.md @ a45dee4 -->
+<!-- translated-from: README.md @ e3fa827 -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
@@ -54,25 +54,25 @@ zip、7z、tar.zst 都用預設值壓縮。7-ZSTar 26.05.1 x64（7z.exe）、單
 |---|---|---|---|
 | 安裝給 | 這台電腦所有帳號 | 目前帳號 | 不用安裝 |
 | 需要系統管理員權限 | 是 | 否 | 否 |
-| 右鍵選單 | Windows 11 第一層 | 在「顯示其他選項」裡 | 沒有 |
+| 右鍵選單 | Windows 11 第一層 | 傳統選單（Windows 11 上在「顯示其他選項」裡） | 沒有 |
 | [開始] 功能表 | 有 | 有 | 沒有 |
 
 三種都有 x64、x86、arm64 版，請選和 Windows 相同的架構：在 64 位元 Windows 上裝 x86 版，可能沒有右鍵選單。arm64 版還沒在實機上跑過。可以和官方 7-Zip 同時安裝，互不影響。
 
 **Windows 可能會對這些下載顯示警告。** 安裝程式和程式檔都沒有經過憑證授權單位簽發的程式碼簽署，所以第一次執行時，Microsoft Defender SmartScreen 可能會擋下來並顯示警告；在已開啟智慧型應用程式控制的 Windows 11 電腦上，`.msi` 安裝檔則會直接被封鎖，而且沒有任何可以繼續的選項。這不代表檔案有問題：每個 Release 都附有 `SHA256SUMS`，可以用來核對你下載的檔案是否和發布的一致。核對方法、智慧型應用程式控制對你的影響，以及核對無誤後如何繼續安裝，見 [docs/install/INSTALL.zh-Hant.md](../install/INSTALL.zh-Hant.md#未簽章的安裝包smartscreen-與智慧型應用程式控制)。
 
-**關於第一層選單**：Windows 11 只讓帶有套件身分的程式進第一層，所以全機 MSI 會安裝一個自簽憑證簽署的小型 MSIX 套件，並信任這張憑證；解除安裝時一併移除。不想信任的話，用 `msiexec /i 7-ZSTar-<版本>-<架構>.msi SPARSE=0` 安裝，選單就會留在「顯示其他選項」裡。套件只替執行安裝的帳號註冊，其他帳號要另外註冊。
+**關於第一層選單**：Windows 11 只讓帶有套件身分的程式進第一層，所以在 Windows 11 上，全機 MSI 會安裝一個自簽憑證簽署的小型 MSIX 套件，並信任這張憑證；解除安裝時一併移除。不想信任的話，用 `msiexec /i 7-ZSTar-<版本>-<架構>.msi SPARSE=0` 安裝，選單就會留在「顯示其他選項」裡。套件只替執行安裝的帳號註冊，其他帳號要另外註冊。
 
 完整說明（含檔案關聯與解除安裝）在 [docs/install/INSTALL.zh-Hant.md](../install/INSTALL.zh-Hant.md)。
 
 ## 已知限制
 
-- **取消勾選「整合到右鍵選單」會移除右鍵選單的註冊。** 在檔案管理員（`7zFM`）的「工具 > 選項 > 7-ZSTar」中，有一個「將 7-ZSTar 整合到快顯功能表中」核取方塊。和官方 7-Zip 一樣，取消勾選會刪掉安裝程式建立的殼層擴充註冊（`CLSID` 機碼），7-ZSTar 就從右鍵選單消失。全機安裝版以系統管理員身分執行檔案管理員，可以再勾回來；個別使用者版勾不回來：再勾選會顯示「拒絕存取」，選單也不會回來。要補回，請重新執行當初的 `.msi` 安裝檔，選擇 *Repair*（修復）。
+- **取消勾選「整合到右鍵選單」會移除右鍵選單的註冊。** 在檔案管理員（`7zFM`）的「工具 > 選項 > 7-ZSTar」中，有一個「將 7-ZSTar 整合到快顯功能表中」核取方塊。和官方 7-Zip 一樣，取消勾選會刪掉安裝程式建立的殼層擴充註冊（`CLSID` 機碼），7-ZSTar 就從右鍵選單消失。全機安裝版以系統管理員身分執行檔案管理員，可以再勾回來；個別使用者版勾不回來：再勾選會顯示「存取被拒」，選單也不會回來。要補回，請重新執行當初的 `.msi` 安裝檔，選擇 *Repair*（修復）。
 - **第一層選單只有在互動式登入的工作階段安裝時才會註冊。** 從遠端或非互動的工作階段安裝全機 `.msi`（例如透過 SSH，或管理工具的靜默部署），安裝仍會回報成功，但 Windows 11 套件沒有註冊，只會出現「顯示其他選項」裡的傳統選單。詳情見 [docs/install/INSTALL.zh-Hant.md](../install/INSTALL.zh-Hant.md#windows-11-右鍵選單)。
 
 ## 系統需求
 
-Windows 7 或 Windows Server 2008 R2 以上（x64、x86）；arm64 需要 Windows 10 以上。不用另外安裝執行環境。這個下限是依套件需求推得，比 Windows 11 舊的版本還沒有實測過。Linux 只提供自行建置的命令列版本，不支援 macOS。
+Windows 7 或 Windows Server 2008 R2 以上（x64、x86）；arm64 需要 Windows 10 以上。不用另外安裝執行環境。這個下限是依套件需求推得。實測過的環境有 Windows 7 SP1（已裝後續更新）、Windows 10 22H2 和 Windows 11，皆為 64 位元；Windows 8 與 8.1、32 位元 Windows、Windows Server 和 arm64 實機則沒有測過。Linux 只提供自行建置的命令列版本，不支援 macOS。
 
 ## 專案定位
 

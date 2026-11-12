@@ -1,4 +1,4 @@
-<!-- translated-from: README.md @ a45dee4 -->
+<!-- translated-from: README.md @ e3fa827 -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
@@ -54,14 +54,14 @@ PowerShell에서는 형식 스위치를 `7z a "-ttar.zst" backup.tar.zst docs`�
 |---|---|---|---|
 | 설치 대상 | PC의 모든 계정 | 현재 계정 | 설치 필요 없음 |
 | 관리자 권한 필요 | 예 | 아니요 | 아니요 |
-| 오른쪽 클릭 메뉴 | Windows 11 첫 번째 단계 | “추가 옵션 표시” 안 | 없음 |
+| 오른쪽 클릭 메뉴 | Windows 11 첫 번째 단계 | 클래식 메뉴(Windows 11에서는 “추가 옵션 표시” 안) | 없음 |
 | 시작 메뉴 항목 | 있음 | 있음 | 없음 |
 
 패키지마다 x64, x86, arm64가 있으니 사용 중인 Windows에 맞는 것을 고르십시오. 64비트 Windows에서 x86 패키지를 설치하면 오른쪽 클릭 메뉴가 없을 수 있습니다. arm64 빌드는 아직 실제 기기에서 실행해 보지 않았습니다. 7-ZSTar는 공식 7-Zip과 나란히 설치되며 서로 영향을 주지 않습니다.
 
 **Windows가 이 다운로드에 대해 경고할 수 있습니다.** 설치 관리자와 프로그램은 인증 기관의 코드 서명을 받지 않았으므로, 처음 실행할 때 Microsoft Defender SmartScreen이 경고와 함께 막을 수 있습니다. 스마트 앱 컨트롤(Smart App Control)이 켜진 Windows 11 PC에서는 `.msi` 설치 관리자가 계속할 방법 없이 아예 차단됩니다. 그렇다고 파일에 문제가 있다는 뜻은 아닙니다. 모든 릴리스에는 `SHA256SUMS` 파일이 함께 있으며, 이를 이용해 내려받은 파일이 게시된 파일과 일치하는지 확인할 수 있습니다. 확인 방법, 스마트 앱 컨트롤이 사용자에게 미치는 영향, 일치하는 것을 확인한 뒤 계속 진행하는 방법은 [docs/install/INSTALL.ko.md](../install/INSTALL.ko.md#서명되지-않은-패키지-smartscreen-및-스마트-앱-컨트롤)에 있습니다.
 
-**첫 번째 단계 메뉴에 대해:** Windows 11은 패키지 ID가 있는 프로그램만 첫 번째 단계에 올려 주므로, 모든 사용자용 MSI는 자체 서명 인증서로 서명한 작은 MSIX 패키지를 설치하고 그 인증서를 신뢰하도록 등록합니다. 제거하면 둘 다 삭제됩니다. 신뢰하고 싶지 않다면 `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0`으로 설치하십시오. 그러면 메뉴는 “추가 옵션 표시” 안에 남습니다. 이 패키지는 설치 관리자를 실행한 계정에만 등록되며, 다른 계정은 따로 등록해야 합니다.
+**첫 번째 단계 메뉴에 대해:** Windows 11은 패키지 ID가 있는 프로그램만 첫 번째 단계에 올려 주므로, Windows 11에서 모든 사용자용 MSI는 자체 서명 인증서로 서명한 작은 MSIX 패키지를 설치하고 그 인증서를 신뢰하도록 등록합니다. 제거하면 둘 다 삭제됩니다. 신뢰하고 싶지 않다면 `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0`으로 설치하십시오. 그러면 메뉴는 “추가 옵션 표시” 안에 남습니다. 이 패키지는 설치 관리자를 실행한 계정에만 등록되며, 다른 계정은 따로 등록해야 합니다.
 
 파일 연결과 제거 방법을 포함한 자세한 내용은 [docs/install/INSTALL.ko.md](../install/INSTALL.ko.md)에 있습니다.
 
@@ -72,7 +72,7 @@ PowerShell에서는 형식 스위치를 `7z a "-ttar.zst" backup.tar.zst docs`�
 
 ## 시스템 요구 사항
 
-Windows 7 또는 Windows Server 2008 R2 이후 버전(x64, x86), arm64에서는 Windows 10 이후 버전. 따로 설치할 것은 없습니다. 이 하한선은 패키지가 요구하는 조건에서 나온 것이며, Windows 11보다 오래된 버전은 테스트하지 않았습니다. Linux에서는 직접 컴파일하는 명령줄 빌드가 있으며, macOS는 지원하지 않습니다.
+Windows 7 또는 Windows Server 2008 R2 이후 버전(x64, x86), arm64에서는 Windows 10 이후 버전. 따로 설치할 것은 없습니다. 이 하한선은 패키지가 요구하는 조건에서 나온 것입니다. 테스트는 모두 64비트인 Windows 7 SP1(이후 업데이트 적용), Windows 10 22H2, Windows 11에서 했으며, Windows 8과 8.1, 32비트 Windows, Windows Server, arm64 하드웨어에서는 하지 않았습니다. Linux에서는 직접 컴파일하는 명령줄 빌드가 있으며, macOS는 지원하지 않습니다.
 
 ## 이 프로젝트에 대해
 

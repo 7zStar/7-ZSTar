@@ -1,4 +1,4 @@
-<!-- translated-from: docs/INSTALL.md @ a45dee4 -->
+<!-- translated-from: docs/INSTALL.md @ e3fa827 -->
 # 7-ZSTar 설치하기
 
 [English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · **한국어** · [العربية](INSTALL.ar.md)
@@ -13,9 +13,13 @@
 그 밖에 필요한 것은 없습니다. C 런타임을 정적으로 링크(`-MT`)했기 때문에
 바이너리는 Windows 자체의 DLL만 가져다 쓰며, 재배포 가능 패키지도 .NET도 필요하지 않습니다.
 
-이 최소 사양은 패키지가 요구하는 조건에서 *도출*한 것이지 직접 측정한 값이 아닙니다. Windows 11보다 오래된 버전은 여기서 테스트하지 않았습니다. 또한 upstream
-7-Zip의 최소 사양보다 높습니다. upstream 바이너리는 지금도 Windows XP에서 로드됩니다. 이 기준을 정하는 요인은 세 가지이며,
-그중 두 번째는 어떤 빌드 설정으로도 되돌릴 수 없습니다.
+이 최소 사양은 패키지가 요구하는 조건에서 *도출*한 것이며, 테스트는 Windows 7 SP1(이후 업데이트 설치, PowerShell 5.1 포함),
+Windows 10 22H2, Windows 11에서 모두 64비트로 했습니다. Windows 7과 10에서는 모든 사용자용과 사용자별 x64 `.msi`의 설치와 제거,
+설치 마법사, x64 `.zip`, 추가된 모든 코덱과 한 번에 끝나는 tar 형식, 오른쪽 클릭 메뉴, 파일 연결, 도움말 파일,
+그리고 64비트 Windows에서 실행되는 x86 `.msi`와 `.zip`을 확인했습니다. 그 밖에는 Windows에서 테스트한 것이 없습니다.
+Windows 8과 8.1, Windows Server, 32비트 Windows, arm64 하드웨어, 그 업데이트가 없는 Windows 7도 마찬가지입니다.
+또한 이 최소 사양은 upstream 7-Zip의 최소 사양보다 높습니다. upstream 바이너리는 지금도 Windows XP에서 로드됩니다.
+이 기준을 정하는 요인은 세 가지이며, 그중 두 번째는 어떤 빌드 설정으로도 되돌릴 수 없습니다.
 
 - `.msi`는 `InstallerVersion="500"`을 선언하며, Windows Installer 5.0은
   "Windows Server 2008 R2 이후 및 Windows 7 이후와 함께" 제공되었습니다
@@ -96,7 +100,9 @@ Linux 도구와의 상호 운용성은 `test/interop/REPORT.md`에 있습니다.
 해시가 일치하고 파일의 출처에 만족한다면:
 
 - **`.msi`** - 평소처럼 실행합니다. SmartScreen이 막으면 그래도 실행하는 옵션을 선택합니다
-  (영어 Windows에서는 "Run anyway"이며, 경고 창을 먼저 펼쳐야 할 수도 있습니다).
+  (영어 Windows에서는 "Run anyway"입니다). 경고 창을 먼저 펼쳐야 할 수도 있습니다.
+  시험한 Windows 10 PC에서는 경고 창의 메시지 아래에 있는 링크를 누르기 전까지
+  파일을 실행하지 않는 단추만 표시되었습니다.
   그러면 모든 사용자용 `.msi`는 다른 설치 관리자와 마찬가지로 관리자 승인을 요청합니다.
 - **`.zip`** - 압축을 풀고 폴더에서 `7zFM.exe` 또는 `7z.exe`를 실행합니다. 안에 든
   프로그램도 서명되어 있지 않으므로, 각 프로그램을 처음 실행할 때 Windows가 같은 경고를 표시할 수 있습니다.
@@ -171,18 +177,23 @@ MSI는 자체 셸 확장 CLSID와 자체 `Software\7-ZSTar` 레지스트리 하�
 
 MSI는 일반적인 설치 마법사(welcome, licence, setup type, optional feature tree, finish - 시작, 사용권, 설치 유형, 선택 기능 트리, 마침)를 실행합니다. 조용한 설치도 그대로 동작합니다
 (`msiexec /i 7-ZSTar-<version>-<arch>.msi /qn`). 자동(quiet) 모드에서는 msiexec가
-UI 시퀀스 전체를 건너뛰기 때문입니다.
+UI 시퀀스 전체를 건너뛰기 때문입니다. 마법사는 다른 언어로 설정된 Windows에서도
+영어로만 표시되며(중국어 번체 Windows 10에서 확인했고, `.msi`에는 다른 언어가 들어 있지 않습니다),
+마침 페이지에는 *Launch 7-ZSTar File Manager*가 기본으로 선택되어 있습니다.
 
 ### Windows 11 오른쪽 클릭 메뉴
 
 Windows 11에서 7-ZSTar 항목은 공식 7-Zip과 WinRAR가 여전히 머물러 있는 *추가 옵션 표시* 아래가 아니라 첫 번째 단계 메뉴에 나타납니다. Windows 11은 패키지 ID(package identity)가 있는 셸 확장만 그곳에 나열하므로,
 MSI는 프로그램 옆에 ID만 담은 작은 MSIX 패키지를 넣어 두고 설치 중에 등록합니다.
-클래식 등록도 함께 유지하며, 덕분에
-Windows 10에서도, 예전 컨텍스트 메뉴로 되돌린 사용자에게도 항목이 계속 동작합니다.
+클래식 등록도 함께 유지합니다. 메뉴가 한 단계뿐이고
+*추가 옵션 표시*가 없는 Windows 10과 Windows 7의 오른쪽 클릭 메뉴에 항목을 넣어 주는 것이 바로 이 등록이며,
+예전 컨텍스트 메뉴로 되돌린 사용자에게도 항목이 계속 동작하게 해 줍니다.
 
 이 패키지는 **자체 서명 인증서**로 서명되며, 설치 관리자는 이 인증서를
 `LocalMachine\TrustedPeople`에 넣습니다. Windows는 서명을 신뢰할 수 있는 무언가로 연결할 수 없는
-패키지를 배포하지 않기 때문입니다. 제거하면 패키지와 함께 인증서도 삭제됩니다.
+패키지를 배포하지 않기 때문입니다. 제거하면 패키지와 함께 인증서도 삭제됩니다. Windows 10과 Windows 7에서는 설치 관리자가
+둘 다 하지 않습니다. 인증서를 추가하지도, 패키지를 등록하지도 않으며
+클래식 등록만으로 메뉴가 나타납니다.
 
 자체 서명 인증서를 신뢰하고 싶지 않다면 그 부분만 거부하고
 나머지는 그대로 사용할 수 있습니다.
@@ -191,8 +202,8 @@ Windows 10에서도, 예전 컨텍스트 메뉴로 되돌린 사용자에게도 
 msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0
 ```
 
-그러면 Windows 10과 같은 동작이 됩니다. 7-ZSTar는 오른쪽 클릭
-메뉴의 *추가 옵션 표시* 아래에 나타납니다. 나중에 켜거나, 일반 설치 후에 되돌리려면 다음을 사용합니다.
+그러면 클래식 메뉴만 생기므로, Windows 11에서 7-ZSTar 항목은 오른쪽 클릭
+메뉴의 *추가 옵션 표시* 아래에 나타납니다. 첫 번째 단계 항목을 나중에 켜거나, 일반 설치 후에 되돌리려면 다음을 사용합니다.
 
 ```
 powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIntegration.ps1" -TrustCert -Register
@@ -230,7 +241,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 `HKCU` 아래로 들어가며, 이 패키지는 `HKLM`에 아무것도 쓰지 않습니다(Windows Installer 자체의 관리 정보는 제외).
 컴퓨터 단위 패키지처럼 하지 못하는 점은 다음과 같습니다.
 
-- **Windows 11 첫 번째 단계 메뉴 없음.** 7-ZSTar는 오른쪽 클릭 메뉴의
+- **Windows 11 첫 번째 단계 메뉴 없음.** Windows 11에서 7-ZSTar는 오른쪽 클릭 메뉴의
   *추가 옵션 표시* 아래에 있습니다. 첫 번째 단계 항목에는 자체 서명 인증서를
   컴퓨터 전체에서 신뢰해야 하고 이는 관리자 권한이 필요합니다. Windows 11에서 측정한 결과,
   `CurrentUser\TrustedPeople`의 인증서로는 Windows가 패키지를
@@ -255,20 +266,28 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 ### 파일 연결과 제거 시 연결에 일어나는 일
 
-**Settings > Apps > Default apps(설정 > 앱 > 기본 앱)에서 지정하십시오.** 7-ZSTar를 입력하면 7-ZSTar가 열 수 있는 모든 형식이
-그곳에 나열되어 지정할 수 있습니다. 설치 관리자는 7-ZSTar를 기본 프로그램 응용 프로그램으로 등록합니다. 형식마다 아이콘과 열기 명령이 있는 ProgID,
+**Settings > Apps > Default apps(설정 > 앱 > 기본 앱)에서 지정하십시오.** Windows 11에서는 그곳에 7-ZSTar를 입력하면
+7-ZSTar가 열 수 있는 모든 형식이 나열되어 지정할 수 있습니다. Windows 10에서는 그 페이지의
+*Set defaults by app*(앱별 기본값 설정) 아래에 7-ZSTar가 나열되며, *Manage*(관리)를 누르면 형식이 표시됩니다.
+Windows 7에는 설정 앱이 없습니다. 7-ZSTar는 제어판 > 기본 프로그램 > *Set your default programs*(기본 프로그램 설정)에
+나열되며, 이 문서에서 말하는 Default apps가 그곳에서는 이것을 가리킵니다.
+그 두 페이지에서 형식을 지정하는 것은 테스트하지 않았습니다. 설치 관리자는 7-ZSTar를 기본 프로그램 응용 프로그램으로 등록합니다. 형식마다 아이콘과 열기 명령이 있는 ProgID,
 각 확장명의 *연결 프로그램* 목록 항목, Windows가 읽는 Capabilities 블록입니다.
 그러나 어떤 파일 형식도 의도적으로 차지하지 않습니다. 어떤 프로그램으로 압축 파일을 열지는
 사용자가 결정할 일이며, 그래서 7-ZSTar와 공식
-7-Zip이 서로 방해하지 않습니다.
+7-Zip이 서로 방해하지 않습니다. 그래도 다른 프로그램이 열겠다고 나서지 않는 형식은 Windows가 알아서 7-ZSTar로 보낼 수 있습니다.
+테스트한 Windows 10과 Windows 7 PC에서는 다른 프로그램이 `.7z`를 등록하지 않은 상태였는데,
+`.7z` 파일에 7-ZSTar의 아이콘이 표시되었고 Windows가 사용할 프로그램을 묻지 않고 더블클릭하면 7-ZSTar에서 열렸습니다.
 
 **파일 관리자의 도구 > 옵션 > 시스템은 Windows 11에서 대부분 동작하지 않으며**,
 이는 여기의 버그가 아니라 Windows의 규칙입니다. 이 설정은
-`HKCU\Software\Classes`에 `7-ZSTar.<ext>` ProgID를 쓰는데, 컴퓨터가 이미 알고 있는 확장명(모든 압축 형식이 그렇습니다)에 대해서는 Windows가 이를 무시합니다.
+`HKCU\Software\Classes`에 `7-ZSTar.<ext>` ProgID를 쓰는데, 컴퓨터가 이미 알고 있는 확장명(모든 압축 형식이 그렇습니다)에 대해서는 Windows 11이 이를 무시합니다.
 `AssocQueryString`은 `Unknown`을 반환하고 탐색기는 빈 일반 아이콘을 그립니다.
-Windows가 대신 따르는 것은 Windows만 계산할 수 있는 해시가 찍힌 `UserChoice` 키이며,
-그래서 설정 UI가 유일한 경로입니다. 어떤 응용 프로그램도 이 키를 쓸 수 없습니다.
-7-ZSTar도, 7-Zip도, 어떤 설치 관리자도 마찬가지입니다.
+Windows 11이 대신 따르는 것은 Windows만 계산할 수 있는 해시가 찍힌 `UserChoice` 키이며,
+그래서 그곳에서는 설정 UI가 유일한 경로입니다. 어떤 응용 프로그램도 이 키를 쓸 수 없습니다.
+7-ZSTar도, 7-Zip도, 어떤 설치 관리자도 마찬가지입니다. Windows 10과 Windows 7은 시험에서 다르게 동작했습니다.
+파일 관리자에서 `.7z`와 `.zst`를 다른 프로그램을 고르지 않은 채 지정하자
+`AssocQueryString`이 둘 모두에 대해 `7zFM.exe`를 반환했습니다.
 
 **모든 사용자 열에서 형식을 지우면 컴퓨터 단위 패키지가 그 형식에 대해 등록한 자체 항목이 제거됩니다.**
 그 열은 `HKLM\Software\Classes`에 쓰며, 컴퓨터 단위 패키지는 이곳에 자신이 알리는 ProgID와
