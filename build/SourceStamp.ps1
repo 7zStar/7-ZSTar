@@ -85,10 +85,12 @@ function Get-SourceFingerprint {
 
         Not cached: a long-lived process that checks, then edits source, then
         checks again must see the edit. (Assert-ArtifactFresh caches within
-        one call only.) Side effect worth knowing: `git add -A` writes a blob
-        object for every edited or untracked file into the real object
-        database. They are unreachable and `git gc` collects them; the index
-        and the work tree are not touched.
+        one call only.) Only the kind's Include paths are staged and listed,
+        so files elsewhere in the tree are never read. Side effect worth
+        knowing: `git add -A` writes a blob object for every edited or
+        untracked file under those paths into the real object database. They
+        are unreachable and `git gc` collects them; the index and the work
+        tree are not touched.
     #>
     [CmdletBinding()]
     param(
@@ -107,6 +109,15 @@ function Get-SourceFingerprint {
     $head = Invoke-SrcStampGit $RepoRoot @('rev-parse', 'HEAD')
     $headId = if ($head.Code -eq 0 -and $head.Out) { $head.Out[0] } else { 'unborn' }
 
+    $set = $script:SrcStampKinds[$Kind]
+    # Pathspecs for git: only the Include entries that exist. git add stops on
+    # a pathspec that matches nothing, and an entry missing from the work tree
+    # adds no line either way (its tracked files would be staged as deleted).
+    $fullRoot = ConvertTo-FullPath $RepoRoot
+    $specs = @($set.Include | Where-Object { Test-Path -LiteralPath (Join-Path $fullRoot $_) })
+    # Never run git add -A with no pathspec: that would stage the whole tree.
+    if ($specs.Count -eq 0) { throw "No files matched stamp kind '$Kind' under $RepoRoot." }
+
     $realIndex = Join-Path $gitDir 'index'
     $tmpIndex = Join-Path ([IO.Path]::GetTempPath()) ('7zstar-fp-' + [guid]::NewGuid().ToString('N') + '.idx')
     $prevIdx = $env:GIT_INDEX_FILE
@@ -115,9 +126,9 @@ function Get-SourceFingerprint {
         # stat data is unchanged; only edited or new files are read.
         if (Test-Path -LiteralPath $realIndex) { Copy-Item -LiteralPath $realIndex -Destination $tmpIndex -Force }
         $env:GIT_INDEX_FILE = $tmpIndex
-        $add = Invoke-SrcStampGit $RepoRoot @('add', '-A')
+        $add = Invoke-SrcStampGit $RepoRoot (@('add', '-A', '--') + $specs)
         if ($add.Code -ne 0) { throw "git add -A (temporary index) failed: $($add.Out -join ' ')" }
-        $ls = Invoke-SrcStampGit $RepoRoot @('ls-files', '-s')
+        $ls = Invoke-SrcStampGit $RepoRoot (@('ls-files', '-s', '--') + $specs)
         if ($ls.Code -ne 0) { throw "git ls-files failed: $($ls.Out -join ' ')" }
     } finally {
         if ($null -eq $prevIdx) { Remove-Item Env:\GIT_INDEX_FILE -ErrorAction SilentlyContinue }
@@ -125,7 +136,6 @@ function Get-SourceFingerprint {
         Remove-Item -LiteralPath $tmpIndex -Force -ErrorAction SilentlyContinue
     }
 
-    $set = $script:SrcStampKinds[$Kind]
     $kept = New-Object Collections.Generic.List[string]
     foreach ($line in $ls.Out) {
         # "<mode> <blob> <stage>\t<path>"
@@ -161,6 +171,33 @@ function Get-SourceStampPath {
     return Join-Path (Split-Path -Parent $Artifact) $script:SrcStampFileName
 }
 
+function Get-TargetArtifact {
+    <#
+    .SYNOPSIS
+        The file a build target produces: <target>\<platform>\$(PROG).
+    .DESCRIPTION
+        Every target makefile names its one output on a `PROG = <file>` line,
+        and CPP\Build.mak links exactly $(PLATFORM)\$(PROG). Build.ps1 stamps
+        that file and nothing else: the output directory can also hold files
+        the target did not build (Test-Smoke copies Format7zF's 7z.dll into
+        the Console directory), and a stamp must not vouch for those. Returns
+        the full path, or nothing when the file is not there. Throws when the
+        makefile has no literal PROG line.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$TargetDir,
+        [Parameter(Mandatory)][string]$Platform
+    )
+    $TargetDir = ConvertTo-FullPath $TargetDir
+    $makefile = Join-Path $TargetDir 'makefile'
+    $prog = @(Get-Content -LiteralPath $makefile | ForEach-Object {
+        if ($_ -match '^\s*PROG\s*=\s*([^\s$()]+)\s*$') { $Matches[1] }
+    })
+    if ($prog.Count -ne 1) { throw "Expected one literal 'PROG = <file>' line in $makefile, found $($prog.Count)." }
+    $out = Join-Path $TargetDir "$Platform\$($prog[0])"
+    if (Test-Path -LiteralPath $out -PathType Leaf) { return $out }
+}
+
 function Get-ArtifactDigest {
     param([Parameter(Mandatory)][string]$Path)
     [ordered]@{
@@ -176,7 +213,8 @@ function Write-SourceStamp {
     .DESCRIPTION
         Besides the fingerprint, the stamp lists each artifact by file name
         with its length and SHA256. A directory stamp (one per build target)
-        lists every file the target produced; a sidecar lists its one file.
+        lists the file the target produced (Get-TargetArtifact); a sidecar
+        lists its one file.
         The check compares those, so an old file copied back over a stamped one
         is caught even when the copy kept its old modification time.
     #>

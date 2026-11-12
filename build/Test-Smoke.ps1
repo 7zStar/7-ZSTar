@@ -17,7 +17,8 @@ param(
     [ValidateSet('x64', 'x86', 'arm64')]
     [string]$Platform = 'x64',
 
-    # Directory holding 7z.exe + 7z.dll. Defaults to the Console build output.
+    # Directory holding 7z.exe + 7z.dll, tested as is (nothing is copied into
+    # it). Defaults to the Console build output, which borrows Format7zF's 7z.dll.
     [string]$BinDir,
 
     # Test binaries that carry no source stamp (an unpacked release, say) or
@@ -31,44 +32,44 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'SourceStamp.ps1')
 
+# 7z.dll is borrowed from the build tree only for the default BinDir; a
+# caller who points at a specific directory (an unpacked release, say) gets
+# exactly what is there, untouched - the same rule as Test-Interop.ps1.
+$explicitBinDir = [bool]$BinDir
 if (-not $BinDir) { $BinDir = Join-Path $RepoRoot "CPP\7zip\UI\Console\$Platform" }
 $SevenZip = Join-Path $BinDir '7z.exe'
 if (-not (Test-Path $SevenZip)) { throw "7z.exe not found: $SevenZip" }
+$dll = Join-Path $BinDir '7z.dll'
+$dllSrc = Join-Path $RepoRoot "CPP\7zip\Bundles\Format7zF\$Platform\7z.dll"
 
 # Everything below is only worth its green if the binaries come from the source
-# as it is now. Check every build-tree binary this run touches: the console
-# 7z.exe (unless -BinDir points elsewhere - then that directory is held to the
-# same rule), the 7z.dll it borrows, and the GUI the string checks read.
+# as it is now. Check every binary this run touches: the console 7z.exe, the
+# 7z.dll it loads (an explicit -BinDir's own, else the build-tree one it
+# borrows), and the GUI the string checks read.
 $freshTargets = @($SevenZip)
-$freshDll = Join-Path $RepoRoot "CPP\7zip\Bundles\Format7zF\$Platform\7z.dll"
 $freshFm = Join-Path $RepoRoot "CPP\7zip\UI\FileManager\$Platform\7zFM.exe"
-if (Test-Path $freshDll) {
-    $freshTargets += $freshDll
-} elseif (-not $PSBoundParameters.ContainsKey('BinDir')) {
+if ($explicitBinDir) {
+    if (-not (Test-Path $dll)) { throw "7z.dll not found next to $SevenZip" }
+    $freshTargets += $dll   # an explicit -BinDir brings its own
+} elseif (Test-Path $dllSrc) {
+    $freshTargets += $dllSrc
+} else {
     # A 7z.dll left in the Console directory by an earlier run is a copy of
-    # some older Format7zF build; the Console stamp lists it but did not make it.
-    throw "Format7zF output missing: $freshDll. Build it first (build\Build.ps1); a 7z.dll left in $BinDir by an earlier run is not evidence."
-} elseif (Test-Path (Join-Path $BinDir '7z.dll')) {
-    $freshTargets += (Join-Path $BinDir '7z.dll')   # an explicit -BinDir brings its own
+    # some older Format7zF build; the Console stamp does not list it.
+    throw "Format7zF output missing: $dllSrc. Build it first (build\Build.ps1); a 7z.dll left in $BinDir by an earlier run is not evidence."
 }
 if (Test-Path (Join-Path $BinDir '7zFM.exe')) { $freshTargets += (Join-Path $BinDir '7zFM.exe') }
 elseif (Test-Path $freshFm) { $freshTargets += $freshFm }
 Assert-ArtifactFresh -Path $freshTargets -Skip:$SkipFreshnessCheck -Caller 'Test-Smoke.ps1'
 
 # 7z.exe loads 7z.dll from its own directory; the Console build output does not
-# contain one, so borrow the Format7zF bundle's when testing a build tree.
+# contain one, so borrow the Format7zF bundle's when testing the build tree.
 #
-# Copied unconditionally, every run. Copying only when absent would leave a
-# stale 7z.dll behind after Format7zF is rebuilt, and the suite would then pass
-# against the previous build - the exact "you tested a different binary than
-# you think" failure the banner check below exists to catch.
-$dll = Join-Path $BinDir '7z.dll'
-$dllSrc = Join-Path $RepoRoot "CPP\7zip\Bundles\Format7zF\$Platform\7z.dll"
-if (Test-Path $dllSrc) {
-    Copy-Item $dllSrc $dll -Force
-} elseif (-not (Test-Path $dll)) {
-    throw "7z.dll not found next to 7z.exe nor at $dllSrc"
-}
+# Copied on every such run. Copying only when absent would leave a stale 7z.dll
+# behind after Format7zF is rebuilt, and the suite would then pass against the
+# previous build - the exact "you tested a different binary than you think"
+# failure the banner check below exists to catch.
+if (-not $explicitBinDir) { Copy-Item $dllSrc $dll -Force }
 
 $Work = Join-Path $env:TEMP ("7zstar-smoke-" + [System.IO.Path]::GetRandomFileName())
 New-Item -ItemType Directory -Force $Work | Out-Null

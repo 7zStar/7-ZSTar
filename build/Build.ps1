@@ -177,17 +177,18 @@ foreach ($t in $selected) {
         Pop-Location
     }
     if ($ok -and $srcFp -and (Test-Path -LiteralPath (Split-Path $stampPath -Parent))) {
-        # List the .exe/.dll/.sfx files in the target's output directory
-        # (length + SHA256), so a file swapped in afterwards is caught too.
-        # That can include a file the target did not build - Test-Smoke copies
-        # Format7zF's 7z.dll into the Console directory - which is why the
-        # test scripts hold the original in the Format7zF directory and refuse
-        # to fall back to that copy.
-        $outputs = @(Get-ChildItem -LiteralPath (Split-Path $stampPath -Parent) -File |
-                     Where-Object { $_.Extension -in '.exe', '.dll', '.sfx' } |
-                     ForEach-Object { $_.FullName })
-        Write-SourceStamp -StampPath $stampPath -Fingerprint $srcFp -ArtifactFiles $outputs
-        $stamped++
+        # List only the file this target builds - $(PROG) from its makefile -
+        # with its length and SHA256, so a file swapped in afterwards is caught
+        # too. Other files in the output directory (Test-Smoke copies
+        # Format7zF's 7z.dll into the Console directory) are left out, and the
+        # check refuses them as "not listed in its stamp".
+        $output = Get-TargetArtifact -TargetDir $dir -Platform $Platform
+        if ($output) {
+            Write-SourceStamp -StampPath $stampPath -Fingerprint $srcFp -ArtifactFiles @($output)
+            $stamped++
+        } else {
+            Write-Warning "$t built, but its PROG file is not in $dir\$Platform; no source stamp written."
+        }
     }
     $dt = ($sw.Elapsed - $t0).TotalSeconds
     $results += [pscustomobject]@{ Target = $t; Ok = $ok; Seconds = [math]::Round($dt, 1); Log = $log }

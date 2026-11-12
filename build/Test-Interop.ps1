@@ -61,14 +61,14 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = Split-Path $PSScriptRoot -Parent
 . (Join-Path $PSScriptRoot 'SourceStamp.ps1')
 # .NET IO resolves relative paths against the process directory, cmdlets
-# against PowerShell's location; absolute paths keep the two in agreement.
-function Resolve-Full($p) { $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($p) }
+# against PowerShell's location; ConvertTo-FullPath (SourceStamp.ps1) makes
+# the paths absolute so the two agree.
 
 # 7z.dll is borrowed from the build tree only for the default BinDir; a
 # caller who points at a specific directory (an unpacked release, say) gets
 # exactly what is there, untouched.
 if ($PSBoundParameters.ContainsKey('BinDir')) {
-    $BinDir = Resolve-Full $BinDir
+    $BinDir = ConvertTo-FullPath $BinDir
 } else {
     $BinDir = Join-Path $RepoRoot "CPP\7zip\UI\Console\$Platform"
     $dllSrc = Join-Path $RepoRoot "CPP\7zip\Bundles\Format7zF\$Platform\7z.dll"
@@ -87,14 +87,14 @@ if ($PSBoundParameters.ContainsKey('BinDir')) {
     $freshTargets += $dllSrc
 } else {
     # A 7z.dll left in the Console directory by an earlier run is a copy of some
-    # older Format7zF build; the Console stamp lists it but did not make it.
+    # older Format7zF build; the Console stamp does not list it.
     throw "Format7zF output missing: $dllSrc. Build it first (build\Build.ps1)."
 }
 Assert-ArtifactFresh -Path $freshTargets -Skip:$SkipFreshnessCheck -Caller 'Test-Interop.ps1'
 $banner = (& $SevenZip 2>&1 | Select-Object -First 3 | Where-Object { $_ -match '7-ZSTar' } | Select-Object -First 1)
 if (-not $banner) { throw "$SevenZip did not identify itself as 7-ZSTar (or failed to run)" }
 
-$InteropDir = $(if ($InteropDir) { Resolve-Full $InteropDir } else { Join-Path $RepoRoot 'test\interop' })
+$InteropDir = $(if ($InteropDir) { ConvertTo-FullPath $InteropDir } else { Join-Path $RepoRoot 'test\interop' })
 $LinuxDir = Join-Path $InteropDir 'linux'
 $Manifest = Join-Path $LinuxDir 'MANIFEST.md'
 if (-not (Test-Path $Manifest)) { throw "Linux manifest not found: $Manifest" }

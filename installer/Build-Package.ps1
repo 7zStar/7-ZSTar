@@ -204,9 +204,16 @@ if ($missing) {
 # checked, so a source edit landing in between makes the check fail instead of
 # leaving a package stamp that vouches for source the binaries were not built from.
 $pkgFp = $null
+$binStamps = @{}
 if (-not $SkipFreshnessCheck) {
     try { $pkgFp = Get-SourceFingerprint -Kind package -RepoRoot $RepoRoot }
     catch { throw "$($_.Exception.Message) Build with git available, or pass -SkipFreshnessCheck on purpose (no source stamp is then written beside the packages)." }
+    # The stamps as the check below will read them; the staged copies are held
+    # to these after copying (see there).
+    foreach ($kv in $Binaries.GetEnumerator()) {
+        $sp = Get-SourceStampPath (Join-Path $RepoRoot $kv.Value)
+        if (Test-Path -LiteralPath $sp) { $binStamps[$kv.Key] = [IO.File]::ReadAllText($sp) }
+    }
 }
 Assert-ArtifactFresh -Path @($Binaries.Values | ForEach-Object { Join-Path $RepoRoot $_ }) `
     -Skip:$SkipFreshnessCheck -Caller 'Build-Package.ps1'
@@ -240,6 +247,24 @@ New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 foreach ($kv in $Binaries.GetEnumerator()) {
     Copy-Item (Join-Path $RepoRoot $kv.Value) (Join-Path $Stage $kv.Key) -Force
+}
+# The check above read the build tree; what gets packed is the staged copy.
+# Hold each copy to the stamp the check verified: a build or an old file copied
+# back in between would otherwise go into a package whose stamp vouches for it.
+if (-not $SkipFreshnessCheck) {
+    foreach ($kv in $Binaries.GetEnumerator()) {
+        $src = Join-Path $RepoRoot $kv.Value
+        $sp = Get-SourceStampPath $src
+        $now = if (Test-Path -LiteralPath $sp) { [IO.File]::ReadAllText($sp) } else { $null }
+        if (-not $now -or $now -cne $binStamps[$kv.Key]) {
+            throw "$($kv.Value): its source stamp changed after the freshness check (a build ran meanwhile?). Package again."
+        }
+        $entry = ($now | ConvertFrom-Json).artifacts.PSObject.Properties[(Split-Path -Leaf $src)]
+        $have = Get-ArtifactDigest (Join-Path $Stage $kv.Key)
+        if (-not $entry -or [int64]$entry.Value.length -ne [int64]$have.length -or $entry.Value.sha256 -ne $have.sha256) {
+            throw "$($kv.Value): the staged copy differs from what its stamp lists (the file changed after the freshness check). Package again."
+        }
+    }
 }
 foreach ($d in $Docs) {
     Copy-Item (Join-Path $RepoRoot $d) (Join-Path $Stage $d) -Force

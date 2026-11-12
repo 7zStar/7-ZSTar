@@ -50,8 +50,12 @@ upstream's release date, as the Linux `7zz` does: the Linux build has no such st
 
 ```powershell
 pwsh build\Test-Smoke.ps1                 # functional suite against the x64 build
-pwsh build\Test-Smoke.ps1 -BinDir <dir>   # or against an unpacked release
+pwsh build\Test-Smoke.ps1 -BinDir <dir> -SkipFreshnessCheck   # or against an unpacked release (it has no stamp)
 ```
+
+`-BinDir` tests that directory as it is: its `7z.exe` and its own `7z.dll`
+(missing one is an error), with nothing copied in. Only the default, the
+Console build output, borrows `Format7zF`'s `7z.dll`.
 
 Round trips every codec, checks that one-step `tar.*` archives really drill
 down to their contents rather than showing a bare `.tar`, cross-checks against
@@ -81,14 +85,40 @@ consumers refuse anything that no longer matches:
 | `installer\Build-Package.ps1` | `<file>.srcstamp` beside each `.msi` / `.zip` | `installer\Test-MsiRegistry.ps1`, `installer\Test-SparseIntegration.ps1` |
 
 The stamp is a content fingerprint of the **work tree** (uncommitted edits and
-new untracked files count; `.gitignore`d files do not), not a commit id:
+new untracked files count; untracked files that `.gitignore` matches do not,
+while tracked ones count even where it matches), not a commit id:
 binaries cover `C`, `CPP`, `Asm`; packages add `installer` (except `Test-*.ps1`
-and `GUIDS.md`), `Lang`, `Help` and the documents `Build-Package.ps1` packs. A
-change outside those sets (the website, `docs\`, a README) leaves artifacts
-fresh. A mismatch, a missing stamp (anything built before the stamps existed
+and `GUIDS.md`), `Lang`, `Help` and the documents `Build-Package.ps1` packs.
+Nothing outside those paths is read, and a change outside them (the website, `docs\`,
+`build\`) leaves artifacts fresh. The root `README.md` and `CHANGELOG.md` are
+packed, so editing them stales the packages but not the binaries; the codec
+READMEs under `C\` are part of the binary set and stale both.
+
+A target's stamp lists one file: the one its makefile names on its literal
+`PROG = <file>` line (`Get-TargetArtifact` in `SourceStamp.ps1`), with its
+length and SHA256. Anything else in the output directory is left out - notably
+the `7z.dll` that `Test-Smoke.ps1` and `Test-Interop.ps1` copy from `Format7zF`
+into the Console directory - and a consumer handed such a file refuses it as
+"not listed in its stamp". To check `7z.dll`, check
+`CPP\7zip\Bundles\Format7zF\<Platform>\7z.dll`. A makefile without exactly one
+literal `PROG` line stops `Build.ps1`; a target that built but left no `PROG`
+file gets a warning and no stamp.
+
+A mismatch, a missing stamp (anything built before the stamps existed
 included), or a file whose length or SHA256 differs from what the stamp lists
 (an old build copied back over a new one, even with its old modification time
 kept) makes the consumer throw. The fix is to rebuild.
+
+`Build-Package.ps1` checks the six binaries, copies them into its staging
+directory, then holds each copy to the stamp it checked: if a binary's
+`.srcstamp` changed in between, or a staged copy's length or SHA256 differs
+from what that stamp lists, it throws ("Package again"). A package stamp thus
+vouches for the bytes that were packed - and `Build-Package.ps1` must not run
+alongside `Build.ps1` on the same tree. `Test-SparseIntegration.ps1` checks
+before its UAC prompt; the elevated copy it relaunches does not check again,
+but installs only an `.msi` with the exact length and SHA256 the first run saw
+(handed over through a one-time file in `-OutDir`). No parameter declares the
+check done; `-SkipFreshnessCheck` stays the only way past, and it is logged.
 
 Two things that trip people: after `Build.ps1 -Targets X` only X is stamped
 current, so a consumer that reads other targets (`Test-Smoke` reads the console,

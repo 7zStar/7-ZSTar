@@ -56,10 +56,14 @@ param(
     # is logged to build\logs\freshness-skips.log.
     [switch]$SkipFreshnessCheck,
 
-    # Set only by the unelevated run when it relaunches itself: it has already
-    # done the check (or logged the skip), so the elevated child does not
-    # repeat it - or log the skip a second time.
-    [switch]$FreshnessChecked
+    # Internal to the UAC relaunch; not for callers. The unelevated run has
+    # done the check (or logged the skip) and leaves a one-time handoff file in
+    # OutDir holding this token and the .msi digest it saw. The elevated child
+    # accepts the token only if it matches that file, and only installs an
+    # .msi with that exact digest - so it neither repeats the check nor logs
+    # the skip a second time, and a token alone cannot skip anything.
+    [Parameter(DontShow)]
+    [string]$FreshnessToken
 )
 
 $ErrorActionPreference = 'Stop'
@@ -103,9 +107,28 @@ if (-not $OutDir) { $OutDir = Join-Path $selfDir 'obj\sparse-test' }
 New-Item -ItemType Directory -Force $OutDir | Out-Null
 
 # Before any UAC prompt or install: is this .msi the one the current source
-# produces? The elevated child skips it (see -FreshnessChecked).
-if (-not $FreshnessChecked) {
-    . (Join-Path (Split-Path $selfDir -Parent) 'build\SourceStamp.ps1')
+# produces? The elevated child relaunched by this script holds the .msi to
+# what the unelevated run checked instead (see -FreshnessToken).
+. (Join-Path (Split-Path $selfDir -Parent) 'build\SourceStamp.ps1')
+$handoff = ConvertTo-FullPath (Join-Path $OutDir 'freshness-handoff.json')
+if ($FreshnessToken) {
+    $rec = $null
+    if (Test-Path -LiteralPath $handoff) {
+        try { $rec = [IO.File]::ReadAllText($handoff) | ConvertFrom-Json } catch { $rec = $null }
+        Remove-Item -LiteralPath $handoff -Force -ErrorAction SilentlyContinue   # one use only
+    }
+    if (-not $rec -or "$($rec.token)" -cne $FreshnessToken) {
+        throw "-FreshnessToken is internal to the UAC relaunch and does not match $handoff. Run the script without it."
+    }
+    $have = if (Test-Path -LiteralPath $Msi) { Get-ArtifactDigest $Msi } else { $null }
+    if (-not $have -or "$($rec.length)" -ne "$($have.length)" -or "$($rec.sha256)" -ne $have.sha256) {
+        throw "$Msi is not the file the freshness check saw (replaced while UAC was waiting?). Run the script again."
+    }
+    $msiDigest = $have
+} else {
+    # Digest taken before the check: a file swapped in between fails the
+    # child's comparison rather than being installed unverified.
+    $msiDigest = if (Test-Path -LiteralPath $Msi) { Get-ArtifactDigest $Msi } else { $null }
     Assert-ArtifactFresh -Path $Msi -Skip:$SkipFreshnessCheck -Caller 'Test-SparseIntegration.ps1'
 }
 
@@ -124,10 +147,22 @@ if (-not (Test-Admin)) {
     # System32 powershell.exe, not the Store-provisioned pwsh: the WindowsApps
     # alias cannot be elevated and fails with a misleading "cancelled by user".
     $host51 = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
+    if (-not $msiDigest) { throw "MSI not found: $Msi" }
+    $token = [guid]::NewGuid().ToString('N')
+    $json = [ordered]@{ token = $token; length = $msiDigest.length; sha256 = $msiDigest.sha256 } | ConvertTo-Json -Compress
+    [IO.File]::WriteAllText($handoff, $json, (New-Object Text.UTF8Encoding $false))
     # Array form only; a single string gets re-parsed and paths keep quotes.
+    # Full paths: the elevated child starts in System32, not in this directory,
+    # and must find the same .msi and the handoff file.
     $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $self,
-                 '-Msi', $Msi, '-OutDir', $OutDir, '-FreshnessChecked')
-    $p = Start-Process -FilePath $host51 -Verb RunAs -ArgumentList $argList -Wait -PassThru
+                 '-Msi', (ConvertTo-FullPath $Msi), '-OutDir', (ConvertTo-FullPath $OutDir),
+                 '-FreshnessToken', $token)
+    try {
+        $p = Start-Process -FilePath $host51 -Verb RunAs -ArgumentList $argList -Wait -PassThru
+    } finally {
+        # The child deletes it on use; this covers a cancelled UAC prompt.
+        Remove-Item -LiteralPath $handoff -Force -ErrorAction SilentlyContinue
+    }
     Write-Host "elevated child exit=$($p.ExitCode)"
     $report = Join-Path $OutDir 'report.txt'
     if (Test-Path -LiteralPath $report) { Get-Content -LiteralPath $report }

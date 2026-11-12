@@ -105,6 +105,8 @@ try {
         Put $d "$d`n"
     }
     Put 'docs/notes.md' "docs`n"
+    Put 'CPP/UI/Console/makefile' "PROG = 7z.exe`nCFLAGS = `$(CFLAGS)`n"   # what Get-TargetArtifact reads
+    Put 'CPP/UI/NoProg/makefile' "PROG = `$(NAME).exe`n"                    # not a literal file name
     New-Item -ItemType Directory -Force (PathOf 'build') | Out-Null
     Copy-Item (Join-Path $SelfDir 'SourceStamp.ps1') (PathOf 'build\SourceStamp.ps1')
     Copy-Item (Join-Path $SelfDir 'Assert-Fresh.ps1') (PathOf 'build\Assert-Fresh.ps1')
@@ -115,6 +117,33 @@ try {
     $msi = 'installer\dist\pkg.msi'         # a "package"
     $log = PathOf 'build\logs\freshness-skips.log'
     function IndexHash { (Get-FileHash -LiteralPath (PathOf '.git\index') -Algorithm SHA256).Hash }
+    # 0 when the file's contents are a blob in the scratch repo's object database.
+    function BlobStored([string]$Rel) {
+        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        try {
+            $id = (& git -C $Work hash-object -- $Rel 2>&1 | Out-String).Trim()
+            & git -C $Work cat-file -e $id 2>$null
+            return $LASTEXITCODE
+        } finally { $ErrorActionPreference = $prev }
+    }
+    # Stamp a target directory the way build\Build.ps1 does: only the file its
+    # makefile names in PROG.
+    function BuildStamp([string]$HostExe, [string]$TargetRel) {
+        $helper = PathOf 'build\_buildstamp.ps1'
+        [IO.File]::WriteAllText($helper, @'
+param($Target)
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'SourceStamp.ps1')
+$out = Get-TargetArtifact -TargetDir $Target -Platform x64
+if (-not $out) { exit 3 }
+Write-SourceStamp -StampPath (Join-Path $Target 'x64\.srcstamp') -Fingerprint (Get-SourceFingerprint -Kind binary) -ArtifactFiles @($out)
+'@)
+        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        try {
+            $script:LastOutput = (& $HostExe -NoProfile -ExecutionPolicy Bypass -File $helper -Target (PathOf $TargetRel) 2>&1 | Out-String)
+            return $LASTEXITCODE
+        } finally { $ErrorActionPreference = $prev }
+    }
 
     foreach ($h in $hosts.GetEnumerator()) {
         $hn = $h.Key; $hx = $h.Value
@@ -184,6 +213,18 @@ exit 0
         Expect "$hn new untracked source file is stale" 1 (RunAssert $hx $a)
         Remove-Item (PathOf 'CPP\new.cpp') -Force
         Expect "$hn untracked file removed is fresh again" 0 (RunAssert $hx $a)
+
+        # Only the kind's paths are staged: an untracked file elsewhere is not
+        # read into .git/objects, one under a watched path is (and counts).
+        # No newline in the contents, so line-ending conversion cannot apply.
+        Put 'docs/untracked.bin' ("outside $hn " + [guid]::NewGuid())
+        Put 'CPP/untracked.cpp' ("inside $hn " + [guid]::NewGuid())
+        Expect "$hn an untracked source file next to an untracked doc is stale" 1 (RunAssert $hx $a)
+        Expect "$hn ... the watched untracked file was hashed (probe works)" 0 (BlobStored 'CPP/untracked.cpp')
+        Expect "$hn ... the untracked file outside the kind's paths was not" 0 $(if ((BlobStored 'docs/untracked.bin') -ne 0) { 0 } else { 1 })
+        Remove-Item (PathOf 'CPP\untracked.cpp') -Force
+        Expect "$hn an untracked file outside the kind's paths stays fresh" 0 (RunAssert $hx $a)
+        Remove-Item (PathOf 'docs\untracked.bin') -Force
 
         Put 'docs/notes.md' "docs changed`n"
         Expect "$hn documentation-only change stays fresh" 0 (RunAssert $hx $a)
@@ -264,6 +305,20 @@ exit 5      # reached only if the stale verdict did not end the script
         Expect "$hn a file the stamp does not list is refused" 1 (RunAssert $hx @(PathOf 'CPP\UI\Console\x64\other.exe'))
         Remove-Item (PathOf 'CPP\UI\Console\x64\other.exe') -Force
 
+        # The producer lists only the target's own output ($(PROG)), not every
+        # binary in the directory: a 7z.dll copied in from Format7zF (as
+        # Test-Smoke does) is not vouched for by the Console stamp.
+        Put 'CPP/UI/Console/x64/7z.dll' "an older Format7zF build`n"
+        Expect "$hn Build.ps1-style stamp is written" 0 (BuildStamp $hx 'CPP\UI\Console')
+        Expect "$hn ... and the target's own output is fresh" 0 (RunAssert $hx $a)
+        $dll = @(PathOf 'CPP\UI\Console\x64\7z.dll')
+        Expect "$hn a foreign 7z.dll in the output directory is refused" 1 (RunAssert $hx $dll)
+        Expect "$hn ... because the stamp does not list it" 0 $(if ($script:LastOutput -match 'not listed in its stamp') { 0 } else { 1 })
+        Remove-Item (PathOf 'CPP\UI\Console\x64\7z.dll') -Force
+        New-Item -ItemType Directory -Force (PathOf 'CPP\UI\NoProg\x64') | Out-Null
+        Expect "$hn a makefile without a literal PROG file name stops the producer" 0 $(if ((BuildStamp $hx 'CPP\UI\NoProg') -ne 0) { 0 } else { 1 })
+        MakeStamp $hx (PathOf $exe) 'binary'
+
         # A long-lived process must not keep an old verdict after the source changes.
         [IO.File]::WriteAllText((PathOf 'build\_cache.ps1'), @'
 param($Artifact)
@@ -307,6 +362,16 @@ try { Assert-ArtifactFresh -Path $Artifact | Out-Null; exit 2 } catch { exit 0 }
         Expect "$hn changed source stales the package too" 1 (RunAssert $hx $m)
         Put 'CPP/b.cpp' "int b;`n"
         Expect "$hn package fresh again after revert" 0 (RunAssert $hx $m)
+
+        # An Include entry that exists nowhere (not on disk, not in the index)
+        # is skipped, not passed to git add (which would fail on it).
+        GitC @('rm', '-q', '--', 'NOTICE'); GitC @('commit', '-q', '-m', 'no NOTICE')
+        $mk = 0; try { MakeStamp $hx (PathOf $msi) 'package' } catch { $script:LastOutput = "$_"; $mk = 1 }
+        Expect "$hn a package input missing from the tree is not an error" 0 $mk
+        Expect "$hn ... and the package stamped without it is fresh" 0 (RunAssert $hx $m)
+        Put 'NOTICE' "NOTICE`n"
+        Expect "$hn ... the input back as an untracked file stales it" 1 (RunAssert $hx $m)
+        GitC @('add', '--', 'NOTICE'); GitC @('commit', '-q', '-m', 'NOTICE back')
 
         # clean up for the next host: tests start from the committed tree
         GitC @('checkout', '--', '.')

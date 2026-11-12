@@ -39,16 +39,17 @@ public remote, which the orphan start exists to keep off it. Do not rebase or
 squash `main` either; its history since `v26.05.1` is ordinary and stays.
 
 Instead, take what upstream changed between the two releases as a patch,
-apply it to `main` with a three-way merge, and commit the result as one
-ordinary commit, `Upgrade to 7-Zip <new>`. Upstream's history stays in your
+apply it to `main` with a three-way merge, finish and verify it (Steps 1 to
+3), and only then commit the result as one ordinary commit, `Upgrade to 7-Zip
+<new>`. Upstream's history stays in your
 clone only: the local `upstream` branch and the `upstream/<version>` tags are
 kept for this and are not pushed.
 
 The fork's discipline is what keeps that patch applying with few conflicts:
 new functionality lives in new files and upstream files get the smallest
 possible wiring, each edit tagged `// 7-ZSTar:` so `git grep` can audit it.
-Elsewhere in this file, "merge" and "mainline merge" mean this upgrade
-commit.
+Elsewhere in this file, "merge" and "mainline merge" mean this upgrade,
+applied and then committed.
 
 ### Step 0 — establish what you are applying, then apply it
 
@@ -80,8 +81,12 @@ conflict markers where upstream's change and ours overlap; it also stages
 what it applies. Read its output before going on: an error, as opposed to a
 conflict, means the patch was not applied.
 
-Resolve the conflicts with Step 1 in hand, `git add` them, and commit the whole
-upgrade as one commit, `Upgrade to 7-Zip <new>`. Then move the local
+Resolve the conflicts with Step 1 in hand and `git add` them, but do not
+commit yet: Step 2 (re-vendoring) and Step 3 (the clean build and the smoke
+suite) belong to the same upgrade. Once Step 3 is green, commit everything as
+one commit, `Upgrade to 7-Zip <new>`; what Part 4 turns up afterwards (the
+`CHANGELOG.md` entry, a literal the greps caught) goes in ordinary follow-up
+commits. Then move the local
 `upstream` branch to the new release (`git branch -f upstream upstream/<new>`)
 so it keeps pointing at the baseline `main` is on.
 
@@ -216,6 +221,10 @@ its source tree. Each has its own procedure; follow it, do not improvise:
 version. Nothing can. This step is manual and load-bearing.
 
 ### Step 3 — verify
+
+Do Part 4 step 2 (the freshness-stamp path lists) first: a change to those
+lists changes the fingerprint, so everything built below would come out stale,
+and the change belongs in the upgrade commit.
 
 ```powershell
 build\Build.ps1 -Clean        # all 17 targets OK, zero warnings
@@ -589,8 +598,8 @@ If a Windows build ever asks for the first-level menu with `FALSE`, the entry
 leaves the first level and stays under *Show more options*. If one asks for the
 classic menu with `TRUE`, the duplicate comes back. Nothing automated sees
 either: `build/Test-Smoke.ps1` checks only that the line is still in the source,
-which catches a merge taking upstream's side of it (Part 4 step 4 is the same
-check by hand). Part 4 step 10 is the look at both menus.
+which catches a merge taking upstream's side of it (Part 4 step 5 is the same
+check by hand). Part 4 step 12 is the look at both menus.
 
 Tried and rejected, so nobody repeats them:
 
@@ -700,20 +709,28 @@ artifact going stale, so the list must follow the build: a new top-level source
 directory that feeds a binary goes into `binary` **and** `package`; a new file
 or directory that `installer/Build-Package.ps1` copies into the package (its
 `$Docs` list, a new vendored folder) goes into `package`. Forgetting is silent -
-nothing fails, the stamp just stops covering that input. After a mainline merge,
-check whether upstream added a top-level directory (Part 4 step 12). One
+nothing fails, the stamp just stops covering that input. The fingerprint does
+not even read anything outside the list: `git add -A` and `git ls-files` run
+with the existing Include entries as pathspecs, so only edited or untracked
+files under them leave unreachable blobs in `.git/objects` (`git gc` collects
+them). After a mainline merge, and before building, check whether upstream
+added a top-level directory (Part 4 step 2): changing the list changes the
+fingerprints, so every stamp written before the change goes stale. One
 built-in blind spot: `.gitignore` excludes every directory named `x86/`,
 `arm64/`, `arm/` and so on (build output), which also matches `Asm/x86/`,
 `Asm/arm64/` and `Asm/arm/`. Edits to tracked files
 there are seen; a brand-new file there is not, until it is tracked with
-`git add -f`. Second blind spot, latent: `git ls-files` prints non-ASCII file
-names in the console's code page, so a name like that under `Lang/` or `Help/`
-would give a different fingerprint under cp950 than under UTF-8 and make
-artifacts look stale when producer and consumer ran in different consoles
-(measured). None of the watched paths has one today; if one appears, fix
-`Invoke-SrcStampGit` to force UTF-8 output before relying on the check - do
-not drop `core.quotePath=false`, which would make such paths silently
-unmatched. `build/Test-SourceStamp.ps1`
+`git add -f`. Second blind spot, latent: with `core.quotePath=false`, git
+writes non-ASCII file names to the pipe as UTF-8 whatever the console, but
+PowerShell decodes a native command's output with `[Console]::OutputEncoding`.
+A name like that under `Lang/` or `Help/` would therefore decode differently
+under cp950 than under UTF-8, give a different fingerprint and make artifacts
+look stale when producer and consumer ran in different consoles (measured).
+None of the watched paths has one today; if one appears, make
+`Invoke-SrcStampGit` set `[Console]::OutputEncoding` to UTF-8 (no BOM) around
+its git call and restore it afterwards, before relying on the check. No git
+setting fixes this - git already writes UTF-8. And do not drop
+`core.quotePath=false`, which would make such paths silently unmatched. `build/Test-SourceStamp.ps1`
 holds the rules' tests (scratch repo, exit codes only); it keeps its own copy of
 the document list, so extend it together with the library. CI runs it on the
 x64 leg of `.github/workflows/build.yml` before the build, so a change to the
@@ -724,15 +741,28 @@ library or its tests that breaks a case fails that push or pull request;
 
 ## Part 4 — After any merge or re-vendor, in order
 
+The order matters because of the freshness stamps (Part 3.16): an edit under a
+watched path makes everything built or packed before it stale. So a source fix
+made on the way - a literal step 5 caught, say - sends you back to step 3, and
+an edit to a packed document back to step 9.
+
 1. **After a mainline merge only:** re-vendor `Lang/`, `Help/7-zip.chm` and
    `LICENSE-7-Zip.txt` from the new release's *binary* package, and update the
    two recorded SHA-256 values (Part 1 Step 2). Nothing downstream detects a
    forgotten refresh - the packaging script only notices if they are *missing*.
-2. `build\Build.ps1 -Clean` - all 17 targets, zero warnings. `-Clean` is not
+2. **After every mainline merge, before anything below builds:**
+   `git ls-tree -d --name-only HEAD` and compare
+   the top-level directories with `$script:SrcStampKinds` in
+   `build\SourceStamp.ps1` (Part 3.16). A new directory that feeds a binary or
+   the package must be in the list; nothing fails if it is not, the freshness
+   check just stops watching it. Then `build\Test-SourceStamp.ps1`. It comes
+   this early because the list decides the fingerprints: changing it after
+   step 3 or step 9 makes those builds and packages stale.
+3. `build\Build.ps1 -Clean` - all 17 targets, zero warnings. `-Clean` is not
    optional: nmake does not track the `.rc` include graph.
-3. `build\Test-Smoke.ps1` - nothing may fail. Read Part 1 Step 3 for what the
+4. `build\Test-Smoke.ps1` - nothing may fail. Read Part 1 Step 3 for what the
    licence checks mean when they go red.
-4. `git grep -n '"7-Zip"' -- CPP/ C/` - every hit is either
+5. `git grep -n '"7-Zip"' -- CPP/ C/` - every hit is either
    `LangUtils.cpp:30` (correct, leave it) or something the merge missed.
    Then `git grep -n '"SevenZip' -- CPP/7zip/UI/Explorer/` - the only hit may
    be the `// 7-ZSTar:` comment in `ContextMenu.cpp` that names upstream's
@@ -747,14 +777,18 @@ library or its tests that breaks a case fails that push or pull request;
    shares a checkbox with ours and no grep shows it.
    Then the two registry-key greps in Part 1 Step 1 B - both must print
    nothing.
-5. `git grep -n '7-ZSTar:' -- CPP/ C/` - spot-check that the markers you expect
+6. `git grep -n '7-ZSTar:' -- CPP/ C/` - spot-check that the markers you expect
    are still attached to the code they describe (Part 3.8 explains the six
    false positives).
-6. Diff `CPP/7zip/Guid.txt` against upstream's for id collisions (Part 3.2).
-7. `installer\Build-Package.ps1` and `installer\Build-Package.ps1 -PerUser`,
+7. Diff `CPP/7zip/Guid.txt` against upstream's for id collisions (Part 3.2).
+8. Update `CHANGELOG.md`, and the version in `README.md` if it moved
+   (Part 3.6 - the header, the two documents and the tag move together).
+   Before packaging: both files are packed and watched by the package stamp,
+   so an edit after step 9 leaves packages with the old text and stale stamps.
+9. `installer\Build-Package.ps1` and `installer\Build-Package.ps1 -PerUser`,
    then actually install the `.msi`, open the file manager, open
    **Help > About**, and look at it.
-8. **After every packaging run:** `installer\Test-MsiRegistry.ps1` - seconds,
+10. **After every packaging run:** `installer\Test-MsiRegistry.ps1` - seconds,
    no elevation, reads the built `.msi` files and checks the generated Default
    Programs registration against `resource.rc`. It exists mainly for one rule:
    the installer must never write the *default* value of `HKCR\.<ext>`. Doing
@@ -763,9 +797,9 @@ library or its tests that breaks a case fails that push or pull request;
    forgotten `Name=` in a generator loop, invisible to a green build.
    It also checks that the two scopes' packages share no component GUID
    (`installer\GUIDS.md`), but only for an architecture whose per-machine and
-   per-user packages are both in `dist\` - which is why step 7 builds both. A
+   per-user packages are both in `dist\` - which is why step 9 builds both. A
    "NOT checked" warning means that half did not run.
-9. **If anything under `installer/sparse/`, the five custom actions or
+11. **If anything under `installer/sparse/`, the five custom actions or
    `Setup-ShellIntegration.ps1` changed:** both of
    `installer\Test-RemoveAssociations.ps1` (seconds, no elevation - runs the
    association cleanup against a scratch registry key and checks it takes our
@@ -776,17 +810,10 @@ library or its tests that breaks a case fails that push or pull request;
    so a failure looks exactly like success. Then right-click a file, because
    whether the entry is in the Windows 11 first-level menu is the one thing no
    script can check.
-10. **After every mainline merge, whenever a new Windows 11 release is out, and
-   whenever step 9 ran:** install the per-machine `.msi` on Windows 11 and, as
+12. **After every mainline merge, whenever a new Windows 11 release is out, and
+   whenever step 11 ran:** install the per-machine `.msi` on Windows 11 and, as
    the installing user, right-click a file. The entry must be in the first-level
    menu, and **Show more options** must have it exactly once (Part 3.12).
-11. Update `CHANGELOG.md`, and the version in `README.md` if it moved
-   (Part 3.6 - the header, the two documents and the tag move together).
-12. **After every mainline merge:** `git ls-tree -d --name-only HEAD` and compare
-   the top-level directories with `$script:SrcStampKinds` in
-   `build\SourceStamp.ps1` (Part 3.16). A new directory that feeds a binary or
-   the package must be in the list; nothing fails if it is not, the freshness
-   check just stops watching it. Then `build\Test-SourceStamp.ps1`.
 13. **Before you push or ask for review:** `git branch --no-merged main` - it
    lists the local branches holding commits `main` does not have. Each one is
    either the work you are about to land, or something that should be merged
