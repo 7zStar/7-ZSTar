@@ -12,10 +12,17 @@ menu, file associations and uninstalling.
 Nothing else is needed: the C runtime is linked statically (`-MT`), so the
 binaries import nothing but Windows' own DLLs - no redistributable, no .NET.
 
-That floor is *derived* from what the packages require, not measured: nothing
-older than Windows 11 has been tested here. It is also higher than upstream
-7-Zip's, whose binaries still load on Windows XP. Three things put it there,
-and the second is the one no build setting can undo:
+That floor is *derived* from what the packages require, and it has been
+tested on Windows 7 SP1 with later updates installed (PowerShell 5.1 among
+them), Windows 10 22H2 and Windows 11, all 64-bit. On Windows 7 and 10 that
+covered installing and uninstalling the all-users and per-user x64 `.msi`, the
+install wizard, the x64 `.zip`, every added codec and one-step tar format, the
+right-click menu, file associations and the help file, and the x86 `.msi` and
+`.zip` running on 64-bit Windows. Nothing else has been tested on Windows: not
+Windows 8 or 8.1, Windows Server, 32-bit Windows, arm64 hardware, or Windows 7
+without those updates. The floor is also higher than upstream 7-Zip's, whose
+binaries still load on Windows XP. Three things put it there, and the second is
+the one no build setting can undo:
 
 - The `.msi` declares `InstallerVersion="500"`, and Windows Installer 5.0
   shipped "with Windows Server 2008 R2 and later and Windows 7 and later"
@@ -107,9 +114,11 @@ every release if you would rather build it: see [build/README.md](../build/READM
 Once the hashes match and you are happy with where the file came from:
 
 - **`.msi`** - start it as usual. If SmartScreen stops it, choose the option to
-  run it anyway ("Run anyway" on an English-language Windows; the warning
-  window may need to be expanded first). The all-users `.msi` then asks for
-  administrator approval like any other installer.
+  run it anyway ("Run anyway" on an English-language Windows). The warning
+  window may need to be expanded first: on the Windows 10 machine tested, it
+  offered only a button not to run the file until the link under its message
+  was clicked. The all-users `.msi` then asks for administrator approval like
+  any other installer.
 - **`.zip`** - extract it and start `7zFM.exe` or `7z.exe` from the folder. The
   programs inside are unsigned as well, so Windows may show the same warning the
   first time you start each one.
@@ -197,7 +206,10 @@ context-menu key `7-ZSTar` - so it neither collides with nor removes official
 It runs a normal install wizard - welcome, licence, setup type, optional
 feature tree, finish - and installing quietly still works unchanged
 (`msiexec /i 7-ZSTar-<version>-<arch>.msi /qn`), because msiexec skips the
-whole UI sequence in quiet mode.
+whole UI sequence in quiet mode. The wizard is in English only, also on a
+Windows set to another language (seen on Traditional Chinese Windows 10; the
+`.msi` is built with no other language), and its finish page has *Launch
+7-ZSTar File Manager* ticked by default.
 
 ### The Windows 11 right-click menu
 
@@ -205,14 +217,17 @@ On Windows 11 the entry is in the first-level menu, not buried under *Show
 more options* where official 7-Zip and WinRAR still sit. Windows 11 only lists
 a shell extension there when it comes with package identity, so the MSI ships
 a small identity-only MSIX package next to the program and registers it during
-install. The classic registration is kept as well, which is what keeps the
-entry working on Windows 10 and for anyone who has restored the old context
-menu.
+install. The classic registration is kept as well. It is what puts the entry
+in the right-click menu on Windows 10 and Windows 7, whose menu has a single
+level with no *Show more options*, and what keeps it working for anyone who
+has restored the old context menu.
 
 That package is signed with a **self-signed certificate**, and the installer
 puts it in `LocalMachine\TrustedPeople` - Windows will not deploy a package
 whose signature it cannot chain to something trusted. Uninstalling removes the
-certificate along with the package.
+certificate along with the package. On Windows 10 and Windows 7 the installer
+does neither: it adds no certificate and registers no package, and the classic
+registration alone provides the menu.
 
 If you would rather not trust a self-signed certificate, decline just that
 part and keep everything else:
@@ -221,9 +236,9 @@ part and keep everything else:
 msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0
 ```
 
-You then get the same behaviour as Windows 10: 7-ZSTar is in the right-click
-menu, under *Show more options*. To turn it on later, or to undo it after a
-normal install:
+You then get only the classic menu, so on Windows 11 the 7-ZSTar entry is in
+the right-click menu under *Show more options*. To turn the first-level entry
+on later, or to undo it after a normal install:
 
 ```
 powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIntegration.ps1" -TrustCert -Register
@@ -264,11 +279,12 @@ session registered normally.
 goes under `HKCU`; the package writes nothing to `HKLM` (Windows Installer's own
 bookkeeping aside). What it does not do the way the per-machine package does:
 
-- **No Windows 11 first-level menu.** 7-ZSTar is in the right-click menu, under
-  *Show more options*. The first-level entry needs the self-signed certificate
-  trusted machine-wide, which takes an administrator: measured on Windows 11, a
-  certificate in `CurrentUser\TrustedPeople` is not enough for Windows to
-  deploy the package. So the per-user package leaves it out.
+- **No Windows 11 first-level menu.** On Windows 11, 7-ZSTar is in the
+  right-click menu under *Show more options*. The first-level entry needs the
+  self-signed certificate trusted machine-wide, which takes an administrator:
+  measured on Windows 11, a certificate in `CurrentUser\TrustedPeople` is not
+  enough for Windows to deploy the package. So the per-user package leaves it
+  out.
 - **One of the two per machine.** Each package refuses to install while the
   other one is installed; uninstall one before installing the other. The
   per-machine package can only see the per-user copy of the account running
@@ -291,22 +307,34 @@ bookkeeping aside). What it does not do the way the per-machine package does:
 
 ### File associations, and what uninstalling does to them
 
-**Set them in Settings > Apps > Default apps.** Type 7-ZSTar, and every format
-it can open is listed there to assign. The installer registers 7-ZSTar as a
-Default Programs application - a ProgID per format with its icon and open
-command, an entry in each extension's *Open with* list, and the Capabilities
-block Windows reads - but it deliberately claims no file type: which program
-opens your archives is your decision, and it is what keeps 7-ZSTar and official
-7-Zip out of each other's way.
+**Set them in Settings > Apps > Default apps.** On Windows 11, type 7-ZSTar
+there and every format it can open is listed to assign. On Windows 10,
+7-ZSTar is listed under *Set defaults by app* on that page, where *Manage*
+shows its formats. Windows 7 has no Settings app: 7-ZSTar is listed under
+Control Panel > Default Programs > *Set your default programs*, which is what
+*Default apps* in this guide stands for there. Assigning formats from those
+two pages has not been tested. The installer registers 7-ZSTar as a Default
+Programs application - a ProgID per format with its icon and open command, an
+entry in each extension's *Open with* list, and the Capabilities block Windows
+reads - but it deliberately claims no file type: which program opens your
+archives is your decision, and it is what keeps 7-ZSTar and official 7-Zip out
+of each other's way. Windows can still send a format to 7-ZSTar on its own
+when no other program offers to open it: on the Windows 10 and Windows 7
+machines tested, where nothing else had registered `.7z`, a `.7z` file showed
+7-ZSTar's icon and opened in it on double-click, without Windows asking which
+program to use.
 
 **Tools > Options > System in the file manager mostly does not work on
 Windows 11**, and that is a Windows rule rather than a bug here. It writes a
 `7-ZSTar.<ext>` ProgID into `HKCU\Software\Classes`, and for any extension the
-machine already knows - every archive format does - Windows ignores it:
+machine already knows - every archive format does - Windows 11 ignores it:
 `AssocQueryString` answers `Unknown` and Explorer draws the blank generic icon.
-What Windows honours instead is a `UserChoice` key stamped with a hash only it
-can compute, which is why the Settings UI is the only route. No application can
-write one: not 7-ZSTar, not 7-Zip, not any installer.
+What it honours instead is a `UserChoice` key stamped with a hash only Windows
+can compute, which is why the Settings UI is the only route there. No
+application can write one: not 7-ZSTar, not 7-Zip, not any installer. Windows
+10 and Windows 7 behaved differently in testing: once `.7z` and `.zst` were set
+in the file manager, with no other program chosen for them, `AssocQueryString`
+returned `7zFM.exe` for both.
 
 **Clearing a format in its *All Users* column removes the per-machine
 package's own registration for it.** That column writes

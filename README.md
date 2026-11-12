@@ -51,14 +51,14 @@ In PowerShell, put the format switch in quotes, as in `7z a "-ttar.zst" backup.t
 |---|---|---|---|
 | Installs for | Every account on the PC | The current account | No install needed |
 | Requires administrator rights | Yes | No | No |
-| Right-click menu | Windows 11 first level | Under “Show more options” | None |
+| Right-click menu | Windows 11 first level | Classic menu (“Show more options” on Windows 11) | None |
 | Start menu entry | Yes | Yes | No |
 
 Each comes in x64, x86 and arm64; pick the one that matches your Windows: on 64-bit Windows, the x86 packages may have no right-click menu. The arm64 builds haven't been run on real hardware yet. 7-ZSTar installs alongside official 7-Zip, and neither affects the other.
 
 **Windows may warn about these downloads.** The installers and programs aren't code-signed by a certificate authority, so Microsoft Defender SmartScreen may stop them with a warning the first time you run one, and on a Windows 11 PC with Smart App Control turned on the `.msi` installers are blocked outright, with no option to continue. That doesn't mean the file is bad: every release comes with a `SHA256SUMS` file, and you can check that your download matches what was published. How to check it, what Smart App Control means for you, and how to carry on once it matches, is in [docs/INSTALL.md](https://github.com/7zStar/7-ZSTar/blob/main/docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
 
-**About the first-level menu:** Windows 11 only lets programs with package identity onto the first level, so the all-users MSI installs a small MSIX package signed with a self-signed certificate, and trusts that certificate. Uninstalling removes both. If you'd rather not trust it, install with `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0` and the menu stays under “Show more options”. The package is registered only for the account that runs the installer; other accounts register it separately.
+**About the first-level menu:** Windows 11 only lets programs with package identity onto the first level, so on Windows 11 the all-users MSI installs a small MSIX package signed with a self-signed certificate, and trusts that certificate. Uninstalling removes both. If you'd rather not trust it, install with `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0` and the menu stays under “Show more options”. The package is registered only for the account that runs the installer; other accounts register it separately.
 
 The full details, including file associations and uninstalling, are in [docs/INSTALL.md](https://github.com/7zStar/7-ZSTar/blob/main/docs/INSTALL.md).
 
@@ -69,7 +69,7 @@ The full details, including file associations and uninstalling, are in [docs/INS
 
 ## System requirements
 
-Windows 7 or Windows Server 2008 R2 and later (x64, x86); Windows 10 and later on arm64. Nothing else to install. That floor comes from what the packages require; versions older than Windows 11 haven't been tested. On Linux there's a command-line build you compile yourself; macOS isn't supported.
+Windows 7 or Windows Server 2008 R2 and later (x64, x86); Windows 10 and later on arm64. Nothing else to install. That floor comes from what the packages require. It's been tested on Windows 7 SP1 with later updates, Windows 10 22H2 and Windows 11, all 64-bit, but not on Windows 8 or 8.1, 32-bit Windows, Windows Server or arm64 hardware. On Linux there's a command-line build you compile yourself; macOS isn't supported.
 
 ## About this project
 
