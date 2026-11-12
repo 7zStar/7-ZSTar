@@ -3,7 +3,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · **日本語** · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · **日本語** · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [العربية](README.ar.md) · [Esperanto](README.eo.md)
 
 **Windows 11ユーザーにとってもっと使いやすい7-Zipのフォーク。右クリックメニューの第1階層、zstd圧縮、一度で作れるtar.zst。**
 

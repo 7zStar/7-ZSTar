@@ -1,5 +1,7 @@
 # Installing 7-ZSTar
 
+**English** · [繁體中文](install/INSTALL.zh-Hant.md) · [한국어](install/INSTALL.ko.md) · [العربية](install/INSTALL.ar.md)
+
 The details behind the short version in the [README](../README.md): system requirements, the
 SmartScreen warning, Smart App Control and how to check a download, the three packages, the Windows 11 right-click
 menu, file associations and uninstalling.

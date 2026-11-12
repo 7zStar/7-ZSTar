@@ -3,7 +3,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · **Esperanto**
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [العربية](README.ar.md) · **Esperanto**
 
 **7-Zip-disbranĉo pli amika al modernaj uzantoj de Windows 11: komandoj en la unua nivelo de la kunteksta menuo, zstd-densigo kaj tar.zst en unu trairo.**
 

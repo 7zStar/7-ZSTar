@@ -3,7 +3,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · **Tiếng Việt** · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · **Tiếng Việt** · [한국어](README.ko.md) · [العربية](README.ar.md) · [Esperanto](README.eo.md)
 
 **Bản fork của 7-Zip thân thiện hơn với người dùng Windows 11 hiện đại: menu chuột phải ở cấp đầu tiên, nén zstd và tar.zst trong một lượt.**
 

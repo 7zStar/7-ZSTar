@@ -3,7 +3,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · **Português (Brasil)** · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · **Português (Brasil)** · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [العربية](README.ar.md) · [Esperanto](README.eo.md)
 
 **Um fork do 7-Zip mais amigável para quem usa o Windows 11 hoje: menu do botão direito no primeiro nível, compactação zstd e tar.zst em uma única passada.**
 
