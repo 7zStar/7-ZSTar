@@ -2,8 +2,11 @@
 
 ## 26.05.1 (2026-11-09)
 
-Fork of 7-Zip 26.05 (upstream commit b88c6bc, 2026-10-21). The fork began at
-26.02 (f9d78af, 2026-06-25).
+Fork of 7-Zip 26.05 (commit
+[b88c6bc](https://github.com/ip7z/7zip/commit/b88c6bc09339de32f7d18bbab900686b244f42ba)
+in ip7z/7zip, 2026-10-21). The fork began at 26.02 (commit
+[f9d78af](https://github.com/ip7z/7zip/commit/f9d78aff31a5f2521ae7ddbdc97c4a8855808959)
+in ip7z/7zip, 2026-06-25).
 
 - **`Add to <name>.tar.zst` in the right-click menu**, above `Add to <name>.7z`:
   one click, no dialog. The three email items now default to off; tick them

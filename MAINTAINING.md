@@ -27,22 +27,63 @@ to protect you from.
 
 ### The model
 
-Merge, never rebase (`git merge upstream/<tag>` onto `main`). Rebase rewrites
-every commit and loses the `// 7-ZSTar:` markers' association with their
-reasons. The fork's discipline is that new functionality lives in new files
-and upstream files get the smallest possible wiring, each edit tagged
-`// 7-ZSTar:` so `git grep` can audit it.
+**Status (2026-11-09): a candidate, to be confirmed when the first new
+upstream release arrives, and never run yet.** What is settled is the history
+it has to fit; the commands below are the proposed way to fit it.
 
-### Step 0 — establish what you are merging into
+The public `main` starts from a single orphan commit (`v26.05.1`) and shares
+no ancestor with `upstream`, so it cannot take a merge: `git merge` refuses
+unrelated histories, and the ways around that (`--allow-unrelated-histories`,
+`git replace --graft`) would bring upstream's whole commit chain onto the
+public remote, which the orphan start exists to keep off it. Do not rebase or
+squash `main` either; its history since `v26.05.1` is ordinary and stays.
+
+Instead, take what upstream changed between the two releases as a patch,
+apply it to `main` with a three-way merge, and commit the result as one
+ordinary commit, `Upgrade to 7-Zip <new>`. Upstream's history stays in your
+clone only: the local `upstream` branch and the `upstream/<version>` tags are
+kept for this and are not pushed.
+
+The fork's discipline is what keeps that patch applying with few conflicts:
+new functionality lives in new files and upstream files get the smallest
+possible wiring, each edit tagged `// 7-ZSTar:` so `git grep` can audit it.
+Elsewhere in this file, "merge" and "mainline merge" mean this upgrade
+commit.
+
+### Step 0 — establish what you are applying, then apply it
+
+`<old>` is the release `main` is on now (`26.05` for `v26.05.1`), `<new>` the
+one you are moving to. Upstream's tags arrive under their plain names; give
+the new one the `upstream/` name the old ones have.
 
 ```bash
 git fetch upstream --tags
-git diff --stat upstream/26.05..HEAD           # our whole divergence
-git diff --stat upstream/26.05..upstream/<new> # what upstream changed
+git tag upstream/<new> <new>
+git diff --stat upstream/<old>..HEAD           # our whole divergence
+git diff --stat upstream/<old>..upstream/<new> # what upstream changed
 ```
 
 The intersection of those two lists is your actual work. Everything below is
 about what the intersection does not show.
+
+Then, on `main` (or a branch cut from it) with a clean working tree:
+
+```bash
+git diff --binary upstream/<old> upstream/<new> | git apply -3
+git status                                     # unmerged paths are the conflicts
+```
+
+`--binary` puts upstream's binary files in the patch; without it they come
+through as "Binary files differ" and cannot be applied. `-3` merges each
+file three-way, using the pre-image blobs the fetch brought in, and leaves
+conflict markers where upstream's change and ours overlap; it also stages
+what it applies. Read its output before going on: an error, as opposed to a
+conflict, means the patch was not applied.
+
+Resolve the conflicts with Step 1 in hand, `git add` them, and commit the whole
+upgrade as one commit, `Upgrade to 7-Zip <new>`. Then move the local
+`upstream` branch to the new release (`git branch -f upstream upstream/<new>`)
+so it keeps pointing at the baseline `main` is on.
 
 ### Step 1 — the categories of divergence
 
@@ -746,3 +787,12 @@ library or its tests that breaks a case fails that push or pull request;
    `build\SourceStamp.ps1` (Part 3.16). A new directory that feeds a binary or
    the package must be in the list; nothing fails if it is not, the freshness
    check just stops watching it. Then `build\Test-SourceStamp.ps1`.
+13. **Before you push or ask for review:** `git branch --no-merged main` - it
+   lists the local branches holding commits `main` does not have. Each one is
+   either the work you are about to land, or something that should be merged
+   into it first, or something you have confirmed is unrelated; decide which
+   before going on. A review of `main..<branch>` sees only that one branch, so
+   a parallel line of work that never reached `main` is invisible to it and to
+   every check above (add `-a` to include remote branches). The local
+   `upstream` branch always shows here and is expected (Part 1), as does any
+   branch you keep locally on purpose and never push.
