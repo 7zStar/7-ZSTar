@@ -81,9 +81,9 @@ To build 7-ZSTar yourself, see [build/README.md](build/README.md); before mergin
 
 ## Donate
 
-7-ZSTar is free, whether you chip in or not. If it has saved you time and you'd like to say thanks, you can send crypto to the address below. It goes to me, DraftingDreamer, for my own development costs, and doesn't buy features, help, or any promise about what comes next.
+7-ZSTar is free to use, whether you chip in or not. If it has saved you some time and you'd like to say thanks, you can send crypto to the address below. It goes to me, DraftingDreamer, for my own development costs, and doesn't buy features, help, or any promise about what comes next.
 
-Any token on Ethereum or Polygon is welcome (ETH, POL, USDT, USDC or anything else), same address on both:
+Any token on Ethereum or Polygon is welcome: ETH, POL, USDT, USDC or anything else. It's the same address on both networks.
 
 ```
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
@@ -95,7 +95,7 @@ Any token on Ethereum or Polygon is welcome (ETH, POL, USDT, USDC or anything el
 - This is the only official address, and I'll never ask you to send to a different one.
 - Transfers can't be reversed, so they can't be refunded.
 
-A GitHub star or telling a friend helps too.
+Starring 7-ZSTar on GitHub or telling a friend helps too.
 
 ## License
 

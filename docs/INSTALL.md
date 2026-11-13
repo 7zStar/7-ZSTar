@@ -144,8 +144,11 @@ What happened when 7-ZSTar 26.05.1 was tried on Windows 11 Pro 25H2 (build
   「系統禁用此安裝。請連絡系統管理員。」, and a Windows Security notification said
   that Smart App Control had blocked the file because Windows could not tell who
   published it and it is not an app Windows knows. There was no option to
-  continue, and `msiexec /i ... /qn` returned error 1625. The wording on an
-  English-language Windows has not been checked.
+  continue, and `msiexec /i ... /qn` returned error 1625. That message is
+  Windows Installer's string 1625; on an English-language Windows the same
+  string reads "The system administrator has set policies to prevent this
+  installation." (read from Windows Installer's English resources, not seen on
+  screen).
 - **A program from the `.zip` ran.** `7zFM.exe`, extracted from the portable
   `.zip`, started normally in the same test. Whether Windows lets an unsigned
   program run is its own judgement of that file, so this may be different on
@@ -184,7 +187,10 @@ with `-PerUser`):
 | Explorer right-click menu | yes | yes, classic menu only ([below](#the-per-user-package)) | no |
 | Start menu entry | yes | yes | no |
 | Needs administrator | yes | no | no |
-| Removal | Apps & features | Apps & features | delete the folder |
+| Removal | *Installed apps* in Settings | *Installed apps* in Settings | delete the folder |
+
+*Installed apps* is the Windows 11 name. Windows 10 calls the same page *Apps &
+features*, and on Windows 7 it is *Programs and Features* in Control Panel.
 
 Use the packages that match Windows itself: x86 on 32-bit Windows, x64 on
 64-bit Windows, arm64 on Windows on Arm (the arm64 packages are built but have
