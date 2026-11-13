@@ -1,7 +1,7 @@
 <!-- synced-with: docs/INSTALL.md @ e3fa827 -->
 # 安裝 7-ZSTar
 
-[English](../INSTALL.md) · **繁體中文** · [한국어](INSTALL.ko.md) · [العربية](INSTALL.ar.md)
+[English](../INSTALL.md) · **繁體中文** · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
 
 這份文件是 [README](../readme/README.zh-Hant.md) 簡短說明背後的細節：系統需求、SmartScreen 警告、智慧型應用程式控制（Smart App Control）、如何核對下載的檔案、三種安裝包、Windows 11 右鍵選單、檔案關聯與解除安裝。
 

@@ -1,6 +1,6 @@
 # Installing 7-ZSTar
 
-**English** · [繁體中文](install/INSTALL.zh-Hant.md) · [한국어](install/INSTALL.ko.md) · [العربية](install/INSTALL.ar.md)
+**English** · [繁體中文](install/INSTALL.zh-Hant.md) · [한국어](install/INSTALL.ko.md) · [Italiano](install/INSTALL.it.md) · [Polski](install/INSTALL.pl.md) · [Türkçe](install/INSTALL.tr.md) · [Nederlands](install/INSTALL.nl.md) · [Українська](install/INSTALL.uk.md) · [Bahasa Indonesia](install/INSTALL.id.md) · [ไทย](install/INSTALL.th.md) · [Čeština](install/INSTALL.cs.md) · [Magyar](install/INSTALL.hu.md) · [Română](install/INSTALL.ro.md) · [Svenska](install/INSTALL.sv.md) · [Ελληνικά](install/INSTALL.el.md) · [हिन्दी](install/INSTALL.hi.md) · [العربية](install/INSTALL.ar.md) · [فارسی](install/INSTALL.fa.md) · [עברית](install/INSTALL.he.md)
 
 The details behind the short version in the [README](../README.md): system requirements, the
 SmartScreen warning, Smart App Control and how to check a download, the three packages, the Windows 11 right-click

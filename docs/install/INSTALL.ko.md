@@ -1,11 +1,11 @@
-<!-- translated-from: docs/INSTALL.md @ e3fa827 -->
+<!-- synced-with: docs/INSTALL.md @ 8d159f1 -->
 # 7-ZSTar 설치하기
 
-[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · **한국어** · [العربية](INSTALL.ar.md)
+[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · **한국어** · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
 
-*이 문서는 영어 원문을 번역한 것이며, 내용이 다를 경우 영어 원문을 따릅니다.*
+*영어판과 내용이 다를 경우 영어판을 따릅니다.*
 
-[README](../readme/README.ko.md)의 간단한 안내 뒤에 있는 자세한 내용입니다. 시스템 요구 사항, SmartScreen 경고, 스마트 앱 컨트롤(Smart App Control)과 내려받은 파일을 확인하는 방법, 세 가지 패키지, Windows 11 오른쪽 클릭 메뉴, 파일 연결, 제거 방법을 다룹니다.
+[README](../readme/README.ko.md)의 간단한 안내 뒤에 있는 자세한 내용입니다. 시스템 요구 사항, SmartScreen 경고, 스마트 앱 컨트롤과 내려받은 파일을 확인하는 방법, 세 가지 패키지, Windows 11 오른쪽 클릭 메뉴, 파일 연결, 제거 방법을 다룹니다.
 
 ## 시스템 요구 사항
 
@@ -22,7 +22,7 @@ Windows 8과 8.1, Windows Server, 32비트 Windows, arm64 하드웨어, 그 업�
 이 기준을 정하는 요인은 세 가지이며, 그중 두 번째는 어떤 빌드 설정으로도 되돌릴 수 없습니다.
 
 - `.msi`는 `InstallerVersion="500"`을 선언하며, Windows Installer 5.0은
-  "Windows Server 2008 R2 이후 및 Windows 7 이후와 함께" 제공되었습니다
+  "with Windows Server 2008 R2 and later and Windows 7 and later"(Windows Server 2008 R2 이후 및 Windows 7 이후와 함께) 제공되었습니다
   ([Microsoft][msi-versions]). 포터블 `.zip`은 Windows Installer를 거치지 않지만
   다음 두 항목을 보십시오.
 - **zstd와 fast-lzma2는 Vista 이후에만 있는 동기화 기능을 사용합니다.** 두 라이브러리 모두
@@ -64,12 +64,12 @@ Linux 도구와의 상호 운용성은 `test/interop/REPORT.md`에 있습니다.
 **7-ZSTar 릴리스의 설치 관리자와 프로그램은 인증 기관(CA)의 코드 서명을 받지 않았으며**, 이 프로젝트는 코드 서명 인증서를 보유하고 있지 않습니다.
 그래서 Windows는 파일을 누가 게시했는지 알 수 없고,
 `.msi` 또는 `.zip`에 든 프로그램을 처음 실행할 때 Microsoft Defender SmartScreen이 경고와 함께 실행을 막을 수 있습니다. Microsoft 개발자 문서는
-"서명 없음"을 "Windows protected your PC"(Windows에서 PC를 보호했습니다)라는 제목의 경고가 표시되는 경우 중 하나로 꼽으며,
-이때 사용자가 "Run anyway"(그래도 실행)를 선택해야 앱이 실행됩니다
+"No signature"(서명 없음)를 "Windows의 PC 보호"라는 제목의 경고가 표시되는 경우 중 하나로 꼽으며,
+이때 사용자가 "실행"을 선택해야 앱이 실행됩니다
 ([Microsoft][smartscreen-rep]). 기업 정책으로 이 선택지가 아예 없어질 수도 있습니다.
 그런 PC라면 관리하는 사람에게 문의하십시오.
 
-릴리스에서 서명된 것은 딱 하나, 모든 사용자용 `.msi` 안에 들어 있고 7-ZSTar를 Windows 11 오른쪽 클릭 메뉴의 첫 번째 단계에 올려 주는 작은 패키지뿐입니다.
+릴리스에서 서명된 것은 딱 하나, 모든 사용자용 `.msi` 안에 들어 있고 7-ZSTar를 Windows 11 오른쪽 클릭 메뉴의 첫 화면에 올려 주는 작은 패키지뿐입니다.
 이 패키지의 인증서는 자체 서명이며 해당 패키지를 빌드하는 동안 생성됩니다.
 따라서 인증 기관의 서명이 아니고 패키지를 누가 빌드했는지는 전혀 증명하지 않습니다. 이 패키지의 역할과 사용하지 않는 방법은
 [Windows 11 오른쪽 클릭 메뉴](#windows-11-오른쪽-클릭-메뉴)를 보십시오.
@@ -99,10 +99,10 @@ Linux 도구와의 상호 운용성은 `test/interop/REPORT.md`에 있습니다.
 
 해시가 일치하고 파일의 출처에 만족한다면:
 
-- **`.msi`** - 평소처럼 실행합니다. SmartScreen이 막으면 그래도 실행하는 옵션을 선택합니다
+- **`.msi`** - 평소처럼 실행합니다. SmartScreen이 막으면 그래도 실행하는 옵션("실행")을 선택합니다
   (영어 Windows에서는 "Run anyway"입니다). 경고 창을 먼저 펼쳐야 할 수도 있습니다.
-  시험한 Windows 10 PC에서는 경고 창의 메시지 아래에 있는 링크를 누르기 전까지
-  파일을 실행하지 않는 단추만 표시되었습니다.
+  시험한 Windows 10 PC에서는 경고 창의 메시지 아래에 있는 "추가 정보" 링크를 누르기 전까지
+  파일을 실행하지 않는 "실행 안 함" 단추만 표시되었습니다.
   그러면 모든 사용자용 `.msi`는 다른 설치 관리자와 마찬가지로 관리자 승인을 요청합니다.
 - **`.zip`** - 압축을 풀고 폴더에서 `7zFM.exe` 또는 `7z.exe`를 실행합니다. 안에 든
   프로그램도 서명되어 있지 않으므로, 각 프로그램을 처음 실행할 때 Windows가 같은 경고를 표시할 수 있습니다.
@@ -111,27 +111,29 @@ SmartScreen은 서명 여부만이 아니라 파일이 얼마나 널리 알려�
 
 ### Windows 11의 스마트 앱 컨트롤
 
-일부 Windows 11 PC에는 **스마트 앱 컨트롤(Smart App Control)**이라는 더 엄격한 보호 기능이
+일부 Windows 11 PC에는 **스마트 앱 컨트롤**이라는 더 엄격한 보호 기능이
 켜져 있습니다. 이 기능이 켜져 있으면 Windows는 Microsoft 클라우드 서비스가 보증할 수 있는 경우가 아니면 서명되지 않은 파일을 차단하는데,
 새 릴리스에는 보통 그런 기록이 없습니다
 ([Microsoft][sac-faq], [Microsoft][smartscreen-rep]). SmartScreen 경고와 달리
 이 차단에는 그래도 파일을 실행하는 옵션이 없으며, Microsoft FAQ에 따르면
 개별 앱에 대해 스마트 앱 컨트롤을 우회할 방법은 없습니다.
 
-스마트 앱 컨트롤을 "켜기"로 둔 Windows 11 Pro 25H2(build 26200.8037)에서 7-ZSTar 26.05.1을 시험했을 때의 결과는 다음과 같습니다.
+스마트 앱 컨트롤을 "켬"으로 둔 Windows 11 Pro 25H2(build 26200.8037)에서 7-ZSTar 26.05.1을 시험했을 때의 결과는 다음과 같습니다.
 
 - **`.msi` 설치 관리자가 차단되었습니다.** 모든 사용자용과 사용자별 설치 관리자 모두 같았습니다. 중국어 번체 Windows에서 Windows Installer는
   「系統禁用此安裝。請連絡系統管理員。」(뜻: 이 설치는 시스템에서 금지되어 있으니 시스템 관리자에게 문의하라는 내용)라고 표시했고, Windows 보안 알림은
   Windows가 게시자를 알 수 없고 Windows가 아는 앱도 아니어서
   스마트 앱 컨트롤이 파일을 차단했다고 알렸습니다. 계속 진행할 옵션은 없었고,
-  `msiexec /i ... /qn`은 error 1625를 반환했습니다. 영어 Windows에서의 문구는
-  확인하지 않았습니다.
+  `msiexec /i ... /qn`은 error 1625를 반환했습니다. 이 메시지는
+  Windows Installer의 string 1625이며, 영어 Windows에서는 같은 문자열이
+  "The system administrator has set policies to prevent this installation."로 표시됩니다
+  (Windows Installer의 영어 리소스에서 읽은 것이며 화면에서 확인한 것은 아닙니다).
 - **`.zip`의 프로그램은 실행되었습니다.** 같은 시험에서 포터블 `.zip`에서 풀어낸 `7zFM.exe`가
   정상적으로 시작되었습니다. 서명되지 않은 프로그램의 실행을 허용할지는
   Windows가 그 파일에 대해 내리는 개별 판단이므로, 사용 중인 PC에서는 다를 수 있습니다.
-- 스마트 앱 컨트롤을 "켜기"로 바꾼 직후에는 `.msi`가 몇 분 동안
+- 스마트 앱 컨트롤을 "켬"으로 바꾼 직후에는 `.msi`가 몇 분 동안
   설치되다가 그 뒤에 차단되기 시작했습니다. 원인은 찾지 못했으므로,
-  켜기 직후의 설치 성공이 설치 관리자가 허용된다는 뜻은 아닙니다.
+  켠 직후의 설치 성공이 설치 관리자가 허용된다는 뜻은 아닙니다.
 
 따라서 스마트 앱 컨트롤이 켜져 있는 PC에서는 **설치 관리자를 설치할 수 없으며**,
 `SHA256SUMS`를 확인해도 이는 달라지지 않습니다. 달라지는 것은 Windows 보안 앱의 스마트 앱 컨트롤 설정에서
@@ -143,7 +145,7 @@ SmartScreen은 서명 여부만이 아니라 파일이 얼마나 널리 알려�
 다시 켤 수 있는지도 먼저 알아 둘 만합니다. Microsoft FAQ에 따르면
 최근 Windows 업데이트에서는 Windows를 새로 설치하지 않고도 스마트 앱 컨트롤을 다시 켤 수 있으므로,
 그렇지 않은 버전에서는 한 번 끄면 영구적일 수 있습니다. 여기서 시험한 빌드에서는 "끄기" 후에도 다시
-"켜기" 옵션이 계속 제공되었습니다. 이는 시험 결과일 뿐 사용 중인 버전에 대한 보장이 아닙니다.
+"켬" 옵션이 계속 제공되었습니다. 이는 시험 결과일 뿐 사용 중인 버전에 대한 보장이 아닙니다.
 
 [smartscreen-rep]: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation
 [sac-faq]: https://support.microsoft.com/en-us/windows/smart-app-control-frequently-asked-questions-285ea03d-fa88-4d56-882e-6698afdb7003
@@ -156,13 +158,16 @@ SmartScreen은 서명 여부만이 아니라 파일이 얼마나 널리 알려�
 | | `.msi` | `-user.msi` | `.zip` |
 |---|---|---|---|
 | 설치 대상 | 모든 계정 | 설치하는 계정 | - |
-| 파일 탐색기 오른쪽 클릭 메뉴 | 예 | 예, 클래식 메뉴만([아래](#사용자별-패키지)) | 아니요 |
-| 시작 메뉴 항목 | 예 | 예 | 아니요 |
+| Explorer(탐색기) 오른쪽 클릭 메뉴 | 예 | 예, 기존 메뉴만([아래](#사용자별-패키지)) | 아니요 |
+| Start menu(시작 메뉴) 항목 | 예 | 예 | 아니요 |
 | 관리자 권한 필요 | 예 | 아니요 | 아니요 |
-| 제거 | Apps & features(앱 및 기능) | Apps & features(앱 및 기능) | 폴더 삭제 |
+| 제거 | 설정의 *설치된 앱* | 설정의 *설치된 앱* | 폴더 삭제 |
+
+*설치된 앱*은 Windows 11에서 쓰는 이름입니다. Windows 10에서는 같은 페이지를 *앱 및 기능*이라고 하며,
+Windows 7에서는 Control Panel(제어판)의 *Programs and Features*(프로그램 및 기능)입니다.
 
 Windows 자체와 맞는 패키지를 사용하십시오. 32비트 Windows에는 x86, 64비트 Windows에는 x64, Arm용 Windows에는 arm64입니다(arm64 패키지는 빌드되지만
-실행해 본 적은 없습니다). x86 셸 확장은 32비트이고 64비트 탐색기는
+실행해 본 적은 없습니다). x86 셸 확장은 32비트이고 64비트 Explorer(탐색기)는
 이를 로드할 수 없습니다. 그래서 64비트 Windows에서 x86 `-user.msi`는 오른쪽 클릭 메뉴가
 전혀 없고, x86 `.msi`는 Windows 11에서만, 그리고 Windows 11 패키지를 등록한 계정(설치한 계정 또는
 아래의 `-Register`를 실행한 계정)에서만 메뉴가 나타납니다.
@@ -183,9 +188,9 @@ UI 시퀀스 전체를 건너뛰기 때문입니다. 마법사는 다른 언어�
 
 ### Windows 11 오른쪽 클릭 메뉴
 
-Windows 11에서 7-ZSTar 항목은 공식 7-Zip과 WinRAR가 여전히 머물러 있는 *추가 옵션 표시* 아래가 아니라 첫 번째 단계 메뉴에 나타납니다. Windows 11은 패키지 ID(package identity)가 있는 셸 확장만 그곳에 나열하므로,
+Windows 11에서 7-ZSTar 항목은 공식 7-Zip과 WinRAR가 여전히 머물러 있는 *추가 옵션 표시* 아래가 아니라 첫 화면 메뉴에 나타납니다. Windows 11은 패키지 ID(package identity)가 있는 셸 확장만 그곳에 나열하므로,
 MSI는 프로그램 옆에 ID만 담은 작은 MSIX 패키지를 넣어 두고 설치 중에 등록합니다.
-클래식 등록도 함께 유지합니다. 메뉴가 한 단계뿐이고
+기존 등록도 함께 유지합니다. 메뉴가 한 단계뿐이고
 *추가 옵션 표시*가 없는 Windows 10과 Windows 7의 오른쪽 클릭 메뉴에 항목을 넣어 주는 것이 바로 이 등록이며,
 예전 컨텍스트 메뉴로 되돌린 사용자에게도 항목이 계속 동작하게 해 줍니다.
 
@@ -193,7 +198,7 @@ MSI는 프로그램 옆에 ID만 담은 작은 MSIX 패키지를 넣어 두고 �
 `LocalMachine\TrustedPeople`에 넣습니다. Windows는 서명을 신뢰할 수 있는 무언가로 연결할 수 없는
 패키지를 배포하지 않기 때문입니다. 제거하면 패키지와 함께 인증서도 삭제됩니다. Windows 10과 Windows 7에서는 설치 관리자가
 둘 다 하지 않습니다. 인증서를 추가하지도, 패키지를 등록하지도 않으며
-클래식 등록만으로 메뉴가 나타납니다.
+기존 등록만으로 메뉴가 나타납니다.
 
 자체 서명 인증서를 신뢰하고 싶지 않다면 그 부분만 거부하고
 나머지는 그대로 사용할 수 있습니다.
@@ -202,8 +207,8 @@ MSI는 프로그램 옆에 ID만 담은 작은 MSIX 패키지를 넣어 두고 �
 msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0
 ```
 
-그러면 클래식 메뉴만 생기므로, Windows 11에서 7-ZSTar 항목은 오른쪽 클릭
-메뉴의 *추가 옵션 표시* 아래에 나타납니다. 첫 번째 단계 항목을 나중에 켜거나, 일반 설치 후에 되돌리려면 다음을 사용합니다.
+그러면 기존 메뉴만 생기므로, Windows 11에서 7-ZSTar 항목은 오른쪽 클릭
+메뉴의 *추가 옵션 표시* 아래에 나타납니다. 첫 화면 항목을 나중에 켜거나, 일반 설치 후에 되돌리려면 다음을 사용합니다.
 
 ```
 powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIntegration.ps1" -TrustCert -Register
@@ -218,15 +223,15 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 그 결과는 두 가지입니다.
 
 - 같은 컴퓨터의 두 번째 계정은 같은 스크립트를 `-Register`로 실행하기 전까지는
-  클래식 메뉴만 보입니다.
+  기존 메뉴만 보입니다.
 - 제거하면 제거하는 사용자의 등록만 해제됩니다. 다른 사람이 등록했다면 그 사람의 등록은
   제거 후에도 남아서 더 이상 없는 폴더를 가리킵니다. 그 계정은
   `Get-AppxPackage 7-ZSTar | Remove-AppxPackage`로 정리합니다.
 
-**알려진 제한: 첫 번째 단계 메뉴는 설치가 대화형 로그인 세션에서 실행될 때만 등록됩니다.**
+**알려진 제한: 첫 화면 메뉴는 설치가 대화형 로그인 세션에서 실행될 때만 등록됩니다.**
 원격이나 비대화형 세션에서 모든 사용자용 `.msi`를 설치하면(SSH를 통하거나 관리 도구의 조용한 배포 등)
 성공으로 보고되지만 Windows 11 패키지는
-등록되지 않으므로 *추가 옵션 표시* 아래의 클래식 메뉴만 나타납니다.
+등록되지 않으므로 *추가 옵션 표시* 아래의 기존 메뉴만 나타납니다.
 시험에서 SSH 세션(세션 0)의 `msiexec /i ... /qn`은 0으로 종료했지만
 `Setup-ShellIntegration.ps1`은 `registration failed: 0x80070005`
 (액세스가 거부되었습니다.)를 보고했습니다. 같은 `.msi`를 관리자의 콘솔
@@ -241,8 +246,8 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 `HKCU` 아래로 들어가며, 이 패키지는 `HKLM`에 아무것도 쓰지 않습니다(Windows Installer 자체의 관리 정보는 제외).
 컴퓨터 단위 패키지처럼 하지 못하는 점은 다음과 같습니다.
 
-- **Windows 11 첫 번째 단계 메뉴 없음.** Windows 11에서 7-ZSTar는 오른쪽 클릭 메뉴의
-  *추가 옵션 표시* 아래에 있습니다. 첫 번째 단계 항목에는 자체 서명 인증서를
+- **Windows 11 첫 화면 메뉴 없음.** Windows 11에서 7-ZSTar는 오른쪽 클릭 메뉴의
+  *추가 옵션 표시* 아래에 있습니다. 첫 화면 항목에는 자체 서명 인증서를
   컴퓨터 전체에서 신뢰해야 하고 이는 관리자 권한이 필요합니다. Windows 11에서 측정한 결과,
   `CurrentUser\TrustedPeople`의 인증서로는 Windows가 패키지를
   배포하기에 충분하지 않았습니다. 그래서 사용자별 패키지에서는 이를 뺐습니다.
@@ -250,27 +255,28 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
   하나를 제거한 뒤 다른 것을 설치하십시오.
   컴퓨터 단위 패키지는 자신을 실행하는 계정의 사용자별 설치만 볼 수 있으므로
   다른 계정의 사용자별 설치는 감지되지 않습니다.
-- **Group policy(그룹 정책)가 메뉴를 숨길 수 있습니다.** `EnforceShellExtensionSecurity`가
+- **그룹 정책이 메뉴를 숨길 수 있습니다.** `EnforceShellExtensionSecurity`가
   설정된 곳에서는 탐색기가 컴퓨터 전체의 *Approved* 키에 나열된 셸 확장만 로드하는데,
   사용자별 설치는 이 키에 쓸 수 없으므로 오른쪽 클릭
   메뉴가 나타나지 않습니다. 그런 곳에서는 컴퓨터 단위 패키지를 사용하십시오.
 - **도구 > 옵션 > 시스템에서 형식을 지우면 7-ZSTar가 그 형식에 대해 제공하던 항목도 함께 사라집니다.**
   그곳에서 형식을 지우면(셀이 빌 때까지 클릭한 다음 확인),
   파일 관리자(`7zFM`)는 `HKCU\Software\Classes\.<ext>`와 `7-ZSTar.<ext>` 키 전체를 삭제합니다.
-  사용자별 설치에서는 이 키들에 Settings > Apps > Default apps(설정 > 앱 > 기본 앱) 및 *연결 프로그램* 목록용으로 패키지가 등록한 내용도 들어 있습니다.
-  그러면 7-ZSTar가 해당 형식의 *연결 프로그램*에서 빠지고, Default apps에는 그 형식에 대해 빈 항목이 나타납니다.
+  사용자별 설치에서는 이 키들에 설정 > 앱 > 기본 앱 및 *연결 프로그램* 목록용으로 패키지가 등록한 내용도 들어 있습니다.
+  그러면 7-ZSTar가 해당 형식의 *연결 프로그램*에서 빠지고, 기본 앱에는 그 형식에 대해 빈 항목이 나타납니다.
   설치를 복구하면 되돌아옵니다(`.msi`를 다시 실행하고 *Repair*(복구)를 선택).
-  더 좋은 방법은 파일 관리자가 아니라 Default apps에서 파일 형식을 지정하는 것입니다.
+  더 좋은 방법은 파일 관리자가 아니라 기본 앱에서 파일 형식을 지정하는 것입니다.
   컴퓨터 단위 패키지도 한 곳에서는 같은 약점이 있으며,
   아래의 파일 연결에서 설명합니다.
 
 ### 파일 연결과 제거 시 연결에 일어나는 일
 
-**Settings > Apps > Default apps(설정 > 앱 > 기본 앱)에서 지정하십시오.** Windows 11에서는 그곳에 7-ZSTar를 입력하면
+**설정 > 앱 > 기본 앱에서 지정하십시오.** Windows 11에서는 그곳에 7-ZSTar를 입력하면
 7-ZSTar가 열 수 있는 모든 형식이 나열되어 지정할 수 있습니다. Windows 10에서는 그 페이지의
 *Set defaults by app*(앱별 기본값 설정) 아래에 7-ZSTar가 나열되며, *Manage*(관리)를 누르면 형식이 표시됩니다.
-Windows 7에는 설정 앱이 없습니다. 7-ZSTar는 제어판 > 기본 프로그램 > *Set your default programs*(기본 프로그램 설정)에
-나열되며, 이 문서에서 말하는 Default apps가 그곳에서는 이것을 가리킵니다.
+Windows 7에는 설정 앱이 없습니다. 7-ZSTar는 Control Panel > Default Programs > *Set your default programs*
+(제어판의 기본 프로그램, 그 안의 기본 프로그램 설정)에
+나열되며, 이 문서에서 말하는 기본 앱이 그곳에서는 이것을 가리킵니다.
 그 두 페이지에서 형식을 지정하는 것은 테스트하지 않았습니다. 설치 관리자는 7-ZSTar를 기본 프로그램 응용 프로그램으로 등록합니다. 형식마다 아이콘과 열기 명령이 있는 ProgID,
 각 확장명의 *연결 프로그램* 목록 항목, Windows가 읽는 Capabilities 블록입니다.
 그러나 어떤 파일 형식도 의도적으로 차지하지 않습니다. 어떤 프로그램으로 압축 파일을 열지는
@@ -291,7 +297,7 @@ Windows 11이 대신 따르는 것은 Windows만 계산할 수 있는 해시가 
 
 **모든 사용자 열에서 형식을 지우면 컴퓨터 단위 패키지가 그 형식에 대해 등록한 자체 항목이 제거됩니다.**
 그 열은 `HKLM\Software\Classes`에 쓰며, 컴퓨터 단위 패키지는 이곳에 자신이 알리는 ProgID와
-*연결 프로그램* 항목을 보관합니다. 그곳에서 형식을 지우면(파일 관리자를 관리자 권한으로 실행해야 합니다)
+*연결 프로그램* 항목을 보관합니다. 그곳에서 형식을 지우면(파일 관리자를 관리자 권한으로 실행(run as administrator)해야 합니다)
 이 키들이 통째로 삭제되고, 모든 계정에 영향을 줍니다. 사용자별 패키지에서는 복구하면 같은 키가 복원되었으며,
 컴퓨터 단위 패키지에서는 측정하지 않았습니다.
 
@@ -323,7 +329,7 @@ ProgID와, 여전히 그것을 가리키는 파일 형식만 대상이므로, �
 powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIntegration.ps1" -RemoveAssociations
 ```
 
-이 명령은 7-ZSTar의 항목만 제거합니다. 아니면 제거 후에 Settings > Apps > Default apps(설정 > 앱 > 기본 앱)에서
+이 명령은 7-ZSTar의 항목만 제거합니다. 아니면 제거 후에 설정 > 앱 > 기본 앱에서
 형식을 다시 지정하십시오. 파일 관리자에서 하려면
 7-ZSTar가 표시된 자기 열의 각 셀이 빌 때까지 클릭한 다음 확인을 누릅니다. 모두 선택하고 "+"를 누르지 마십시오.
 이 동작은 선택한 모든 행에 하나의 상태를 적용하므로 공식 7-Zip 같은 다른 프로그램에 속한 형식까지
@@ -331,7 +337,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 모든 사용자 열에 설정된 연결은 제거 정리 작업이 전혀 건드리지 않으며,
 모든 계정이 삭제된 프로그램을 가리키는 채로 남습니다.
-설정한 관리자가 있다면 제거하기 전에 파일 관리자를 관리자 권한으로 실행해서 그 셀을 비우고 확인을 눌러야 합니다.
+설정한 관리자가 있다면 제거하기 전에 파일 관리자를 관리자 권한으로 실행(run as administrator)해서 그 셀을 비우고 확인을 눌러야 합니다.
 `-RemoveAssociations`는 이 열에 닿지 않습니다. 제거 직전에 비우는 것은
 패키지 자체의 등록(위 참조)도 함께 삭제하더라도 문제가 없습니다. 어차피
 제거하면 그것도 삭제되기 때문입니다. 사용자별 패키지에는
@@ -340,13 +346,13 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 ## 언어
 
 모든 패키지에는 upstream의 번역 90여 개 언어가 들어 있습니다. **도구 > 옵션 > 언어**에서
-고르십시오. MSI에서는 *Custom* 설치(Custom setup / Custom - 사용자 지정 설치)에서 언어를 제외할 수도 있습니다. 7-ZSTar는 처음 실행할 때 시스템 언어를 따르려고 하지만,
-Windows의 "language for non-Unicode programs"(유니코드를 지원하지 않는 프로그램용 언어)와 "regional format"(지역 형식) 설정이 서로 다르면
+고르십시오. MSI에서는 *Custom* 설치(사용자 지정 설치)에서 언어를 제외할 수도 있습니다. 7-ZSTar는 처음 실행할 때 시스템 언어를 따르려고 하지만,
+Windows의 "language for non-Unicode programs"(유니코드를 지원하지 않는 프로그램용 언어)와 "사용지역 언어" 설정이 서로 다르면
 이 감지는 포기하고 영어로 남습니다. 언어를 직접 고르면 항상 동작합니다.
 
 7-ZSTar가 직접 추가한 문자열, 즉 zstd 수준과 사전 필드, 새 압축 형식 이름에는
 upstream 번역이 없어서 영어로 남습니다.
-예외는 정보 대화 상자의 **후원**과 **웹사이트** 단추입니다. 92개 언어 중 67개 언어에는 각각 해당하는 단어가 있고,
+예외는 7-ZSTar 정보 대화 상자의 **후원**과 **웹사이트** 단추입니다. 92개 언어 중 67개 언어에는 각각 해당하는 단어가 있고,
 나머지 25개 언어는 영어를 표시합니다
 (`Lang/UPSTREAM.md`에 목록이 있습니다).
 번역은 이곳에서 작성하지 않고 가져온 것입니다. [Lang/UPSTREAM.md](../../Lang/UPSTREAM.md)를 보십시오.

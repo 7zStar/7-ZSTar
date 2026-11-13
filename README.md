@@ -3,7 +3,7 @@
   <img src="docs/logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-**English** · [繁體中文](docs/readme/README.zh-Hant.md) · [简体中文](docs/readme/README.zh-Hans.md) · [Deutsch](docs/readme/README.de.md) · [Français](docs/readme/README.fr.md) · [Español](docs/readme/README.es.md) · [Português (Brasil)](docs/readme/README.pt-BR.md) · [日本語](docs/readme/README.ja.md) · [Tiếng Việt](docs/readme/README.vi.md) · [한국어](docs/readme/README.ko.md) · [العربية](docs/readme/README.ar.md) · [Esperanto](docs/readme/README.eo.md)
+**English** · [繁體中文](docs/readme/README.zh-Hant.md) · [简体中文](docs/readme/README.zh-Hans.md) · [Deutsch](docs/readme/README.de.md) · [Français](docs/readme/README.fr.md) · [Español](docs/readme/README.es.md) · [Português (Brasil)](docs/readme/README.pt-BR.md) · [日本語](docs/readme/README.ja.md) · [Tiếng Việt](docs/readme/README.vi.md) · [한국어](docs/readme/README.ko.md) · [Italiano](docs/readme/README.it.md) · [Polski](docs/readme/README.pl.md) · [Türkçe](docs/readme/README.tr.md) · [Nederlands](docs/readme/README.nl.md) · [Українська](docs/readme/README.uk.md) · [Bahasa Indonesia](docs/readme/README.id.md) · [ไทย](docs/readme/README.th.md) · [Čeština](docs/readme/README.cs.md) · [Magyar](docs/readme/README.hu.md) · [Română](docs/readme/README.ro.md) · [Svenska](docs/readme/README.sv.md) · [Ελληνικά](docs/readme/README.el.md) · [हिन्दी](docs/readme/README.hi.md) · [العربية](docs/readme/README.ar.md) · [فارسی](docs/readme/README.fa.md) · [עברית](docs/readme/README.he.md) · [Esperanto](docs/readme/README.eo.md)
 
 **A 7-Zip fork that's friendlier to modern Windows 11 users: a first-level right-click menu, zstd compression, and one-pass tar.zst.**
 
