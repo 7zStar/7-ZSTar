@@ -62,7 +62,7 @@ Dateizuordnungen, das Deinstallieren und das Paket pro Benutzer werden in der [I
 7z x backup.tar.zst -oout
 ```
 
-In PowerShell setzen Sie den Schalter in Anführungszeichen: `7z a "-ttar.zst" backup.tar.zst docs`. Ohne sie teilt PowerShell ihn in zwei Teile, und Sie erhalten eine Datei namens `.zst`. Der *Command Prompt* (cmd), also die Eingabeaufforderung, braucht keine Anführungszeichen.
+In PowerShell setzen Sie den Schalter in Anführungszeichen: `7z a "-ttar.zst" backup.tar.zst docs`. Ohne sie teilt PowerShell ihn in zwei Teile, und Sie erhalten eine Datei namens `.zst`. Die Eingabeaufforderung (cmd) braucht keine Anführungszeichen.
 
 ## Gut zu wissen
 

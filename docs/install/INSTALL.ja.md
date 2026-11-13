@@ -1,7 +1,7 @@
 <!-- synced-with: docs/INSTALL.md @ 8d159f1 -->
 # 7-ZSTarのインストール
 
-[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · **日本語** · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
+[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · [简体中文](INSTALL.zh-Hans.md) · [Deutsch](INSTALL.de.md) · [Français](INSTALL.fr.md) · [Español](INSTALL.es.md) · [Português (Brasil)](INSTALL.pt-BR.md) · **日本語** · [Tiếng Việt](INSTALL.vi.md) · [Русский](INSTALL.ru.md) · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md) · [Esperanto](INSTALL.eo.md)
 
 *英語版と内容が異なる場合は、英語版が優先されます。*
 
@@ -87,7 +87,7 @@ SmartScreenはファイルの知名度に基づいて警告するもので、署
 | 管理者権限が必要 | はい | いいえ | いいえ |
 | 削除 | 設定の*インストールされているアプリ* | 設定の*インストールされているアプリ* | フォルダーを削除 |
 
-*インストールされているアプリ*はWindows 11での名前です。Windows 10では同じページを*アプリと機能*と呼び、Windows 7ではControl Panel（従来の設定画面）の*Programs and Features*（インストール済みプログラムの一覧）にあたります。
+*インストールされているアプリ*はWindows 11での名前です。Windows 10では同じページを*アプリと機能*と呼び、Windows 7ではコントロール パネルの*プログラムと機能*にあたります。
 
 お使いのWindowsに合ったパッケージを使ってください。32ビット版Windowsにはx86、64ビット版Windowsにはx64、Windows on Armにはarm64です（arm64パッケージはビルドされていますが、一度も実行したことはありません）。x86のシェル拡張は32ビットで、64ビット版のエクスプローラーは読み込めません。そのため、64ビット版Windowsではx86の`-user.msi`には右クリックメニューがまったくなく、x86の`.msi`のメニューはWindows 11でのみ、しかもそのWindows 11用パッケージを登録したアカウント（インストールしたアカウント、または後述の`-Register`を実行したアカウント）にだけ表示されます。
 
@@ -136,7 +136,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 ### ファイルの関連付けと、アンインストールで起こること
 
-**設定 > アプリ > 既定のアプリで設定してください**。Windows 11では、そこで7-ZSTarと入力すると、開けるすべての形式が一覧表示されるので、割り当てられます。Windows 10では、7-ZSTarはそのページの*Set defaults by app*（アプリごとに既定値を設定する項目）の下に表示され、*Manage*（管理）でその形式を確認できます。Windows 7には設定アプリがありません。7-ZSTarは、Control Panel（従来の設定画面）> 既定のプログラム > *既定のプログラムを設定します*に表示され、このガイドの*既定のアプリ*は、そこではこれを指します。この2つのページからの形式の割り当ては、テストしていません。インストーラーは、7-ZSTarを既定のプログラムのアプリケーションとして登録します。形式ごとのProgID（アイコンと開くコマンド付き）、各拡張子の*プログラムから開く*の一覧への項目、Windowsが読むCapabilitiesブロックです。ただし、ファイルの種類は意図的に要求しません。どのプログラムでアーカイブを開くかはあなたが決めることで、それが7-ZSTarと公式7-Zipがお互いの邪魔をしない理由です。それでも、ほかにそれを開くと申し出るプログラムがないときは、Windowsが自分で形式を7-ZSTarに振り向けることがあります。テストしたWindows 10とWindows 7のマシンでは、ほかに`.7z`を登録したものがなく、`.7z`ファイルに7-ZSTarのアイコンが表示され、ダブルクリックで、どのプログラムを使うかをWindowsに尋ねられることなく、7-ZSTarで開きました。
+**設定 > アプリ > 既定のアプリで設定してください**。Windows 11では、そこで7-ZSTarと入力すると、開けるすべての形式が一覧表示されるので、割り当てられます。Windows 10では、7-ZSTarはそのページの*Set defaults by app*（アプリごとに既定値を設定する項目）の下に表示され、*Manage*（管理）でその形式を確認できます。Windows 7には設定アプリがありません。7-ZSTarは、コントロール パネル > 既定のプログラム > *既定のプログラムの設定*に表示され、このガイドの*既定のアプリ*は、そこではこれを指します。この2つのページからの形式の割り当ては、テストしていません。インストーラーは、7-ZSTarを既定のプログラムのアプリケーションとして登録します。形式ごとのProgID（アイコンと開くコマンド付き）、各拡張子の*プログラムから開く*の一覧への項目、Windowsが読むCapabilitiesブロックです。ただし、ファイルの種類は意図的に要求しません。どのプログラムでアーカイブを開くかはあなたが決めることで、それが7-ZSTarと公式7-Zipがお互いの邪魔をしない理由です。それでも、ほかにそれを開くと申し出るプログラムがないときは、Windowsが自分で形式を7-ZSTarに振り向けることがあります。テストしたWindows 10とWindows 7のマシンでは、ほかに`.7z`を登録したものがなく、`.7z`ファイルに7-ZSTarのアイコンが表示され、ダブルクリックで、どのプログラムを使うかをWindowsに尋ねられることなく、7-ZSTarで開きました。
 
 **ファイル マネージャーの「ツール > オプション > システム」は、Windows 11ではほとんど機能しません**。これはWindowsの決まりであって、7-ZSTarの不具合ではありません。この画面は、`7-ZSTar.<ext>`というProgIDを`HKCU\Software\Classes`に書き込みますが、コンピューターがすでに知っている拡張子（アーカイブ形式はすべてそうです）については、Windows 11はそれを無視します。`AssocQueryString`は`Unknown`を返し、エクスプローラーは空白の汎用アイコンを表示します。Windowsが代わりに尊重するのは、Windowsだけが計算できるハッシュで署名された`UserChoice`キーで、そのため、そこでは設定のUIが唯一の経路です。どのアプリケーションもそれを書き込めません。7-ZSTarも、7-Zipも、どのインストーラーも同じです。Windows 10とWindows 7では、テストでの挙動が違いました。`.7z`と`.zst`をファイル マネージャーで設定し、ほかのプログラムを選んでいなければ、`AssocQueryString`はどちらも`7zFM.exe`を返しました。
 
@@ -158,7 +158,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 ## 言語
 
-すべてのパッケージには、上流の翻訳（90余りの言語）が入っています。言語は**ツール > オプション > 言語**で選びます。MSIでは、*Custom*セットアップで言語を含めないようにすることもできます。7-ZSTarは、初回起動時にシステムの言語に合わせようとしますが、Windowsの"language for non-Unicode programs"（Unicode非対応プログラムの言語）と「地域設定」の内容が食い違うと、この検出は諦めて英語のままになります。言語を手動で選べば、常に動作します。
+すべてのパッケージには、上流の翻訳（90余りの言語）が入っています。言語は**ツール > オプション > 言語**で選びます。MSIでは、*Custom*セットアップで言語を含めないようにすることもできます。7-ZSTarは、初回起動時にシステムの言語に合わせようとしますが、Windowsの「Unicode 対応ではないプログラムの言語」と「地域設定」の内容が食い違うと、この検出は諦めて英語のままになります。言語を手動で選べば、常に動作します。
 
 7-ZSTarが独自に追加した文字列（zstdのレベルと辞書のフィールド、新しいアーカイブ形式の名前）には、上流の翻訳がなく、英語のままです。例外は、バージョン情報ダイアログの**寄付**と**ウェブサイト**ボタンで、92言語のうち67言語にそれぞれの訳があり、残りの25言語では英語で表示されます（`Lang/UPSTREAM.md`にその一覧があります）。
 翻訳は上流から取り込んだもので、ここで書いたものではありません。[Lang/UPSTREAM.md](../../Lang/UPSTREAM.md)を参照してください。

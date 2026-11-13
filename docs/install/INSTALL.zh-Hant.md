@@ -1,7 +1,7 @@
-<!-- synced-with: docs/INSTALL.md @ e3fa827 -->
+<!-- synced-with: docs/INSTALL.md @ 8d159f1 -->
 # 安裝 7-ZSTar
 
-[English](../INSTALL.md) · **繁體中文** · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
+[English](../INSTALL.md) · **繁體中文** · [简体中文](INSTALL.zh-Hans.md) · [Deutsch](INSTALL.de.md) · [Français](INSTALL.fr.md) · [Español](INSTALL.es.md) · [Português (Brasil)](INSTALL.pt-BR.md) · [日本語](INSTALL.ja.md) · [Tiếng Việt](INSTALL.vi.md) · [Русский](INSTALL.ru.md) · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md) · [Esperanto](INSTALL.eo.md)
 
 這份文件是 [README](../readme/README.zh-Hant.md) 簡短說明背後的細節：系統需求、SmartScreen 警告、智慧型應用程式控制（Smart App Control）、如何核對下載的檔案、三種安裝包、Windows 11 右鍵選單、檔案關聯與解除安裝。
 
@@ -12,7 +12,7 @@
 
 這個下限是依安裝包的需求*推算*出來的，另外也做過實測：Windows 7 SP1（已裝後續更新，其中包含 PowerShell 5.1）、Windows 10 22H2 和 Windows 11，皆為 64 位元。在 Windows 7 與 10 上，測試的項目有：全機與個別使用者 x64 `.msi` 的安裝與解除安裝、安裝精靈、x64 `.zip`、所有新增的編碼器與一步 tar 格式、右鍵選單、檔案關聯與說明檔，以及在 64 位元 Windows 上執行的 x86 `.msi` 與 `.zip`。除此之外，Windows 上沒有測過其他環境：Windows 8 與 8.1、Windows Server、32 位元 Windows、arm64 實機，以及沒裝上述更新的 Windows 7，都沒有測。這個下限也比上游 7-Zip 的高，上游的執行檔在 Windows XP 上仍然載得進去。有三個原因把門檻拉到這裡，其中第二個是任何建置設定都無法改變的：
 
-- `.msi` 宣告了 `InstallerVersion="500"`，而 Windows Installer 5.0 是隨「Windows Server 2008 R2 及更新版本，以及 Windows 7 及更新版本」發行的（[Microsoft][msi-versions]）。免安裝的 `.zip` 不經過 Windows Installer，但請看接下來兩點。
+- `.msi` 宣告了 `InstallerVersion="500"`，而 Windows Installer 5.0 是 “with Windows Server 2008 R2 and later and Windows 7 and later”（隨 Windows Server 2008 R2 及更新版本，以及 Windows 7 及更新版本）發行的（[Microsoft][msi-versions]）。免安裝的 `.zip` 不經過 Windows Installer，但請看接下來兩點。
 - **zstd 與 fast-lzma2 使用只有 Vista 以上才有的同步機制。** 兩者都在自己的標頭檔裡強制定義 `_WIN32_WINNT 0x0600`，並直接呼叫 `InitializeConditionVariable` / `SleepConditionVariableCS`，所以內含這些編碼器的兩個執行檔 `7z.dll` 與 `7za.exe` 會匯入四個 Windows XP 與 Server 2003 沒有的函式。上游的 `7z.dll` 一個也不匯入。
 - 工具鏈：這些檔案是用 Visual Studio 2022 建置的，它支援的目標平台是 Windows 7 以上，Vista 與 Server 2008 都是「No」（[Microsoft][vs-targeting]）。連結後的子系統版本在 x64 與 x86 是 6.0，在 arm64 是 6.2，而 Windows on arm64 本來就是從 Windows 10 才開始。
 
@@ -62,7 +62,7 @@ SmartScreen 警告的依據是檔案的知名程度，不只是簽章；下載�
 
 在 Windows 11 Pro 25H2（組建 26200.8037）、已開啟智慧型應用程式控制的狀態下試用 7-ZSTar 26.05.1，結果如下：
 
-- **`.msi` 安裝程式被封鎖了**，全機安裝版與個別使用者版都一樣。在繁體中文版 Windows 上，Windows Installer 顯示「系統禁用此安裝。請連絡系統管理員。」，同時 Windows 安全性通知說，智慧型應用程式控制封鎖了該檔案，因為 Windows 無法得知是誰發布的，而且它不是 Windows 認識的應用程式。沒有任何可以繼續的選項，`msiexec /i ... /qn` 回傳了 error 1625。英文版 Windows 上的訊息文字沒有查證過。
+- **`.msi` 安裝程式被封鎖了**，全機安裝版與個別使用者版都一樣。在繁體中文版 Windows 上，Windows Installer 顯示「系統禁用此安裝。請連絡系統管理員。」，同時 Windows 安全性通知說，智慧型應用程式控制封鎖了該檔案，因為 Windows 無法得知是誰發布的，而且它不是 Windows 認識的應用程式。沒有任何可以繼續的選項，`msiexec /i ... /qn` 回傳了 error 1625。這則訊息是 Windows Installer 的 1625 號字串（string 1625）；在英文版 Windows 上，同一個字串寫的是 “The system administrator has set policies to prevent this installation.”（讀自 Windows Installer 的英文資源，不是在畫面上看到的）。
 - **`.zip` 裡的程式可以執行。** 從免安裝 `.zip` 解壓縮出來的 `7zFM.exe`，在同一次測試中正常啟動。Windows 是否允許未簽章的程式執行，是它對該檔案的個別判斷，所以你的電腦上可能不一樣。
 - 剛開啟智慧型應用程式控制之後，`.msi` 還能安裝幾分鐘，然後才開始被封鎖。原因沒有找到，所以剛開啟後安裝成功，並不代表安裝程式被允許。
 
@@ -83,7 +83,9 @@ SmartScreen 警告的依據是檔案的知名程度，不只是簽章；下載�
 | 檔案總管右鍵選單 | 有 | 有，只有傳統選單（[見下](#個別使用者安裝包)） | 沒有 |
 | [開始] 功能表項目 | 有 | 有 | 沒有 |
 | 需要系統管理員 | 是 | 否 | 否 |
-| 移除方式 | Apps & features（已安裝的應用程式） | Apps & features（已安裝的應用程式） | 刪除資料夾 |
+| 移除方式 | 設定裡的「已安裝的應用程式」 | 設定裡的「已安裝的應用程式」 | 刪除資料夾 |
+
+「已安裝的應用程式」是 Windows 11 的名稱。Windows 10 把同一頁叫做「應用程式與功能」，在 Windows 7 上則是控制台裡的「程式和功能」。
 
 請選擇和 Windows 本身相符的安裝包：32 位元 Windows 用 x86，64 位元 Windows 用 x64，Windows on Arm 用 arm64（arm64 安裝包有建置，但從來沒有實際執行過）。x86 的殼層擴充是 32 位元的，64 位元的檔案總管載入不了，所以在 64 位元 Windows 上，x86 的 `-user.msi` 完全沒有右鍵選單；x86 的 `.msi` 只有在 Windows 11 上才有，而且只限註冊過它的 Windows 11 套件的帳號（執行安裝的帳號，或是執行過 `-Register` 的帳號，見下文）。
 
@@ -132,7 +134,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 ### 檔案關聯，以及解除安裝對它們的影響
 
-**請在「設定 > 應用程式 > 預設應用程式」裡設定。** 在 Windows 11 上，在那裡輸入 7-ZSTar，它能開啟的每種格式都會列出來供你指派。在 Windows 10 上，7-ZSTar 列在該頁的 *Set defaults by app* 底下，按 *Manage* 可看到它的格式。Windows 7 沒有「設定」應用程式：7-ZSTar 列在控制台 > Default Programs > *Set your default programs* 裡，本文所說的「預設應用程式」在那裡就是指這一頁。從這兩個頁面指派格式，還沒有測試過。安裝程式會把 7-ZSTar 註冊成預設程式（Default Programs）的應用程式：每種格式有一個帶圖示與開啟命令的 ProgID、每個副檔名的「開啟檔案」清單裡有一個項目，還有 Windows 會讀取的 Capabilities 區塊；但它刻意不宣告擁有任何檔案類型：由哪個程式開啟你的壓縮檔是你的決定，這也讓 7-ZSTar 與官方 7-Zip 不會互相干擾。不過，當沒有其他程式提供開啟某種格式時，Windows 仍可能自行把它交給 7-ZSTar：在測試用的 Windows 10 與 Windows 7 上，沒有其他程式註冊過 `.7z`，結果 `.7z` 檔案顯示 7-ZSTar 的圖示，按兩下就用它開啟，Windows 並沒有詢問要用哪個程式。
+**請在「設定 > 應用程式 > 預設應用程式」裡設定。** 在 Windows 11 上，在那裡輸入 7-ZSTar，它能開啟的每種格式都會列出來供你指派。在 Windows 10 上，7-ZSTar 列在該頁的 *Set defaults by app* 底下，按 *Manage* 可看到它的格式。Windows 7 沒有「設定」應用程式：7-ZSTar 列在「控制台 > 預設程式 > 設定您的預設程式」裡，本文所說的「預設應用程式」在那裡就是指這一頁。從這兩個頁面指派格式，還沒有測試過。安裝程式會把 7-ZSTar 註冊成預設程式（Default Programs）的應用程式：每種格式有一個帶圖示與開啟命令的 ProgID、每個副檔名的「開啟檔案」清單裡有一個項目，還有 Windows 會讀取的 Capabilities 區塊；但它刻意不宣告擁有任何檔案類型：由哪個程式開啟你的壓縮檔是你的決定，這也讓 7-ZSTar 與官方 7-Zip 不會互相干擾。不過，當沒有其他程式提供開啟某種格式時，Windows 仍可能自行把它交給 7-ZSTar：在測試用的 Windows 10 與 Windows 7 上，沒有其他程式註冊過 `.7z`，結果 `.7z` 檔案顯示 7-ZSTar 的圖示，按兩下就用它開啟，Windows 並沒有詢問要用哪個程式。
 
 **檔案管理員裡的「工具 > 選項 > 系統」在 Windows 11 上大多無效**，這是 Windows 的規則，不是這裡的錯誤。它會把一個 `7-ZSTar.<ext>` ProgID 寫到 `HKCU\Software\Classes`，而對於電腦已經認得的副檔名（每種壓縮格式都是），Windows 11 會忽略它：`AssocQueryString` 回答 `Unknown`，檔案總管畫出空白的通用圖示。Windows 認的是一個 `UserChoice` 機碼，上面蓋有只有它自己能算出的雜湊值，所以在 Windows 11 上，「設定」介面是唯一的路。沒有任何應用程式能寫出這樣的機碼：7-ZSTar 不行，7-Zip 不行，任何安裝程式都不行。Windows 10 與 Windows 7 在測試中的表現不同：在檔案管理員裡設定 `.7z` 和 `.zst`、且沒有為它們另選其他程式之後，`AssocQueryString` 兩者都回傳 `7zFM.exe`。
 
@@ -156,5 +158,5 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 每個安裝包都附有上游的翻譯，九十幾種語言。請在**工具 > 選項 > 語言**裡挑選；MSI 也讓你在 *Custom setup*（自訂安裝）中把它們排除。7-ZSTar 第一次執行時會嘗試跟隨系統語言，但當 Windows 的“language for non-Unicode programs”（非 Unicode 程式的語言）與 regional format（地區格式）設定不一致時，這項偵測會放棄並維持英文；自己手動選擇語言永遠有效。
 
-7-ZSTar 自己新增的字串，包括 zstd 的壓縮等級與字典欄位、新的壓縮檔格式名稱，沒有上游的翻譯，會維持英文。例外是「關於」對話方塊的**贊助**與**網站**按鈕：92 種語言中有 67 種各有對應的字，其餘 25 種顯示英文（`Lang/UPSTREAM.md` 列出了它們）。
+7-ZSTar 自己新增的字串，包括 zstd 的壓縮等級與字典欄位、新的壓縮檔格式名稱，沒有上游的翻譯，會維持英文。例外是「關於 7-ZSTar」對話方塊的**贊助**與**網站**按鈕：92 種語言中有 67 種各有對應的字，其餘 25 種顯示英文（`Lang/UPSTREAM.md` 列出了它們）。
 翻譯是直接引入的，不是在這裡撰寫的：見 [Lang/UPSTREAM.md](../../Lang/UPSTREAM.md)。

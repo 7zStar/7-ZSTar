@@ -4,7 +4,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · **فارسی** · [עברית](README.he.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Русский](README.ru.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · **فارسی** · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
 *در صورت مغایرت با نسخهٔ انگلیسی، نسخهٔ انگلیسی ملاک است.*
 
@@ -47,7 +47,7 @@
 |---|---|---|---|
 | نیاز به دسترسی سرپرست | بله | خیر | خیر |
 | منوی کلیک راست | سطح اول در ⁦Windows 11⁩ | منوی کلاسیک (در ⁦Windows 11⁩ زیر «Show more options») | ندارد |
-| ورودی Start menu (منوی شروع) | بله | بله | خیر |
+| ورودی منوی شروع | بله | بله | خیر |
 
 هر کدام برای ⁦x86⁩ و ⁦arm64⁩ هم موجود است؛ همان را انتخاب کنید که با Windows شما مطابقت دارد. روی ⁦Windows 64⁩ بیتی ممکن است بسته‌های ⁦x86⁩ منوی کلیک راست نداشته باشند و نسخه‌های ⁦arm64⁩ هنوز روی سخت‌افزار واقعی آزمایش نشده‌اند. ⁦7-ZSTar⁩ کنار ⁦7-Zip⁩ رسمی نصب می‌شود و تأثیری بر آن ندارد.
 
@@ -64,7 +64,7 @@
 7z x backup.tar.zst -oout
 ```
 
-در PowerShell سوئیچ را داخل نقل‌قول بگذارید: `7z a "-ttar.zst" backup.tar.zst docs`. بدون نقل‌قول، PowerShell آن را به دو تکه می‌شکند و فایلی به نام `.zst` ساخته می‌شود. اما Command Prompt (cmd) به نقل‌قول نیازی ندارد.
+در PowerShell سوئیچ را داخل نقل‌قول بگذارید: `7z a "-ttar.zst" backup.tar.zst docs`. بدون نقل‌قول، PowerShell آن را به دو تکه می‌شکند و فایلی به نام `.zst` ساخته می‌شود. اما خط فرمان (cmd) به نقل‌قول نیازی ندارد.
 
 ## نکته‌های مفید
 

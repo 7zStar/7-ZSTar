@@ -62,7 +62,7 @@ As associações de arquivos, a desinstalação e o pacote por usuário estão d
 7z x backup.tar.zst -oout
 ```
 
-No PowerShell, coloque a opção entre aspas: `7z a "-ttar.zst" backup.tar.zst docs`. Sem as aspas, o PowerShell a divide em duas e você acaba com um arquivo chamado `.zst`. O Command Prompt (cmd), o prompt de comando do Windows, não precisa de aspas.
+No PowerShell, coloque a opção entre aspas: `7z a "-ttar.zst" backup.tar.zst docs`. Sem as aspas, o PowerShell a divide em duas e você acaba com um arquivo chamado `.zst`. O Prompt de Comando (cmd) não precisa de aspas.
 
 ## Bom saber
 

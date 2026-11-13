@@ -4,7 +4,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · **Bahasa Indonesia** · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Русский](README.ru.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · **Bahasa Indonesia** · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
 *Jika isi dokumen ini berbeda dengan versi bahasa Inggris, yang berlaku adalah versi bahasa Inggris.*
 
@@ -62,7 +62,7 @@ Asosiasi file, uninstal, dan paket per pengguna dijelaskan di [panduan instalasi
 7z x backup.tar.zst -oout
 ```
 
-Di PowerShell, beri tanda kutip pada switch-nya: `7z a "-ttar.zst" backup.tar.zst docs`. Tanpa tanda kutip, PowerShell memecahnya jadi dua dan hasilnya sebuah file bernama `.zst`. Command Prompt (cmd) tidak memerlukan tanda kutip.
+Di PowerShell, beri tanda kutip pada switch-nya: `7z a "-ttar.zst" backup.tar.zst docs`. Tanpa tanda kutip, PowerShell memecahnya jadi dua dan hasilnya sebuah file bernama `.zst`. Prompt Perintah (cmd) tidak memerlukan tanda kutip.
 
 ## Perlu diketahui
 

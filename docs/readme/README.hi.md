@@ -4,7 +4,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · **हिन्दी** · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Русский](README.ru.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · **हिन्दी** · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
 *अंग्रेज़ी संस्करण से भिन्नता होने पर अंग्रेज़ी संस्करण ही मान्य होगा।*
 
@@ -45,7 +45,7 @@ tar.zst, zip से 15 से 23% छोटा निकला, और रफ़
 |---|---|---|---|
 | व्यवस्थापक अधिकार चाहिए | हाँ | नहीं | नहीं |
 | राइट-क्लिक मेनू | Windows 11 में पहले स्तर पर | क्लासिक मेनू (Windows 11 में “Show more options” के अंदर) | नहीं |
-| Start menu (स्टार्ट मेनू) में प्रविष्टि | हाँ | हाँ | नहीं |
+| प्रारंभ मेनू में प्रविष्टि | हाँ | हाँ | नहीं |
 
 हर एक x86 और arm64 के लिए भी मिलता है; अपने Windows से मेल खाने वाला चुनें। 64-बिट Windows पर x86 पैकेजों में राइट-क्लिक मेनू नहीं भी हो सकता है, और arm64 बिल्ड अभी असली हार्डवेयर पर नहीं परखे गए हैं। 7-ZSTar आधिकारिक 7-Zip के साथ-साथ इंस्टॉल होता है और उसे प्रभावित नहीं करता।
 
@@ -62,11 +62,11 @@ tar.zst, zip से 15 से 23% छोटा निकला, और रफ़
 7z x backup.tar.zst -oout
 ```
 
-PowerShell में स्विच को कोट्स में रखें: `7z a "-ttar.zst" backup.tar.zst docs`। इनके बिना PowerShell उसे दो हिस्सों में तोड़ देता है और `.zst` नाम की एक फ़ाइल बन जाती है। Command Prompt (cmd) में कोट्स की ज़रूरत नहीं।
+PowerShell में स्विच को कोट्स में रखें: `7z a "-ttar.zst" backup.tar.zst docs`। इनके बिना PowerShell उसे दो हिस्सों में तोड़ देता है और `.zst` नाम की एक फ़ाइल बन जाती है। आदेश प्रॉम्प्ट (cmd) में कोट्स की ज़रूरत नहीं।
 
 ## जानने लायक बातें
 
-- **“7-जिप के शेल (कवच) प्रसंग मेनु में जोडें” को बंद करने** (फ़ाइल प्रबंधक में **औजार > विकल्प > 7-ZSTar**) से राइट-क्लिक प्रविष्टि हट जाती है, जैसा आधिकारिक 7-Zip में होता है। सभी उपयोगकर्ताओं वाले पैकेज में फ़ाइल प्रबंधक को व्यवस्थापक के रूप में चलाकर इसे फिर चालू किया जा सकता है। प्रति-उपयोगकर्ता पैकेज में ऐसा नहीं हो सकता (“Access is denied.”); `.msi` को दोबारा चलाएँ और *Repair* (मरम्मत) चुनें।
+- **“7-जिप के शेल (कवच) प्रसंग मेनु में जोडें” को बंद करने** (फ़ाइल प्रबंधक में **औजार > विकल्प > 7-ZSTar**) से राइट-क्लिक प्रविष्टि हट जाती है, जैसा आधिकारिक 7-Zip में होता है। सभी उपयोगकर्ताओं वाले पैकेज में फ़ाइल प्रबंधक को “व्यवस्थापक के रूप में चलाएँ” से खोलकर इसे फिर चालू किया जा सकता है। प्रति-उपयोगकर्ता पैकेज में ऐसा नहीं हो सकता (“Access is denied.”); `.msi` को दोबारा चलाएँ और *Repair* (मरम्मत) चुनें।
 - **Windows 11 पर साइलेंट या रिमोट इंस्टॉल** (SSH से, या किसी डिप्लॉयमेंट टूल से) सफल हो जाते हैं, लेकिन पहले स्तर की प्रविष्टि रजिस्टर नहीं होती, इसलिए 7-ZSTar सिर्फ़ “Show more options” के अंदर दिखता है। [इंस्टॉलेशन गाइड में और जानकारी](../install/INSTALL.hi.md#windows-11-का-राइट-क्लिक-मेनू)।
 - **tar.br, tar.lz4, tar.lz5, tar.liz या tar.Z को एक्सट्रैक्ट करना** आपके लिए अब भी एक ही चरण है, पर बीच में एक अस्थायी फ़ाइल बनती है, जो बाद में हटा दी जाती है।
 

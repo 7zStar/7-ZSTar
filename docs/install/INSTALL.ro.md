@@ -1,7 +1,7 @@
 <!-- synced-with: docs/INSTALL.md @ 8d159f1 -->
 # Instalarea 7-ZSTar
 
-[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · **Română** · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
+[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · [简体中文](INSTALL.zh-Hans.md) · [Deutsch](INSTALL.de.md) · [Français](INSTALL.fr.md) · [Español](INSTALL.es.md) · [Português (Brasil)](INSTALL.pt-BR.md) · [日本語](INSTALL.ja.md) · [Tiếng Việt](INSTALL.vi.md) · [Русский](INSTALL.ru.md) · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · **Română** · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md) · [Esperanto](INSTALL.eo.md)
 
 *Dacă există diferențe față de versiunea în limba engleză, este valabilă versiunea în limba engleză.*
 
@@ -131,7 +131,7 @@ cu `-PerUser`):
 | Eliminare | *Aplicații instalate* din Setări | *Aplicații instalate* din Setări | ștergeți folderul |
 
 *Aplicații instalate* este denumirea din Windows 11. Windows 10 numește aceeași pagină *Aplicații și
-caracteristici*, iar în Windows 7 este *Programs and Features* (programe și caracteristici) în Control Panel (Panou de control).
+caracteristici*, iar în Windows 7 este *Programe și caracteristici* în Panou de control.
 
 Folosiți pachetele care corespund versiunii Windows: x86 pe Windows pe 32 de biți, x64 pe
 Windows pe 64 de biți, arm64 pe Windows pe Arm (pachetele arm64 sunt compilate, dar
@@ -254,7 +254,7 @@ așa cum face pachetul pe mașină:
 acolo și sunt listate toate formatele pe care le poate deschide, pentru a le atribui. În Windows 10,
 7-ZSTar este listat pe acea pagină la *Set defaults by app* (setare valori implicite după aplicație), unde *Manage* (gestionare) arată formatele lui.
 Windows 7 nu are aplicația Setări: 7-ZSTar este listat în
-Control Panel (Panou de control) > Programe implicite > *Setare programe implicite*, ceea ce înseamnă
+Panou de control > Programe implicite > *Setare programe implicite*, ceea ce înseamnă
 *Aplicații implicite* din acest ghid acolo. Atribuirea formatelor din acele
 două pagini nu a fost testată. Programul de instalare înregistrează 7-ZSTar ca aplicație
 Programe implicite - un ProgID pentru fiecare format, cu pictograma și comanda de deschidere, o
@@ -340,7 +340,7 @@ celorlalte conturi, iar 7-Zip oficial se comportă la fel.
 Fiecare pachet include traducerile din 7-Zip original, peste 90 de limbi. Alegeți una la
 **Unelte > Opţiuni... > Limbaj**; MSI-ul vă permite, de asemenea, să le omiteți la instalarea *Custom*.
 7-ZSTar încearcă să urmeze limba sistemului la prima pornire, dar această detectare renunță și rămâne
-pe engleză atunci când setarea „language for non-Unicode programs” (limba pentru programe non-Unicode) din Windows și setarea
+pe engleză atunci când setarea „Limbă pentru programele non-Unicode” din Windows și setarea
 „Format regional” nu coincid - alegerea manuală a unei limbi funcționează întotdeauna.
 
 Șirurile adăugate de 7-ZSTar însuși - câmpurile pentru nivelul zstd și dicționar, numele noilor

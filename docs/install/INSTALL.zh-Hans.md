@@ -1,7 +1,7 @@
 <!-- synced-with: docs/INSTALL.md @ 8d159f1 -->
 # 安装 7-ZSTar
 
-[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · **简体中文** · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
+[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · **简体中文** · [Deutsch](INSTALL.de.md) · [Français](INSTALL.fr.md) · [Español](INSTALL.es.md) · [Português (Brasil)](INSTALL.pt-BR.md) · [日本語](INSTALL.ja.md) · [Tiếng Việt](INSTALL.vi.md) · [Русский](INSTALL.ru.md) · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md) · [Esperanto](INSTALL.eo.md)
 
 这份文档是 [README](../readme/README.zh-Hans.md) 中简短说明背后的细节：系统要求、SmartScreen 警告、智能应用控制、如何核对下载的文件、三种安装包、Windows 11 右键菜单、文件关联与卸载。
 
@@ -85,7 +85,7 @@ SmartScreen 警告的依据是文件的知名度，不仅仅是签名；下载�
 | 需要管理员 | 是 | 否 | 否 |
 | 移除方式 | “设置”中的“安装的应用” | “设置”中的“安装的应用” | 删除文件夹 |
 
-“安装的应用”是 Windows 11 中的名称。Windows 10 把同一个页面叫作“应用和功能”，在 Windows 7 上则是 Control Panel（控制面板）里的 *Programs and Features*（程序和功能）。
+“安装的应用”是 Windows 11 中的名称。Windows 10 把同一个页面叫作“应用和功能”，在 Windows 7 上则是控制面板里的 *程序和功能*。
 
 请选择与 Windows 本身相符的安装包：32 位 Windows 用 x86，64 位 Windows 用 x64，Windows on Arm 用 arm64（arm64 安装包已经构建出来，但从未运行过）。x86 的外壳扩展是 32 位的，64 位的文件资源管理器无法加载它，所以在 64 位 Windows 上，x86 的 `-user.msi` 完全没有右键菜单；x86 的 `.msi` 只在 Windows 11 上才有，而且只限注册过它的 Windows 11 包的账户（执行安装的账户，或运行过 `-Register` 的账户，见下文）。
 
@@ -134,7 +134,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 ### 文件关联，以及卸载对它们的影响
 
-**请在“设置 > 应用 > 默认应用”中设置。** 在 Windows 11 上，在那里输入 7-ZSTar，它能打开的每种格式都会列出来供你分配。在 Windows 10 上，7-ZSTar 列在该页的 *Set defaults by app*（按应用设置默认值）下面，点 *Manage*（管理）可以看到它的格式。Windows 7 没有“设置”应用：7-ZSTar 列在 Control Panel（控制面板）> 默认程序 > “设置默认程序”里，本文所说的“默认应用”在那里就是指这一页。从这两个页面分配格式，还没有测试过。安装程序会把 7-ZSTar 注册为默认程序应用：每种格式一个带图标和打开命令的 ProgID、每个扩展名的“打开方式”列表里一个条目，以及 Windows 会读取的 Capabilities 块；但它刻意不声明拥有任何文件类型：由哪个程序打开你的压缩文件由你决定，这也让 7-ZSTar 和官方 7-Zip 不会互相干扰。不过，在没有其他程序提供打开某种格式时，Windows 仍可能自行把它交给 7-ZSTar：在测试用的 Windows 10 和 Windows 7 上，没有其他程序注册过 `.7z`，结果 `.7z` 文件显示着 7-ZSTar 的图标，双击就用它打开，Windows 并没有询问用哪个程序。
+**请在“设置 > 应用 > 默认应用”中设置。** 在 Windows 11 上，在那里输入 7-ZSTar，它能打开的每种格式都会列出来供你分配。在 Windows 10 上，7-ZSTar 列在该页的 *Set defaults by app*（按应用设置默认值）下面，点 *Manage*（管理）可以看到它的格式。Windows 7 没有“设置”应用：7-ZSTar 列在控制面板 > 默认程序 > *设置默认程序* 里，本文所说的“默认应用”在那里就是指这一页。从这两个页面分配格式，还没有测试过。安装程序会把 7-ZSTar 注册为默认程序应用：每种格式一个带图标和打开命令的 ProgID、每个扩展名的“打开方式”列表里一个条目，以及 Windows 会读取的 Capabilities 块；但它刻意不声明拥有任何文件类型：由哪个程序打开你的压缩文件由你决定，这也让 7-ZSTar 和官方 7-Zip 不会互相干扰。不过，在没有其他程序提供打开某种格式时，Windows 仍可能自行把它交给 7-ZSTar：在测试用的 Windows 10 和 Windows 7 上，没有其他程序注册过 `.7z`，结果 `.7z` 文件显示着 7-ZSTar 的图标，双击就用它打开，Windows 并没有询问用哪个程序。
 
 **文件管理器里的“工具 > 选项 > 系统”在 Windows 11 上大多不起作用**，这是 Windows 的规则，不是这里的错误。它会往 `HKCU\Software\Classes` 里写一个 `7-ZSTar.<ext>` ProgID，而对于电脑已经认识的扩展名（每种压缩格式都是），Windows 11 会忽略它：`AssocQueryString` 返回 `Unknown`，文件资源管理器画出空白的通用图标。Windows 认的是一个 `UserChoice` 项，上面盖有只有它自己能算出的哈希值，所以在 Windows 11 上，“设置”界面是唯一的路。没有任何应用能写出这样的项：7-ZSTar 不行，7-Zip 不行，任何安装程序都不行。Windows 10 和 Windows 7 在测试中的表现不同：在文件管理器里设置了 `.7z` 和 `.zst`、且没有为它们另选其他程序之后，`AssocQueryString` 对两者都返回了 `7zFM.exe`。
 
@@ -156,7 +156,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 ## 语言
 
-每个安装包都带有上游的翻译，九十多种语言。请在**工具 > 选项 > 语言**里选择；MSI 也允许你在 *Custom*（自定义）安装中把它们排除。7-ZSTar 第一次运行时会尝试跟随系统语言，但当 Windows 的“language for non-Unicode programs”（非 Unicode 程序的语言）与区域格式设置不一致时，这项检测会放弃并保持英文；自己手动选择语言永远有效。
+每个安装包都带有上游的翻译，九十多种语言。请在**工具 > 选项 > 语言**里选择；MSI 也允许你在 *Custom*（自定义）安装中把它们排除。7-ZSTar 第一次运行时会尝试跟随系统语言，但当 Windows 的“非 Unicode 程序的语言”与区域格式设置不一致时，这项检测会放弃并保持英文；自己手动选择语言永远有效。
 
 7-ZSTar 自己新增的字符串，包括 zstd 的压缩级别和字典字段、新的压缩格式名称，没有上游的翻译，会保持英文。例外是“关于 7-ZSTar”对话框的**赞助**和**网站**按钮：92 种语言中有 67 种各有对应的字词，其余 25 种显示英文（`Lang/UPSTREAM.md` 列出了它们）。
 翻译是直接引入的，不是在这里撰写的：见 [Lang/UPSTREAM.md](../../Lang/UPSTREAM.md)。

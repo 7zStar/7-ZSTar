@@ -1,7 +1,7 @@
 <!-- synced-with: docs/INSTALL.md @ 8d159f1 -->
 # 7-ZSTar 설치하기
 
-[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · **한국어** · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
+[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · [简体中文](INSTALL.zh-Hans.md) · [Deutsch](INSTALL.de.md) · [Français](INSTALL.fr.md) · [Español](INSTALL.es.md) · [Português (Brasil)](INSTALL.pt-BR.md) · [日本語](INSTALL.ja.md) · [Tiếng Việt](INSTALL.vi.md) · [Русский](INSTALL.ru.md) · **한국어** · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · [Bahasa Indonesia](INSTALL.id.md) · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md) · [Esperanto](INSTALL.eo.md)
 
 *영어판과 내용이 다를 경우 영어판을 따릅니다.*
 
@@ -164,7 +164,7 @@ SmartScreen은 서명 여부만이 아니라 파일이 얼마나 널리 알려�
 | 제거 | 설정의 *설치된 앱* | 설정의 *설치된 앱* | 폴더 삭제 |
 
 *설치된 앱*은 Windows 11에서 쓰는 이름입니다. Windows 10에서는 같은 페이지를 *앱 및 기능*이라고 하며,
-Windows 7에서는 Control Panel(제어판)의 *Programs and Features*(프로그램 및 기능)입니다.
+Windows 7에서는 제어판의 *프로그램 및 기능*입니다.
 
 Windows 자체와 맞는 패키지를 사용하십시오. 32비트 Windows에는 x86, 64비트 Windows에는 x64, Arm용 Windows에는 arm64입니다(arm64 패키지는 빌드되지만
 실행해 본 적은 없습니다). x86 셸 확장은 32비트이고 64비트 파일 탐색기는
@@ -274,8 +274,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 **설정 > 앱 > 기본 앱에서 지정하십시오.** Windows 11에서는 그곳에 7-ZSTar를 입력하면
 7-ZSTar가 열 수 있는 모든 형식이 나열되어 지정할 수 있습니다. Windows 10에서는 그 페이지의
 *Set defaults by app*(앱별 기본값 설정) 아래에 7-ZSTar가 나열되며, *Manage*(관리)를 누르면 형식이 표시됩니다.
-Windows 7에는 설정 앱이 없습니다. 7-ZSTar는 Control Panel > Default Programs > *Set your default programs*
-(제어판의 기본 프로그램, 그 안의 기본 프로그램 설정)에
+Windows 7에는 설정 앱이 없습니다. 7-ZSTar는 제어판 > 기본 프로그램 > *기본 프로그램 설정*에
 나열되며, 이 문서에서 말하는 기본 앱이 그곳에서는 이것을 가리킵니다.
 그 두 페이지에서 형식을 지정하는 것은 테스트하지 않았습니다. 설치 관리자는 7-ZSTar를 기본 프로그램 응용 프로그램으로 등록합니다. 형식마다 아이콘과 열기 명령이 있는 ProgID,
 각 확장명의 *연결 프로그램* 목록 항목, Windows가 읽는 Capabilities 블록입니다.
@@ -347,7 +346,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 모든 패키지에는 upstream의 번역 90여 개 언어가 들어 있습니다. **도구 > 옵션 > 언어**에서
 고르십시오. MSI에서는 *Custom* 설치(사용자 지정 설치)에서 언어를 제외할 수도 있습니다. 7-ZSTar는 처음 실행할 때 시스템 언어를 따르려고 하지만,
-Windows의 "language for non-Unicode programs"(유니코드를 지원하지 않는 프로그램용 언어)와 "사용지역 언어" 설정이 서로 다르면
+Windows의 "유니코드를 지원하지 않는 프로그램용 언어"와 "사용지역 언어" 설정이 서로 다르면
 이 감지는 포기하고 영어로 남습니다. 언어를 직접 고르면 항상 동작합니다.
 
 7-ZSTar가 직접 추가한 문자열, 즉 zstd 수준과 사전 필드, 새 압축 형식 이름에는

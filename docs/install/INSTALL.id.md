@@ -1,7 +1,7 @@
 <!-- synced-with: docs/INSTALL.md @ 8d159f1 -->
 # Menginstal 7-ZSTar
 
-[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · **Bahasa Indonesia** · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md)
+[English](../INSTALL.md) · [繁體中文](INSTALL.zh-Hant.md) · [简体中文](INSTALL.zh-Hans.md) · [Deutsch](INSTALL.de.md) · [Français](INSTALL.fr.md) · [Español](INSTALL.es.md) · [Português (Brasil)](INSTALL.pt-BR.md) · [日本語](INSTALL.ja.md) · [Tiếng Việt](INSTALL.vi.md) · [Русский](INSTALL.ru.md) · [한국어](INSTALL.ko.md) · [Italiano](INSTALL.it.md) · [Polski](INSTALL.pl.md) · [Türkçe](INSTALL.tr.md) · [Nederlands](INSTALL.nl.md) · [Українська](INSTALL.uk.md) · **Bahasa Indonesia** · [ไทย](INSTALL.th.md) · [Čeština](INSTALL.cs.md) · [Magyar](INSTALL.hu.md) · [Română](INSTALL.ro.md) · [Svenska](INSTALL.sv.md) · [Ελληνικά](INSTALL.el.md) · [हिन्दी](INSTALL.hi.md) · [العربية](INSTALL.ar.md) · [فارسی](INSTALL.fa.md) · [עברית](INSTALL.he.md) · [Esperanto](INSTALL.eo.md)
 
 *Jika isi dokumen ini berbeda dengan versi bahasa Inggris, yang berlaku adalah versi bahasa Inggris.*
 
@@ -190,7 +190,7 @@ dengan `-PerUser`):
 | Penghapusan | *Aplikasi terinstal* di Pengaturan | *Aplikasi terinstal* di Pengaturan | hapus folder |
 
 *Aplikasi terinstal* adalah nama di Windows 11. Windows 10 menyebut halaman yang sama *Aplikasi dan Fitur*,
-dan di Windows 7 namanya *Programs and Features* (program dan fitur) di Control Panel (panel kontrol).
+dan di Windows 7 namanya *Program dan Fitur* di Panel Kontrol.
 
 Gunakan paket yang sesuai dengan Windows itu sendiri: x86 di Windows 32-bit, x64 di
 Windows 64-bit, arm64 di Windows pada Arm (paket arm64 sudah dibangun tetapi
@@ -317,7 +317,7 @@ sendiri). Hal yang tidak dilakukannya seperti paket per mesin:
 di sana dan setiap format yang dapat dibukanya akan terdaftar untuk ditetapkan. Di Windows 10,
 7-ZSTar terdaftar di bawah *Set defaults by app* (atur default menurut aplikasi) pada halaman itu, tempat *Manage* (kelola)
 menampilkan formatnya. Windows 7 tidak memiliki aplikasi Pengaturan: 7-ZSTar terdaftar di bawah
-Control Panel > Default Programs > *Set your default programs* (artinya: Program Default > Atur program default), yang menjadi pengganti
+Panel Kontrol > Program Default > *Atur program default*, yang menjadi pengganti
 *Aplikasi default* dalam panduan ini di sana. Penetapan format dari kedua
 halaman itu belum diuji. Penginstal mendaftarkan 7-ZSTar sebagai aplikasi Program Default
 - ProgID per format dengan ikon dan perintah bukanya, entri di daftar
@@ -403,8 +403,8 @@ akun lain, dan 7-Zip resmi berperilaku sama.
 
 Setiap paket membawa terjemahan dari upstream, lebih dari 90 bahasa. Pilih satu di **Peralatan > Pilihan > Bahasa**;
 MSI juga memungkinkan Anda tidak menyertakannya pada jenis penyiapan *Custom*. 7-ZSTar mencoba mengikuti bahasa sistem
-saat pertama kali dijalankan, tetapi deteksi itu menyerah dan tetap berbahasa Inggris ketika "language for
-non-Unicode programs" (bahasa untuk program non-Unicode) di Windows dan pengaturan Format regional
+saat pertama kali dijalankan, tetapi deteksi itu menyerah dan tetap berbahasa Inggris ketika "Bahasa untuk
+program non-Unicode" di Windows dan pengaturan Format regional
 tidak sama - memilih bahasa secara manual selalu berhasil.
 
 String yang ditambahkan 7-ZSTar sendiri - kolom level dan kamus zstd, nama format arsip

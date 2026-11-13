@@ -1,10 +1,10 @@
-<!-- synced-with: README.md @ 6da4c54 -->
+<!-- synced-with: README.md @ 8d159f1 -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · **繁體中文** · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · **繁體中文** · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [Русский](README.ru.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
 **對現代 Windows 11 使用者更友善的 7-Zip 分支版：右鍵選單第一層就有它，可以用 zstd 壓縮，一次做出 tar.zst。**
 
@@ -64,7 +64,7 @@ tar.zst 比 zip 小 15% 到 23%，速度也不輸 zip。最小的檔案還是 7z
 
 ## 小提醒
 
-- **關掉「將 7-ZSTar 整合到快顯功能表中」**（檔案管理員的「工具 > 選項 > 7-ZSTar」）會讓右鍵選單裡的 7-ZSTar 消失，這點和官方 7-Zip 一樣。全機安裝版只要用系統管理員身分執行檔案管理員，就能再打開。「只裝給自己」版沒辦法這樣打開（會顯示「存取被拒」）；請重新執行原本的 `.msi`，選 *Repair*（修復）。
+- **關掉「將 7-ZSTar 整合到快顯功能表中」**（檔案管理員的「工具 > 選項 > 7-ZSTar」）會讓右鍵選單裡的 7-ZSTar 消失，這點和官方 7-Zip 一樣。全機安裝版只要用系統管理員身分執行檔案管理員，就能再打開。「只裝給自己」版沒辦法這樣打開（會顯示「存取被拒。」）；請重新執行原本的 `.msi`，選 *Repair*（修復）。
 - **在 Windows 11 上用靜默或遠端方式安裝**（例如透過 SSH，或用部署工具），安裝會成功，但第一層選單不會註冊，7-ZSTar 只會出現在「顯示其他選項」裡。[安裝說明裡有詳細說明](../install/INSTALL.zh-Hant.md#windows-11-右鍵選單)。
 - **解壓縮 tar.br、tar.lz4、tar.lz5、tar.liz 或 tar.Z** 對你來說一樣是一步完成，只是過程中會先解到暫存檔，結束後自動刪除。
 

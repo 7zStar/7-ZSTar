@@ -4,7 +4,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · **日本語** · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · **日本語** · [Tiếng Việt](README.vi.md) · [Русский](README.ru.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
 *英語版と内容が異なる場合は、英語版が優先されます。*
 
@@ -62,7 +62,7 @@ tar.zstはzipより15〜23%小さく、速度も劣りませんでした。最�
 7z x backup.tar.zst -oout
 ```
 
-PowerShellでは、スイッチを引用符で囲んでください：`7z a "-ttar.zst" backup.tar.zst docs`。囲まないと、PowerShellがスイッチを2つに分けてしまい、`.zst`という名前のファイルができます。Command Prompt (cmd)（Windowsのコマンド入力画面）では、引用符は不要です。
+PowerShellでは、スイッチを引用符で囲んでください：`7z a "-ttar.zst" backup.tar.zst docs`。囲まないと、PowerShellがスイッチを2つに分けてしまい、`.zst`という名前のファイルができます。コマンド プロンプト (cmd)では、引用符は不要です。
 
 ## 知っておきたいこと
 

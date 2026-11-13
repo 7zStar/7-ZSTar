@@ -62,7 +62,7 @@ tar.zst получился на 15–23 % меньше zip и не медлен�
 7z x backup.tar.zst -oout
 ```
 
-В PowerShell возьмите параметр в кавычки: `7z a "-ttar.zst" backup.tar.zst docs`. Без кавычек PowerShell разобьёт его надвое, и вы получите файл с именем `.zst`. В Command Prompt (cmd) — командной строке Windows — кавычки не нужны.
+В PowerShell возьмите параметр в кавычки: `7z a "-ttar.zst" backup.tar.zst docs`. Без кавычек PowerShell разобьёт его надвое, и вы получите файл с именем `.zst`. В «Командная строка» (cmd) кавычки не нужны.
 
 ## Что полезно знать
 

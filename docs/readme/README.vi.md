@@ -62,7 +62,7 @@ Liên kết tệp, cách gỡ cài đặt và gói riêng bạn được trình 
 7z x backup.tar.zst -oout
 ```
 
-Trong PowerShell, hãy đặt tham số trong dấu ngoặc kép: `7z a "-ttar.zst" backup.tar.zst docs`. Nếu không có dấu ngoặc kép, PowerShell sẽ tách nó làm hai và bạn nhận được một tệp tên là `.zst`. Command Prompt (cmd), tức dấu nhắc lệnh của Windows, không cần dấu ngoặc kép.
+Trong PowerShell, hãy đặt tham số trong dấu ngoặc kép: `7z a "-ttar.zst" backup.tar.zst docs`. Nếu không có dấu ngoặc kép, PowerShell sẽ tách nó làm hai và bạn nhận được một tệp tên là `.zst`. Dấu nhắc Lệnh (cmd) không cần dấu ngoặc kép.
 
 ## Cần biết
 
