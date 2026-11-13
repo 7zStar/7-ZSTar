@@ -1,12 +1,10 @@
-<!-- translated-from: README.md @ e3fa827 -->
+<!-- synced-with: README.md @ 6da4c54 -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
 [English](../../README.md) · **繁體中文** · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [العربية](README.ar.md) · [Esperanto](README.eo.md)
-
-*本文譯自英文版，內容如有出入，以英文版為準。*
 
 **對現代 Windows 11 使用者更友善的 7-Zip 分支版：右鍵選單第一層就有它，可以用 zstd 壓縮，一次做出 tar.zst。**
 
@@ -84,9 +82,9 @@ Windows 7／Server 2008 R2 以上（x64、x86），arm64 需要 Windows 10 以�
 
 ## 贊助
 
-7-ZSTar 是免費的，你贊助或不贊助都一樣能用。如果它幫你省了時間，想表達謝意，可以把加密貨幣轉到下面的地址。這筆錢給我，也就是 DraftingDreamer，用在我自己的開發開銷上，不換取功能、協助或任何後續承諾。
+7-ZSTar 可以免費使用，贊不贊助都一樣。如果它幫你省了一些時間，想說聲謝謝，可以把加密貨幣轉到下面的地址。這筆錢給 DraftingDreamer（築夢天地）個人，用在我自己的開發開銷上，不換取功能、協助或任何後續承諾。
 
-Ethereum 或 Polygon 上的任何代幣都可以（ETH、POL、USDT、USDC 或其他），兩條鏈用同一個地址：
+Ethereum 或 Polygon 鏈上的資產都收，ETH、POL、USDT、USDC 或其他代幣都歡迎。兩條鏈用同一個地址。
 
 ```
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
@@ -95,10 +93,10 @@ Ethereum 或 Polygon 上的任何代幣都可以（ETH、POL、USDT、USDC 或�
 <img src="../donate-qr.png" width="200" alt="贊助地址的 QR Code">
 
 - 只收 Ethereum（ERC20）和 Polygon 鏈上的轉帳。若兩者都有，建議用 Polygon，手續費通常比較低。
-- 這是唯一的官方地址，我不會要求你轉到其他地址。
-- 轉帳無法撤回，所以也無法退款。
+- 官方地址只有這一個，我不會要求任何人改轉到別的地址。
+- 鏈上轉帳無法撤回，所以無法退款。
 
-在 GitHub 上幫 7-ZSTar 按個星星，或推薦給朋友，也是很大的幫助。
+在 GitHub 幫 7-ZSTar 按星星，或介紹給朋友，也是幫忙。
 
 ## 授權
 
