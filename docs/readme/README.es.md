@@ -1,3 +1,4 @@
+<!-- synced-with: README.md @ 8d159f1 -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
@@ -5,15 +6,17 @@
 
 [English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · **Español** · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
+*Si hay alguna diferencia con la versión en inglés, prevalece la versión en inglés.*
+
 **Un fork de 7-Zip más amigable para los usuarios actuales de Windows 11: menú contextual de primer nivel, compresión zstd y tar.zst en un solo paso.**
 
-[Descargar](https://github.com/7zStar/7-ZSTar/releases/latest) · [Sitio web](https://www.7zstar.com/es/) · [Registro de cambios](../../CHANGELOG.md)
+[Descargar](https://github.com/7zStar/7-ZSTar/releases/latest) · [Sitio web](https://www.7zstar.com) · [Registro de cambios](../../CHANGELOG.md)
 
 ## Por qué 7-ZSTar
 
-- **Olvídate de «Mostrar Más opciones».** Con el MSI para todos los usuarios, 7-ZSTar aparece en el primer nivel del menú contextual de Windows 11.
-- **Un solo paso. Sin .tar en el disco.** Comprimir a tar.zst y extraerlo son un solo paso cada uno, sin escribir un .tar en ninguna de las dos direcciones. El 7-Zip oficial no puede crear un .tar.zst y lo extrae en dos pasos, pasando por un .tar.
-- **10× más rápido que 7z.** Con carpetas de proyectos reales, tar.zst comprimió entre 10 y 18 veces más rápido que 7z.
+- **Olvídate de «Mostrar Más opciones».** En Windows 11, 7-ZSTar aparece directamente en el primer nivel del menú contextual.
+- **tar.zst en un solo paso.** Comprime una carpeta a .tar.zst, o extrae uno, en un solo paso, sin dejar ningún .tar en el disco. El 7-Zip oficial no puede crear .tar.zst y lo extrae en dos pasos, pasando por un .tar.
+- **Alrededor de 10× más rápido que 7z.** Con carpetas de proyectos reales, tar.zst comprimió entre 10 y 18 veces más rápido.
 
 ## Velocidad
 
@@ -23,18 +26,34 @@
 | Python `.venv` | 9,795 | 346 MB | 6.6 s / 107.8 MB | 54.8 s / 65.7 MB | **3.6 s** / 83.4 MB |
 | Python `.venv` (binarios grandes) | 11,654 | 671 MB | 25.5 s / 249.5 MB | 100.8 s / 167.2 MB | **5.6 s** / 210.9 MB |
 
-tar.zst resultó entre un 15 y un 23 % más pequeño que zip, y sin ser más lento. Frente a 7z, en cambio, es entre un 15 y un 27 % más grande, así que si lo que más importa es el archivo más pequeño, 7z sigue siendo la mejor opción. Estas cifras son de compresión; al extraer, los tres tardaron más o menos lo mismo.
+tar.zst resultó entre un 15 y un 23 % más pequeño que zip, y sin ser más lento. 7z sigue generando los archivos más pequeños (tar.zst fue entre un 15 y un 27 % más grande), pero tardó mucho más. Al extraer, los tres tardaron más o menos lo mismo.
 
-zip, 7z y tar.zst, todos con la configuración predeterminada. 7-ZSTar 26.05.1 x64 (7z.exe), un solo equipo (Intel Core Ultra 7 155H, SSD NVMe), tres carpetas de proyectos reales, mediana de 3 ejecuciones, 2026-11.
+Configuración predeterminada en los tres; 7-ZSTar 26.05.1 x64, Intel Core Ultra 7 155H, SSD NVMe, mediana de 3 ejecuciones, 2026-11.
 
 ## Formatos
 
-- **Compresión en un solo paso (8):** tar.zst, tar.br, tar.lz4, tar.lz5, tar.liz, tar.gz, tar.bz2, tar.xz
-- **Extracción en un solo paso (10):** esos 8, más tar.lzma y tar.Z
-- **Códecs agregados:** zstd, brotli, lz4, lz5 y lizard, cada uno como formato independiente y como método dentro de .7z, además de fast-lzma2 como codificador LZMA2 alternativo.
-- Siguen disponibles todos los formatos que 7-Zip ya admitía.
+- **Comprimir en un solo paso:** tar.zst, tar.br, tar.lz4, tar.lz5, tar.liz, tar.gz, tar.bz2, tar.xz
+- **Extraer en un solo paso:** todos esos, más tar.lzma y tar.Z
+- **Códecs añadidos:** zstd, brotli, lz4, lz5 y lizard (por sí solos o dentro de un .7z), además de fast-lzma2, un codificador LZMA2 alternativo
+- Siguen funcionando todos los formatos que admite el 7-Zip oficial.
 
-Al extraer tar.br, tar.lz4, tar.lz5, tar.liz o tar.Z sigue siendo un solo paso para ti, pero 7-ZSTar decodifica primero a un archivo intermedio y lo borra después.
+## Descarga
+
+La mayoría de la gente querrá el `.msi` x64 para todos los usuarios, que está en [Versiones](https://github.com/7zStar/7-ZSTar/releases/latest).
+
+| | `.msi` para todos los usuarios | Solo para ti `-user.msi` | `.zip` portátil |
+|---|---|---|---|
+| Requiere permisos de administrador | Sí | No | No |
+| Menú contextual | Primer nivel en Windows 11 | Menú clásico (en Windows 11, en «Mostrar Más opciones») | Ninguno |
+| Entrada en el *Menú Inicio* | Sí | Sí | No |
+
+Cada uno viene también para x86 y arm64; elige el que corresponda a tu Windows. En Windows de 64 bits, es posible que los paquetes x86 no tengan menú contextual, y las compilaciones arm64 aún no se han probado en hardware real. 7-ZSTar se instala junto al 7-Zip oficial sin afectarlo.
+
+**Es posible que Windows te muestre una advertencia la primera vez.** Los archivos no tienen firma de código, así que SmartScreen puede detenerlos («Windows protegió su PC»; puede que tengas que desplegar la advertencia para ver *Ejecutar de todas formas*), y en Windows 11 con Control Inteligente de Aplicaciones activado, el `.msi` se bloquea por completo. Cada versión incluye un archivo `SHA256SUMS` con el que comprobar tu descarga. [La guía de instalación](../install/INSTALL.es.md#paquetes-sin-firmar-smartscreen-y-control-inteligente-de-aplicaciones) explica cómo, y qué hacer con Control Inteligente de Aplicaciones.
+
+**Sobre el menú de primer nivel:** en Windows 11, el `.msi` para todos los usuarios añade un pequeño paquete firmado con un certificado autofirmado y confía en ese certificado; es lo que Windows exige para el primer nivel. Al desinstalar se quitan ambos. Si prefieres no hacerlo, instala con `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0`. El paquete se registra para la cuenta que ejecuta el instalador; las demás cuentas lo registran por separado.
+
+Las asociaciones de archivos, la desinstalación y el paquete por usuario se tratan en la [guía de instalación](../install/INSTALL.es.md).
 
 ## Línea de comandos
 
@@ -43,53 +62,29 @@ Al extraer tar.br, tar.lz4, tar.lz5, tar.liz o tar.Z sigue siendo un solo paso p
 7z x backup.tar.zst -oout
 ```
 
-En PowerShell, pon el parámetro de formato entre comillas, como en `7z a "-ttar.zst" backup.tar.zst docs`. Sin ellas, PowerShell divide `-ttar.zst` en dos y 7z crea un archivo llamado `.zst`. El Símbolo del sistema (cmd) no necesita comillas.
+En PowerShell, pon el parámetro entre comillas: `7z a "-ttar.zst" backup.tar.zst docs`. Sin ellas, PowerShell lo divide en dos y obtienes un archivo llamado `.zst`. En *Command Prompt (cmd)*, el símbolo del sistema, no hacen falta comillas.
 
-## Descarga e instalación
+## Conviene saber
 
-| | Todos los usuarios `.msi` | Solo para ti `-user.msi` | Portátil `.zip` |
-|---|---|---|---|
-| Se instala para | Todas las cuentas del PC | La cuenta actual | No requiere instalación |
-| Requiere permisos de administrador | Sí | No | No |
-| Menú contextual | Primer nivel de Windows 11 | En «Mostrar Más opciones» | Ninguno |
-| Entrada en el menú Inicio | Sí | Sí | No |
-
-Cada uno viene en x64, x86 y arm64; elige el que corresponda a tu Windows: en Windows de 64 bits, es posible que los paquetes x86 no tengan menú contextual. Las compilaciones arm64 aún no se han probado en hardware real. 7-ZSTar se instala junto al 7-Zip oficial y ninguno afecta al otro.
-
-**Windows puede mostrar una advertencia con estas descargas.** Los instaladores y programas no están firmados por una autoridad de certificación, así que Microsoft Defender SmartScreen puede detenerlos con una advertencia la primera vez que ejecutes uno, y en un PC con Windows 11 que tenga Smart App Control activado los instaladores `.msi` se bloquean por completo, sin opción de continuar. Eso no significa que el archivo tenga algún problema: cada release incluye un archivo `SHA256SUMS`, y con él puedes comprobar que lo que descargaste coincide con lo que se publicó. Cómo comprobarlo, qué significa Smart App Control para ti y cómo seguir una vez que la comprobación coincide está en [docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
-
-**Sobre el menú de primer nivel:** Windows 11 solo deja que lleguen al primer nivel los programas con identidad de paquete, así que el MSI para todos los usuarios instala un pequeño paquete MSIX firmado con un certificado autofirmado y marca ese certificado como de confianza. Al desinstalar se quitan ambos. Si prefieres no confiar en él, instala con `msiexec /i 7-ZSTar-<versión>-<arquitectura>.msi SPARSE=0` y el menú se queda en «Mostrar Más opciones». El paquete se registra solo para la cuenta que ejecuta el instalador; las demás cuentas lo registran por separado.
-
-Todos los detalles, incluidas las asociaciones de archivos y la desinstalación, están en [docs/INSTALL.md](../INSTALL.md) (por ahora solo en inglés).
-
-## Limitaciones conocidas
-
-- **Al desmarcar la casilla de integración con el shell se quita el registro del menú contextual.** En el administrador de archivos (`7zFM`), **Herramientas > Opciones > 7-ZSTar** tiene una casilla llamada «Integrar 7-ZSTar al menú contextual del shell». Igual que en el 7-Zip oficial, desmarcarla borra el registro de la extensión del shell (su clave `CLSID`) que creó el instalador, y la entrada de 7-ZSTar desaparece del menú contextual. Con el paquete para todos los usuarios puedes volver a marcarla si el administrador de archivos se ejecuta como administrador. Con el paquete para el usuario actual no se puede: al marcarla de nuevo aparece «Acceso denegado» y la entrada sigue sin aparecer. Para recuperarla, vuelve a ejecutar el `.msi` original y elige *Reparar*.
-- **El menú de primer nivel solo se registra cuando la instalación se ejecuta en una sesión interactiva con sesión iniciada.** Si instalas el `.msi` para todos los usuarios desde una sesión remota o no interactiva (por SSH, o en un despliegue silencioso desde una herramienta de administración), la instalación sigue informando de que fue un éxito, pero el paquete de Windows 11 no se registra, así que solo aparece el menú clásico en «Mostrar Más opciones». Los detalles están en [docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu).
+- **Desactivar «Integrar 7-ZSTar al menú contextual del shell»** (administrador de archivos, **Herramientas > Opciones > 7-ZSTar**) quita la entrada del menú contextual, como en el 7-Zip oficial. Con el paquete para todos los usuarios, se vuelve a activar ejecutando el administrador de archivos con *Ejecutar como administrador*. Con el paquete por usuario no se puede («Acceso denegado.»); ejecuta de nuevo el `.msi` y elige *Repair* (reparar).
+- **Las instalaciones silenciosas o remotas en Windows 11** (por SSH, o desde una herramienta de implementación) se completan, pero la entrada de primer nivel no se registra, así que 7-ZSTar solo aparece en «Mostrar Más opciones». [Más detalles en la guía de instalación](../install/INSTALL.es.md#el-menú-contextual-de-windows-11).
+- **Extraer tar.br, tar.lz4, tar.lz5, tar.liz o tar.Z** sigue siendo un solo paso para ti, pero pasa por un archivo temporal que se elimina después.
 
 ## Requisitos del sistema
 
-Windows 7 o Windows Server 2008 R2 y posteriores (x64, x86); en arm64, Windows 10 y posteriores. No hay que instalar nada más. Este mínimo sale de los requisitos de los paquetes; las versiones anteriores a Windows 11 no se han probado. En Linux hay una versión de línea de comandos que debes compilar tú; macOS no es compatible.
-
-## Sobre este proyecto
-
-7-ZSTar es un fork de 7-Zip más amigable para los usuarios actuales de Windows 11. El núcleo de 7-Zip es excelente, pero algunas cosas no han seguido el ritmo de cómo se trabaja ahora: Windows 11 lo esconde en «Mostrar Más opciones» y no puede comprimir a zstd. 7-ZSTar cubre esos huecos y deja todo lo demás como ya lo conoces.
+Windows 7 / Server 2008 R2 o posterior (x64, x86), o Windows 10 o posterior en arm64. No hace falta instalar nada más. Probado en Windows 7 SP1 de 64 bits (con las actualizaciones posteriores instaladas), Windows 10 y Windows 11; [qué se probó](../install/INSTALL.es.md#requisitos-del-sistema). En Linux hay una compilación de línea de comandos que debes compilar tú; macOS no es compatible.
 
 ## Documentación
 
-Todos los paquetes incluyen `7-zip.chm`, el archivo de ayuda del 7-Zip oficial, sin modificar: **Ayuda > Contenidos** y F1 lo abren. En él dice «7-Zip» en todas partes y no cubre lo que agrega 7-ZSTar; para eso, consulta esta página y [CHANGELOG.md](../../CHANGELOG.md).
+**Ayuda > Contenidos** y F1 abren `7-zip.chm`, el archivo de ayuda del 7-Zip oficial. Dice «7-Zip» en todas partes y no cubre lo que añade 7-ZSTar; eso lo encuentras en esta página y en el [registro de cambios](../../CHANGELOG.md). Si falta el archivo de ayuda, las mismas entradas abren esta sección en línea.
 
-Si el archivo de ayuda no está junto al ejecutable, esas mismas entradas abren esta sección en línea (en inglés).
-
-## Compilar desde el código fuente
-
-Consulta [build/README.md](../../build/README.md). En resumen: VS2022 Build Tools (MSVC v143) y luego `pwsh build\Build.ps1`. Antes de incorporar una nueva versión de upstream, lee [MAINTAINING.md](../../MAINTAINING.md).
+Para compilar 7-ZSTar tú mismo, consulta [build/README.md](../../build/README.md); antes de incorporar una nueva versión upstream, lee [MAINTAINING.md](../../MAINTAINING.md).
 
 <a id="donate"></a>
 
 ## Donar
 
-7-ZSTar es gratis, ayudes o no. Si te ha ahorrado algo de tiempo y quieres darme las gracias, puedes enviar criptomonedas a la dirección de abajo. El dinero es para mí, DraftingDreamer, para cubrir mis propios gastos de desarrollo; no compra funciones, ayuda ni ninguna promesa sobre lo que venga después.
+7-ZSTar es gratis, aportes o no. Si te ha ahorrado algo de tiempo y quieres darme las gracias, puedes enviar criptomonedas a la dirección de abajo. El dinero es para mí, DraftingDreamer, para cubrir mis propios gastos de desarrollo; no compra funciones, asistencia ni ninguna promesa sobre lo que venga después.
 
 Se acepta cualquier token de Ethereum o Polygon: ETH, POL, USDT, USDC u otro. Es la misma dirección en las dos redes.
 
@@ -107,8 +102,6 @@ Darle una estrella a 7-ZSTar en GitHub o recomendárselo a un amigo también ayu
 
 ## Licencia
 
-LGPL v3, consulta [LICENSE](../../LICENSE). Algunas partes tienen otras condiciones: la descompresión RAR, por ejemplo, lleva la restricción unRAR, así que una compilación con soporte para RAR no es puramente LGPL v3. La lista completa está en [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md) y los avisos de derechos de autor de cada componente, en [NOTICE](../../NOTICE).
+LGPL v3, consulta [LICENSE](../../LICENSE). Algunas partes tienen otras condiciones: la descompresión de RAR lleva la restricción unRAR, así que una compilación con compatibilidad con RAR no es puramente LGPL v3. La lista completa está en [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md) y los avisos de copyright, en [NOTICE](../../NOTICE).
 
-## Agradecimientos
-
-7-ZSTar se apoya en los hombros de muchas personas. Gracias a todos los que han dedicado su tiempo a 7-Zip, a los algoritmos de compresión y al código abierto en general. Sin ellos, este software no existiría.
+Gracias a todas las personas que han dedicado su tiempo a 7-Zip, a los algoritmos de compresión y al código abierto en general. Sin ustedes, 7-ZSTar no existiría.

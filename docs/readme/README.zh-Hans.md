@@ -1,3 +1,4 @@
+<!-- synced-with: README.md @ 8d159f1 -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
@@ -5,15 +6,15 @@
 
 [English](../../README.md) · [繁體中文](README.zh-Hant.md) · **简体中文** · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
-**对现代 Windows 11 用户更友好的 7-Zip 分支版：右键菜单第一级就有它，支持 zstd 压缩，tar.zst 一次生成。**
+**对现代 Windows 11 用户更友好的 7-Zip 分支版：右键菜单第一级就有它，支持 zstd 压缩，tar.zst 一步生成。**
 
 [下载](https://github.com/7zStar/7-ZSTar/releases/latest) · [官方网站](https://www.7zstar.com) · [更新日志](../../CHANGELOG.md)
 
 ## 为什么用 7-ZSTar
 
-- **告别“显示更多选项”。** 用“为所有用户安装”的 MSI 装好后，7-ZSTar 直接出现在 Windows 11 右键菜单第一级。
-- **一步到位，磁盘上不留 .tar。** 压缩成 tar.zst、解开 tar.zst 都只要一步，两个方向都不生成 .tar。官方 7-Zip 不能压缩成 .tar.zst，解压也要先解出 .tar，再解一次。
-- **比 7z 快 10 倍。** 压缩真实项目文件夹时，tar.zst 比 7z 快 10 到 18 倍。
+- **告别“显示更多选项”。** 在 Windows 11 上，7-ZSTar 直接出现在右键菜单的第一级。
+- **一步生成 tar.zst。** 把文件夹压缩成 .tar.zst，或者把它解开，都只要一步，磁盘上不会留下 .tar。官方 7-Zip 不能创建 .tar.zst，解开它也要分两步，中间会先解出一个 .tar。
+- **比 7z 快 10 倍左右。** 在真实的项目文件夹上，tar.zst 的压缩速度比 7z 快 10 到 18 倍。
 
 ## 速度实测
 
@@ -23,18 +24,34 @@
 | Python `.venv` | 9,795 | 346 MB | 6.6 秒／107.8 MB | 54.8 秒／65.7 MB | **3.6 秒**／83.4 MB |
 | Python `.venv`（含大型二进制文件） | 11,654 | 671 MB | 25.5 秒／249.5 MB | 100.8 秒／167.2 MB | **5.6 秒**／210.9 MB |
 
-tar.zst 的体积比 zip 小 15% 到 23%，速度也不输 zip。当然，它比 7z 大 15% 到 27%，如果最看重体积，还是选 7z。这里比的是压缩；解压时三者耗时相近，没有速度优势。
+tar.zst 的体积比 zip 小 15% 到 23%，速度也不比 zip 慢。7z 生成的文件仍然最小（tar.zst 比它大 15% 到 27%），但耗时长得多。解压时，三种格式耗时差不多。
 
-zip、7z、tar.zst 均使用默认设置。7-ZSTar 26.05.1 x64（7z.exe），单机（Intel Core Ultra 7 155H，NVMe SSD），三个真实项目文件夹，取 3 次的中位数，2026-11。
+三种格式均使用默认设置；7-ZSTar 26.05.1 x64，Intel Core Ultra 7 155H，NVMe SSD，每项取 3 次运行的中位数，2026-11。
 
 ## 支持的格式
 
-- **一步压缩（8 种）**：tar.zst、tar.br、tar.lz4、tar.lz5、tar.liz、tar.gz、tar.bz2、tar.xz
-- **一步解开（10 种）**：以上 8 种，再加 tar.lzma、tar.Z
-- **新增的压缩算法**：zstd、brotli、lz4、lz5、lizard，既可以作为独立格式，也可以在 .7z 里使用；另有 fast-lzma2 可替代 LZMA2。
-- 7-Zip 原有的格式全部保留。
+- **一步压缩：** tar.zst、tar.br、tar.lz4、tar.lz5、tar.liz、tar.gz、tar.bz2、tar.xz
+- **一步解压：** 以上全部，再加上 tar.lzma 和 tar.Z
+- **新增的压缩算法：** zstd、brotli、lz4、lz5 和 lizard（可单独使用，也可在 .7z 里使用），以及 fast-lzma2（LZMA2 的另一种编码器）
+- 官方 7-Zip 能处理的格式，这里全部照常可用。
 
-解开 tar.br、tar.lz4、tar.lz5、tar.liz、tar.Z 时，操作上同样只要一步，但程序会先解到临时文件，用完即删。
+## 下载
+
+大多数人需要的是“为所有用户安装”的 x64 `.msi`，在 [Releases](https://github.com/7zStar/7-ZSTar/releases/latest) 页面下载。
+
+| | 为所有用户安装 `.msi` | 仅当前用户 `-user.msi` | 免安装 `.zip` |
+|---|---|---|---|
+| 需要管理员权限 | 是 | 否 | 否 |
+| 右键菜单 | Windows 11 上在第一级 | 传统右键菜单（Windows 11 上在“显示更多选项”下） | 无 |
+| 「开始」菜单项 | 有 | 有 | 无 |
+
+每种也都有 x86 和 arm64 版本，请选择与你的 Windows 相符的那个。在 64 位 Windows 上，x86 版本可能没有右键菜单；arm64 版本尚未在真机上运行过。7-ZSTar 可以与官方 7-Zip 同时安装，互不影响。
+
+**第一次运行时，Windows 可能会弹出警告。** 这些文件没有代码签名，所以 SmartScreen 可能会拦截（显示“Windows 已保护你的电脑”，可能需要展开警告才能看到“仍要运行”）；在已打开智能应用控制的 Windows 11 上，`.msi` 会被直接阻止。每个发行版都附有 `SHA256SUMS` 文件，可用来核对你下载的文件。核对方法，以及智能应用控制的应对办法，见[安装说明](../install/INSTALL.zh-Hans.md#未签名的安装包smartscreen-与智能应用控制)。
+
+**关于第一级菜单：** 在 Windows 11 上，“为所有用户安装”的 `.msi` 会额外安装一个用自签名证书签署的小型软件包，并信任这张证书；这是 Windows 对进入第一级菜单的要求。卸载时两者都会移除。如果不想这样，用 `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0` 安装即可。这个软件包只为运行安装程序的账户注册，其他账户需要各自注册。
+
+文件关联、卸载以及“仅当前用户”安装包的细节，见[安装说明](../install/INSTALL.zh-Hans.md)。
 
 ## 命令行
 
@@ -43,47 +60,23 @@ zip、7z、tar.zst 均使用默认设置。7-ZSTar 26.05.1 x64（7z.exe），单
 7z x backup.tar.zst -oout
 ```
 
-在 PowerShell 里，格式参数要加引号，例如 `7z a "-ttar.zst" backup.tar.zst docs`。不加的话，PowerShell 会把 `-ttar.zst` 拆成两个参数，7z 就会创建出一个名为 `.zst` 的文件。命令提示符（cmd）不用加引号。
+在 PowerShell 里，格式参数要加引号：`7z a "-ttar.zst" backup.tar.zst docs`。不加的话，PowerShell 会把它拆成两段，结果生成一个名为 `.zst` 的文件。Command Prompt (cmd)（命令提示符）不用加引号。
 
-## 下载与安装
+## 小提醒
 
-| | 为所有用户安装 `.msi` | 仅当前用户 `-user.msi` | 免安装 `.zip` |
-|---|---|---|---|
-| 安装范围 | 这台电脑的所有账户 | 当前账户 | 无需安装 |
-| 需要管理员权限 | 是 | 否 | 否 |
-| 右键菜单 | Windows 11 第一级 | 在“显示更多选项”里 | 无 |
-| 开始菜单 | 有 | 有 | 无 |
-
-三种都提供 x64、x86、arm64 版本，请选择与 Windows 相同的架构：在 64 位 Windows 上安装 x86 版本，可能没有右键菜单。arm64 版本尚未在真机上运行过。可以和官方 7-Zip 同时安装，互不影响。
-
-**Windows 可能会对这些下载显示警告。** 安装程序和程序文件都没有经过证书颁发机构签发的代码签名，所以第一次运行时，Microsoft Defender SmartScreen 可能会拦截并显示警告；在已开启 Smart App Control 的 Windows 11 电脑上，`.msi` 安装文件则会被直接拦截，而且没有任何可以继续的选项。这并不代表文件有问题：每个 Release 都附有 `SHA256SUMS`，可以用来核对你下载的文件是否与发布的一致。核对方法、Smart App Control 对你的影响，以及核对无误后如何继续安装，见 [docs/INSTALL.md](../INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control)（目前只有英文版）。
-
-**关于第一级菜单**：Windows 11 只允许带有包标识的程序进入第一级，所以“为所有用户安装”的 MSI 会安装一个用自签名证书签署的小型 MSIX 包，并信任这张证书；卸载时一并移除。如果不想信任它，用 `msiexec /i 7-ZSTar-<版本>-<架构>.msi SPARSE=0` 安装，菜单就会留在“显示更多选项”里。这个包只为运行安装程序的账户注册，其他账户需要另行注册。
-
-完整说明（包括文件关联和卸载）见 [docs/INSTALL.md](../INSTALL.md)，目前只有英文版。
-
-## 已知限制
-
-- **取消勾选“添加到右键菜单”会移除右键菜单的注册。** 在文件管理器（`7zFM`）的“工具 ▸ 选项 ▸ 7-ZSTar”页，有一个“添加 7-ZSTar 到右键菜单”复选框。和官方 7-Zip 一样，取消勾选会删掉安装程序创建的外壳扩展注册（`CLSID` 键），7-ZSTar 就从右键菜单消失。“为所有用户安装”的版本以管理员身份运行文件管理器，可以再勾回来；仅当前用户版勾不回来：再勾选会弹出“拒绝访问”，菜单也不会回来。要恢复，请重新运行当初的 `.msi` 安装文件，选择“修复”。
-- **只有在交互式登录的会话中安装，第一级菜单才会注册。** 从远程或非交互式会话安装“为所有用户安装”的 `.msi`（例如通过 SSH，或管理工具的静默部署），安装仍会报告成功，但 Windows 11 包没有注册，只会出现“显示更多选项”里的传统菜单。详情见 [docs/INSTALL.md](../INSTALL.md#the-windows-11-right-click-menu)。
+- **取消勾选“添加 7-ZSTar 到右键菜单”**（文件管理器里的 **工具 > 选项 > 7-ZSTar**）会移除右键菜单项，这一点和官方 7-Zip 一样。“为所有用户安装”版以管理员身份运行文件管理器，就能重新勾上。“仅当前用户”版做不到（会提示“拒绝访问。”）；请重新运行 `.msi`，选择 *Repair*（修复）。
+- **在 Windows 11 上静默安装或远程安装**（通过 SSH，或用部署工具）会成功，但不会注册第一级菜单，7-ZSTar 只会出现在“显示更多选项”下。[安装说明里有更多细节](../install/INSTALL.zh-Hans.md#windows-11-右键菜单)。
+- **解压 tar.br、tar.lz4、tar.lz5、tar.liz 或 tar.Z** 对你来说仍是一步，只是过程中会先解到一个临时文件，结束后自动删除。
 
 ## 系统要求
 
-Windows 7 或 Windows Server 2008 R2 及以上（x64、x86）；arm64 需要 Windows 10 及以上。无需额外安装运行环境。这个下限是根据安装包的要求推算的，比 Windows 11 更早的版本尚未实测。Linux 只提供需要自行构建的命令行版本，不支持 macOS。
-
-## 项目定位
-
-7-ZSTar 是对现代 Windows 11 用户更友好的 7-Zip 分支版。7-Zip 的内核很出色，但有些地方没跟上现在的使用习惯：Windows 11 把它收在“显示更多选项”里，也不能压缩成 zstd。7-ZSTar 补上这些短板，其余操作都和 7-Zip 一样，不用改变使用习惯。
+Windows 7 / Server 2008 R2 及以上（x64、x86），或 arm64 上的 Windows 10 及以上。无需另外安装任何东西。已在 64 位 Windows 7 SP1（已装后续更新）、Windows 10 和 Windows 11 上实测；[测试了哪些项目](../install/INSTALL.zh-Hans.md#系统要求)。Linux 上有需要自行编译的命令行版本；不支持 macOS。
 
 ## 说明文档
 
-每个安装包都附带官方 7-Zip 的帮助文件，从“帮助”菜单或按 F1 打开，内容未做改动，所以写的是“7-Zip”，也不包含 7-ZSTar 新增的功能；新增内容请看本页和 [CHANGELOG.md](../../CHANGELOG.md)。
+**帮助 > 帮助** 和 F1 会打开 `7-zip.chm`，也就是官方 7-Zip 的帮助文件。其中通篇写的是“7-Zip”，也没有涵盖 7-ZSTar 新增的功能；这些内容请看本页和[更新日志](../../CHANGELOG.md)。如果找不到帮助文件，同样的入口会改为在线打开这一部分。
 
-如果可执行文件旁边没有帮助文件，这些入口会改为打开本项目 GitHub 页面的这一段（英文版）。
-
-## 从源代码构建
-
-见 [build/README.md](../../build/README.md)。简单来说：装好 VS2022 Build Tools（MSVC v143），再运行 `pwsh build\Build.ps1`。合并上游新版本之前，请先读 [MAINTAINING.md](../../MAINTAINING.md)。
+想自己构建 7-ZSTar，请看 [build/README.md](../../build/README.md)；合并上游新版本之前，请先读 [MAINTAINING.md](../../MAINTAINING.md)。
 
 <a id="donate"></a>
 
@@ -107,8 +100,6 @@ Ethereum 和 Polygon 链上的资产都收，ETH、POL、USDT、USDC 或其他�
 
 ## 许可证
 
-LGPL v3，见 [LICENSE](../../LICENSE)。部分内容另有条款，例如 RAR 解压受 unRAR 限制，因此带 RAR 支持的版本不是纯 LGPL v3。完整清单见 [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md)，各组件的版权声明见 [NOTICE](../../NOTICE)。
+采用 LGPL v3，见 [LICENSE](../../LICENSE)。部分内容另有条款：RAR 解压受 unRAR 限制，因此带 RAR 支持的版本并不是纯粹的 LGPL v3。完整清单见 [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md)，各组件的版权声明见 [NOTICE](../../NOTICE)。
 
-## 致谢
-
-7-ZSTar 站在许多人的肩膀上。感谢每一位为 7-Zip、各种压缩算法和开源世界付出过的人，没有你们，就没有这个软件。
+感谢每一位为 7-Zip、压缩算法以及整个开源世界付出过时间的人。没有你们，就没有 7-ZSTar。

@@ -1,3 +1,4 @@
+<!-- synced-with: README.md @ 8d159f1 -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="../logo/wordmark-dark@3x.png">
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
@@ -5,36 +6,54 @@
 
 [English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · [Tiếng Việt](README.vi.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · **Esperanto**
 
-**7-Zip-disbranĉo pli amika al modernaj uzantoj de Windows 11: komandoj en la unua nivelo de la kunteksta menuo, zstd-densigo kaj tar.zst en unu trairo.**
+*Se la enhavo malkonsentas kun la angla versio, validas la angla versio.*
 
-[Elŝuti](https://github.com/7zStar/7-ZSTar/releases/latest) · [Retejo](https://www.7zstar.com/eo/) · [Ŝanĝoprotokolo](../../CHANGELOG.md)
+**7-Zip-disbranĉo pli amika al modernaj uzantoj de Windows 11: la kunteksta menuo en la unua nivelo, zstd-densigo kaj tar.zst en unu paŝo.**
+
+[Elŝuti](https://github.com/7zStar/7-ZSTar/releases/latest) · [Retejo](https://www.7zstar.com) · [Ŝanĝoprotokolo](../../CHANGELOG.md)
 
 ## Kial 7-ZSTar
 
-- **Preterpasu «Show more options» (Montri pliajn opciojn).** Instalu la MSI por ĉiuj uzantoj, kaj 7-ZSTar staros en la unua nivelo de la kunteksta menuo de Windows 11 (dekstra klako).
-- **Unu trairo. Neniu .tar sur la disko.** Densigi al tar.zst kaj elarĥivigi ĝin estas po unu paŝo, kaj en neniu direkto estas skribata .tar. La oficiala 7-Zip ne povas krei arĥivon .tar.zst kaj elarĥivigas tian en du paŝoj, tra .tar.
-- **10× pli rapide ol 7z.** Ĉe realaj projektaj dosierujoj tar.zst densigis 10 ĝis 18 foje pli rapide ol 7z.
+- **Ne plu «Show more options» (Montri pliajn opciojn).** En Windows 11, 7-ZSTar estas rekte en la unua nivelo de la dekstraklaka menuo.
+- **tar.zst en unu paŝo.** Densigu dosierujon al .tar.zst, aŭ elarĥivigu tian, en unu paŝo, sen ke restu .tar sur la disko. La oficiala 7-Zip ne povas krei .tar.zst kaj elarĥivigas tian en du paŝoj, tra .tar.
+- **Ĉirkaŭ 10× pli rapide ol 7z.** Ĉe realaj projektaj dosierujoj tar.zst densigis 10 ĝis 18 foje pli rapide.
 
 ## Rapido
 
 | Dosierujo | Dosieroj | Origina grando | zip | 7z | tar.zst |
 |---|---|---|---|---|---|
-| Node `node_modules` | 13 371 | 207 MB | 4,1 s / 76,7 MB | 38,4 s / 51,8 MB | **3,8 s** / 59,7 MB |
-| Python `.venv` | 9 795 | 346 MB | 6,6 s / 107,8 MB | 54,8 s / 65,7 MB | **3,6 s** / 83,4 MB |
-| Python `.venv` (grandaj duumaj dosieroj) | 11 654 | 671 MB | 25,5 s / 249,5 MB | 100,8 s / 167,2 MB | **5,6 s** / 210,9 MB |
+| Node `node_modules` | 13,371 | 207 MB | 4.1 s / 76.7 MB | 38.4 s / 51.8 MB | **3.8 s** / 59.7 MB |
+| Python `.venv` | 9,795 | 346 MB | 6.6 s / 107.8 MB | 54.8 s / 65.7 MB | **3.6 s** / 83.4 MB |
+| Python `.venv` (grandaj duumaj dosieroj) | 11,654 | 671 MB | 25.5 s / 249.5 MB | 100.8 s / 167.2 MB | **5.6 s** / 210.9 MB |
 
-tar.zst donis arĥivojn 15 ĝis 23 % pli malgrandajn ol zip, kaj ne pli malrapide. Ĝi estas tamen 15 ĝis 27 % pli granda ol 7z, do se plej gravas la plej malgranda dosiero, 7z restas la pli bona elekto. Tiuj nombroj rilatas al densigo; ĉe elarĥivigo ĉiuj tri bezonis proksimume same da tempo.
+tar.zst estis 15 ĝis 23 % pli malgranda ol zip, kaj ne pli malrapida. 7z ankoraŭ kreas la plej malgrandajn dosierojn (tar.zst estis 15 ĝis 27 % pli granda), sed bezonis multe pli da tempo. Elarĥivigo daŭris proksimume same ĉe ĉiuj tri.
 
-zip, 7z kaj tar.zst ĉiuj kun la implicitaj agordoj. 7-ZSTar 26.05.1 x64 (7z.exe), unu komputilo (Intel Core Ultra 7 155H, NVMe SSD), tri realaj projektaj dosierujoj, mediano de 3 mezuroj, 2026-11.
+Implicitaj agordoj por ĉiuj tri; 7-ZSTar 26.05.1 x64, Intel Core Ultra 7 155H, NVMe SSD, mediano de 3 mezuroj, 2026-11.
 
 ## Formatoj
 
-- **Densigo en unu paŝo (8):** tar.zst, tar.br, tar.lz4, tar.lz5, tar.liz, tar.gz, tar.bz2, tar.xz
-- **Elarĥivigo en unu paŝo (10):** tiuj 8, plus tar.lzma kaj tar.Z
-- **Aldonitaj kodekoj:** zstd, brotli, lz4, lz5 kaj lizard, ĉiu kiel memstara formato kaj kiel metodo en .7z, plus fast-lzma2 kiel alternativa kodilo de LZMA2.
-- Ĉiu formato, kiun 7-Zip jam subtenas, restas ĉi tie.
+- **Densigo en unu paŝo:** tar.zst, tar.br, tar.lz4, tar.lz5, tar.liz, tar.gz, tar.bz2, tar.xz
+- **Elarĥivigo en unu paŝo:** ĉiuj tiuj, plus tar.lzma kaj tar.Z
+- **Aldonitaj kodekoj:** zstd, brotli, lz4, lz5 kaj lizard (memstare aŭ ene de .7z), plus fast-lzma2, alternativa kodilo de LZMA2
+- Ĉiu formato, kiun la oficiala 7-Zip traktas, daŭre funkcias.
 
-Elarĥivigo de tar.br, tar.lz4, tar.lz5, tar.liz aŭ tar.Z restas unu paŝo por vi, sed 7-ZSTar unue maldensigas al meza dosiero kaj poste forigas ĝin.
+## Elŝuto
+
+Plej multaj homoj volas la `.msi` x64 por ĉiuj uzantoj el [Eldonoj](https://github.com/7zStar/7-ZSTar/releases/latest).
+
+| | Por ĉiuj uzantoj `.msi` | Nur por vi `-user.msi` | Portebla `.zip` |
+|---|---|---|---|
+| Bezonas administrator rights (administrantajn rajtojn) | Jes | Ne | Ne |
+| Kunteksta menuo | Unua nivelo en Windows 11 | Klasika menuo (en Windows 11 sub «Show more options») | Neniu |
+| Ero en Start menu (la starta menuo) | Jes | Jes | Ne |
+
+Ĉiu estas ankaŭ por x86 kaj arm64; elektu tiun, kiu kongruas kun via Windows. En 64-bita Windows la pakaĵoj x86 eble ne havas dekstraklakan menuon, kaj la kompilaĵoj arm64 ankoraŭ ne estis provitaj sur reala aparataro. 7-ZSTar instaliĝas apud la oficiala 7-Zip sen influi ĝin.
+
+**Windows povas averti vin la unuan fojon.** La dosieroj ne estas kodsubskribitaj, do SmartScreen povas haltigi ilin («Windows protected your PC» (Windows protektis vian komputilon); eble necesas malfermi la averton por vidi *Run anyway* (rulu tamen)), kaj en Windows 11 kun ŝaltita Smart App Control (inteligenta kontrolo de aplikaĵoj) la `.msi` estas tute blokita. Ĉiu eldono havas dosieron `SHA256SUMS`, kun kiu vi povas kontroli vian elŝuton. [La instalaj klarigoj](../install/INSTALL.eo.md#nesubskribitaj-pakaĵoj-smartscreen-kaj-smart-app-control) klarigas kiel, kaj kion fari pri Smart App Control.
+
+**Pri la menuo en la unua nivelo:** en Windows 11 la `.msi` por ĉiuj uzantoj aldonas malgrandan pakaĵon subskribitan per memsubskribita atestilo kaj fidas tiun atestilon; tion Windows postulas por la unua nivelo. Malinstalo forigas ambaŭ. Se vi preferas ne fari tion, instalu per `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0`. La pakaĵo estas registrita por la konto, kiu rulas la instalilon; aliaj kontoj registras ĝin aparte.
+
+Dosierasocioj, malinstalo kaj la pakaĵo por unu uzanto estas priskribitaj en [la instalaj klarigoj](../install/INSTALL.eo.md).
 
 ## Komandlinio
 
@@ -43,47 +62,23 @@ Elarĥivigo de tar.br, tar.lz4, tar.lz5, tar.liz aŭ tar.Z restas unu paŝo por 
 7z x backup.tar.zst -oout
 ```
 
-En PowerShell metu la formatan opcion inter citilojn, ekzemple `7z a "-ttar.zst" backup.tar.zst docs`. Sen ili PowerShell dividas `-ttar.zst` en du kaj 7z kreas dosieron nomatan `.zst`. Command Prompt (cmd) ne bezonas citilojn.
+En PowerShell metu la opcion inter citilojn: `7z a "-ttar.zst" backup.tar.zst docs`. Sen citiloj PowerShell dividas ĝin en du kaj vi ricevas dosieron nomatan `.zst`. Command Prompt (cmd) (la komandlinia fenestro) ne bezonas citilojn.
 
-## Elŝuto kaj instalo
+## Bone scii
 
-| | Por ĉiuj uzantoj `.msi` | Nur por vi `-user.msi` | Portebla `.zip` |
-|---|---|---|---|
-| Instalas por | Ĉiu konto en la komputilo | La nuna konto | Neniu instalo necesas |
-| Bezonas administrantajn rajtojn | Jes | Ne | Ne |
-| Kunteksta menuo | Unua nivelo de Windows 11 | Sub «Show more options» | Neniu |
-| Ero en la Starta menuo | Jes | Jes | Ne |
-
-Ĉiu venas en x64, x86 kaj arm64; elektu tiun, kiu kongruas kun via Windows: en 64-bita Windows la pakaĵoj x86 eble ne havas kuntekstan menuon. La kompilaĵoj arm64 ankoraŭ ne funkciis sur reala aparataro. 7-ZSTar instaliĝas apud la oficiala 7-Zip, kaj neniu influas la alian.
-
-**Windows povas averti pri ĉi tiuj elŝutoj.** La instaliloj kaj programoj ne estas kodsubskribitaj de atestila aŭtoritato, do Microsoft Defender SmartScreen povas haltigi ilin per averto la unuan fojon, kiam vi rulas iun, kaj en komputilo kun Windows 11 kaj ŝaltita Smart App Control la instalilojn `.msi` oni tute blokas, sen ebleco daŭrigi. Tio ne signifas, ke la dosiero estas malbona: ĉiu eldono havas dosieron `SHA256SUMS`, kaj vi povas kontroli, ĉu via elŝuto kongruas kun tio, kio estis publikigita. Kiel kontroli, kion Smart App Control signifas por vi, kaj kiel daŭrigi post kiam la dosiero kongruas, troviĝas en [docs/INSTALL.md](https://github.com/7zStar/7-ZSTar/blob/main/docs/INSTALL.md#unsigned-packages-smartscreen-and-smart-app-control).
-
-**Pri la menuo en la unua nivelo:** Windows 11 enlasas en la unuan nivelon nur programojn kun pakaĵa identeco, do la MSI por ĉiuj uzantoj instalas malgrandan MSIX-pakaĵon subskribitan per memsubskribita atestilo kaj aldonas tiun atestilon al la fidataj atestiloj. Malinstalo forigas ambaŭ. Se vi preferas ne fidi ĝin, instalu per `msiexec /i 7-ZSTar-<versio>-<arkitekturo>.msi SPARSE=0`, kaj la menuo restas sub «Show more options». La pakaĵo estas registrita nur por la konto, kiu rulas la instalilon; aliaj kontoj registras ĝin aparte.
-
-La kompletaj detaloj, inkluzive de dosierasocioj kaj malinstalo, troviĝas en [docs/INSTALL.md](https://github.com/7zStar/7-ZSTar/blob/main/docs/INSTALL.md) (nur en la angla).
-
-## Konataj limigoj
-
-- **Malmarki la markobutonon pri integriĝo en la ŝelon forigas la registradon de la dekstraklaka menuo.** En la dosieradministrilo (`7zFM`), sub **Agordoj > Agordoj... > 7-ZSTar**, estas markobutono nomata «Metu 7-ZSTar'on en kuntekstan menuon de ŝelo». Same kiel en la oficiala 7-Zip, malmarki ĝin forigas la registradon de la ŝela etendaĵo (ĝian ŝlosilon `CLSID`), kiun kreis la instalilo, kaj la ero de 7-ZSTar malaperas el la kunteksta menuo. Ĉe la pakaĵo por ĉiuj uzantoj vi povas marki la butonon denove, se la dosieradministrilo funkcias kiel administranto. Ĉe la pakaĵo nur por vi ne eblas: nova marko montras «Access is denied» (Aliro rifuzita), kaj la ero restas for. Por restarigi ĝin, rulu denove la originalan `.msi` kaj elektu *Repair* (Ripari).
-- **La menuo en la unua nivelo estas registrita nur se la instalo okazas en interaga, ensalutinta seanco.** Instali la `.msi` por ĉiuj uzantoj el fora aŭ neinteraga seanco (per SSH, aŭ silenta disponigo el administra ilo) ankoraŭ raportas sukceson, sed la pakaĵo por Windows 11 ne estas registrita, do aperas nur la klasika menuo sub «Show more options». Detaloj estas en [docs/INSTALL.md](https://github.com/7zStar/7-ZSTar/blob/main/docs/INSTALL.md#the-windows-11-right-click-menu).
+- **Malŝalti «Metu 7-ZSTar'on en kuntekstan menuon de ŝelo»** (dosiermastrumilo, **Agordoj > Agordoj... > 7-ZSTar**) forigas la dekstraklakan eron, same kiel en la oficiala 7-Zip. Ĉe la pakaĵo por ĉiuj uzantoj vi povas reŝalti ĝin per rulado de la dosiermastrumilo per «run as administrator» (kiel administranto). Ĉe la pakaĵo por unu uzanto tio ne eblas («Access is denied» (Aliro rifuzita)); rulu la `.msi` denove kaj elektu *Repair* (ripari).
+- **Silentaj aŭ foraj instaloj en Windows 11** (per SSH, aŭ el disponiga ilo) sukcesas, sed la ero en la unua nivelo ne estas registrita, do 7-ZSTar aperas nur sub «Show more options». [Pli en la instalaj klarigoj](../install/INSTALL.eo.md#la-kunteksta-menuo-de-windows-11).
+- **Elarĥivigo de tar.br, tar.lz4, tar.lz5, tar.liz aŭ tar.Z** restas unu paŝo por vi, sed pasas tra provizora dosiero, kiu poste estas forigita.
 
 ## Sistemaj postuloj
 
-Windows 7 aŭ Windows Server 2008 R2 kaj pli novaj (x64, x86); ĉe arm64 Windows 10 kaj pli novaj. Nenio alia estas instalenda. Tiu limo venas el la postuloj de la pakaĵoj; versioj pli malnovaj ol Windows 11 ne estis testitaj. Por Linux ekzistas komandlinia versio, kiun vi mem kompilas; macOS ne estas subtenata.
-
-## Pri ĉi tiu projekto
-
-7-ZSTar estas 7-Zip-disbranĉo pli amika al modernaj uzantoj de Windows 11. La kerno de 7-Zip estas bonega, sed kelkaj aferoj ne sekvis la hodiaŭan manieron de laboro: Windows 11 kaŝas ĝin sub «Show more options», kaj ĝi ne povas densigi al zstd. 7-ZSTar plenigas tiujn mankojn kaj lasas ĉion alian tia, kian vi konas.
+Windows 7 / Server 2008 R2 aŭ pli nova (x64, x86), aŭ Windows 10 aŭ pli nova ĉe arm64. Nenio alia estas instalenda. Provita en 64-bita Windows 7 SP1 (kun poste eldonitaj ĝisdatigoj instalitaj), Windows 10 kaj Windows 11; [kio estis provita](../install/INSTALL.eo.md#sistemaj-postuloj). Por Linux ekzistas komandlinia kompilaĵo, kiun vi mem kompilas; macOS ne estas subtenata.
 
 ## Dokumentaro
 
-Ĉiu pakaĵo enhavas `7-zip.chm`, la helpan dosieron de la oficiala 7-Zip, senŝanĝan: **Helpo > Enhavo...** kaj F1 malfermas ĝin. Ĝi diras "7-Zip" ĉie kaj ne priskribas tion, kion aldonas 7-ZSTar; pri tio vidu ĉi tiun paĝon kaj [CHANGELOG.md](../../CHANGELOG.md).
+**Helpo > Enhavo...** kaj F1 malfermas `7-zip.chm`, la helpan dosieron de la oficiala 7-Zip. Ĝi diras «7-Zip» ĉie kaj ne priskribas tion, kion aldonas 7-ZSTar; tion faras ĉi tiu paĝo kaj la [ŝanĝoprotokolo](../../CHANGELOG.md). Se la helpa dosiero mankas, samaj eroj malfermas ĉi tiun sekcion rete.
 
-Se la helpa dosiero ne troviĝas apud la plenumebla dosiero, samaj eroj malfermas ĉi tiun sekcion rete anstataŭe (en la angla).
-
-## Konstruo el la fontkodo
-
-Vidu [build/README.md](../../build/README.md). Mallonge: VS2022 Build Tools (MSVC v143), poste `pwsh build\Build.ps1`. Antaŭ ol kunfandi novan eldonon de la originalo (upstream), legu [MAINTAINING.md](../../MAINTAINING.md).
+Por kompili 7-ZSTar mem, vidu [build/README.md](../../build/README.md); antaŭ ol kunfandi novan eldonon de la originalo (upstream), legu [MAINTAINING.md](../../MAINTAINING.md).
 
 <a id="donate"></a>
 
@@ -107,8 +102,6 @@ Se vi donas stelon al 7-ZSTar ĉe GitHub aŭ rekomendas ĝin al amiko, ankaŭ ti
 
 ## Permesilo
 
-LGPL v3, vidu [LICENSE](../../LICENSE). Iuj partoj havas aliajn kondiĉojn: ekzemple RAR-maldensigo portas la limigon unRAR, do kompilaĵo kun RAR-subteno ne estas pure LGPL v3. La kompleta listo troviĝas en [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md), kaj la kopirajtaj avizoj de ĉiuj komponantoj en [NOTICE](../../NOTICE).
+LGPL v3, vidu [LICENSE](../../LICENSE). Iuj partoj havas aliajn kondiĉojn: RAR-maldensigo portas la limigon unRAR, do kompilaĵo kun RAR-subteno ne estas pure LGPL v3. La kompleta listo troviĝas en [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md), kaj la kopirajtaj avizoj estas en [NOTICE](../../NOTICE).
 
-## Dankoj
-
-7-ZSTar staras sur la ŝultroj de multaj homoj. Dankon al ĉiuj, kiuj donis sian tempon al 7-Zip, al densigaj algoritmoj kaj al la malfermitkoda mondo ĝenerale. Sen vi ĉi tiu programo ne ekzistus.
+Dankon al ĉiuj, kiuj donis sian tempon al 7-Zip, al densigaj algoritmoj kaj al la malfermitkoda mondo ĝenerale. Sen vi 7-ZSTar ne ekzistus.
