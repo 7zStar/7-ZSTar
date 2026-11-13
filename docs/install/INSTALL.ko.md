@@ -41,7 +41,7 @@ Windows Vista와 Server 2008은 그 중간에 있습니다. 바이너리는 로�
 
 **Linux는 명령줄 빌드로만 지원하며, macOS는 지원하지 않습니다.**
 이 포크는 자체 makefile로 gcc를 사용해 네이티브 `7zz`(`Alone2` 콘솔 프로그램)를 빌드합니다.
-이 makefile은 upstream의 makefile을 포함할 뿐 upstream 파일은 하나도 수정하지 않습니다.
+이 makefile은 upstream의 makefile을 포함할 뿐 그 makefile은 하나도 수정하지 않습니다.
 `cd CPP/7zip/Bundles/Alone2 && make -j"$(nproc)" -f makefile.7zstar.gcc`.
 Ubuntu 24.04, gcc 13.3(x86-64)에서만 빌드와 테스트를 마쳤습니다.
 upstream의 플래그로 빌드해도 경고가 없고, 77개 항목의 스모크 테스트를 통과하며,

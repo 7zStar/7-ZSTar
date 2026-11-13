@@ -55,7 +55,7 @@ Cảnh báo không chứng minh một tệp là xấu, và việc không có c�
 
 Khi các mã băm khớp và bạn yên tâm về nguồn gốc của tệp:
 
-- **`.msi`**: khởi chạy như bình thường. Nếu SmartScreen chặn lại, hãy chọn tùy chọn để vẫn chạy ("Run anyway" trên Windows tiếng Anh, "Chạy dù thế nào đi nữa" trên Windows tiếng Việt). Có thể phải mở rộng cửa sổ cảnh báo trước: trên máy Windows 10 được thử nghiệm, nó chỉ có một nút để không chạy tệp cho đến khi nhấp vào liên kết bên dưới thông báo. Sau đó `.msi` cho mọi người dùng sẽ yêu cầu quản trị viên phê duyệt như mọi trình cài đặt khác.
+- **`.msi`**: khởi chạy như bình thường. Nếu SmartScreen chặn lại, hãy chọn tùy chọn để vẫn chạy ("Run anyway" trên Windows tiếng Anh). Có thể phải mở rộng cửa sổ cảnh báo trước: trên máy Windows 10 được thử nghiệm, nó chỉ có một nút để không chạy tệp cho đến khi nhấp vào liên kết bên dưới thông báo. Sau đó `.msi` cho mọi người dùng sẽ yêu cầu quản trị viên phê duyệt như mọi trình cài đặt khác.
 - **`.zip`**: giải nén rồi khởi chạy `7zFM.exe` hoặc `7z.exe` từ thư mục. Các chương trình bên trong cũng không được ký, nên Windows có thể hiện cùng cảnh báo đó vào lần đầu bạn khởi chạy từng chương trình.
 
 SmartScreen cảnh báo dựa trên mức độ phổ biến của một tệp, không chỉ dựa trên chữ ký; một tệp ít người tải về có thể gây ra cảnh báo ngay cả khi đã được ký. Không có gì ở đây thay đổi điều đó, và không bước nào ở trên tắt SmartScreen.

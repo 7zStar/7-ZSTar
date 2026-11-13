@@ -219,7 +219,7 @@ s-a înregistrat normal.
 ### Pachetul pe utilizator
 
 `7-ZSTar-<version>-<arch>-user.msi` se instalează doar pentru contul curent, în
-`%LOCALAPPDATA%\Programs\7-ZSTar`, fără solicitare UAC. Tot ce înregistrează
+`%LOCALAPPDATA%\Programs\7-ZSTar`, fără solicitarea Control cont utilizator. Tot ce înregistrează
 se află sub `HKCU`; pachetul nu scrie nimic în `HKLM` (în afară de evidența proprie a Windows Installer). Ce nu face
 așa cum face pachetul pe mașină:
 
@@ -257,7 +257,7 @@ Windows 7 nu are aplicația Setări: 7-ZSTar este listat în
 Control Panel (Panou de control) > Programe implicite > *Setare programe implicite*, ceea ce înseamnă
 *Aplicații implicite* din acest ghid acolo. Atribuirea formatelor din acele
 două pagini nu a fost testată. Programul de instalare înregistrează 7-ZSTar ca aplicație
-Default Programs - un ProgID pentru fiecare format, cu pictograma și comanda de deschidere, o
+Programe implicite - un ProgID pentru fiecare format, cu pictograma și comanda de deschidere, o
 intrare în lista *Deschidere cu* a fiecărei extensii și blocul Capabilities pe care Windows îl
 citește - dar nu revendică în mod deliberat niciun tip de fișier: care program vă deschide
 arhivele este decizia dumneavoastră și tocmai asta face ca 7-ZSTar și 7-Zip oficial să nu se încurce

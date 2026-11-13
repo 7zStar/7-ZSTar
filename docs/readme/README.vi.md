@@ -4,7 +4,7 @@
   <img src="../logo/wordmark-light@3x.png" alt="7-ZSTar" width="230">
 </picture>
 
-[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · **Tiếng Việt** · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
+[English](../../README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [日本語](README.ja.md) · **Tiếng Việt** · [Русский](README.ru.md) · [한국어](README.ko.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Türkçe](README.tr.md) · [Nederlands](README.nl.md) · [Українська](README.uk.md) · [Bahasa Indonesia](README.id.md) · [ไทย](README.th.md) · [Čeština](README.cs.md) · [Magyar](README.hu.md) · [Română](README.ro.md) · [Svenska](README.sv.md) · [Ελληνικά](README.el.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md) · [فارسی](README.fa.md) · [עברית](README.he.md) · [Esperanto](README.eo.md)
 
 *Nếu có điểm nào khác với bản tiếng Anh, hãy lấy bản tiếng Anh làm chuẩn.*
 
@@ -66,7 +66,7 @@ Trong PowerShell, hãy đặt tham số trong dấu ngoặc kép: `7z a "-ttar.z
 
 ## Cần biết
 
-- **Tắt “Tích hợp 7-ZSTar vào menu ngữ cảnh”** (trình quản lý tệp, **Công cụ > Tùy chọn > 7-ZSTar**) sẽ xóa mục trong menu chuột phải, giống như 7-Zip chính thức. Với gói cho mọi người dùng, bật lại bằng cách chạy trình quản lý tệp với quyền quản trị viên (*Chạy với tư cách quản trị viên*). Với gói riêng bạn thì không được (“Access is denied.”); hãy chạy lại tệp `.msi` và chọn *Repair* (sửa chữa).
+- **Tắt “Tích hợp 7-ZSTar vào menu ngữ cảnh”** (trình quản lý tệp, **Công cụ > Tùy chọn > 7-ZSTar**) sẽ xóa mục trong menu chuột phải, giống như 7-Zip chính thức. Với gói cho mọi người dùng, bật lại bằng cách chạy trình quản lý tệp với quyền quản trị viên. Với gói riêng bạn thì không được (“Access is denied.”); hãy chạy lại tệp `.msi` và chọn *Repair* (sửa chữa).
 - **Cài đặt im lặng hoặc từ xa trên Windows 11** (qua SSH, hoặc từ một công cụ triển khai) vẫn thành công, nhưng mục ở cấp đầu tiên không được đăng ký, nên 7-ZSTar chỉ xuất hiện trong “Xem thêm tùy chọn”. [Xem thêm trong hướng dẫn cài đặt](../install/INSTALL.vi.md#menu-chuột-phải-của-windows-11).
 - **Giải nén tar.br, tar.lz4, tar.lz5, tar.liz hoặc tar.Z** với bạn vẫn là một bước, nhưng phải đi qua một tệp tạm và tệp này được xóa sau đó.
 

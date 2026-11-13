@@ -129,7 +129,7 @@ Paketregistreringen sker per användare, och installationsprogrammet kör den ba
 
 ### Paketet per användare
 
-`7-ZSTar-<version>-<arch>-user.msi` installerar bara för det aktuella kontot, i `%LOCALAPPDATA%\Programs\7-ZSTar`, utan UAC-fråga. Allt det registrerar hamnar under `HKCU`; paketet skriver ingenting till `HKLM` (bortsett från Windows Installers egen bokföring). Det den inte gör på samma sätt som paketet per dator:
+`7-ZSTar-<version>-<arch>-user.msi` installerar bara för det aktuella kontot, i `%LOCALAPPDATA%\Programs\7-ZSTar`, utan fråga från User Account Control. Allt det registrerar hamnar under `HKCU`; paketet skriver ingenting till `HKLM` (bortsett från Windows Installers egen bokföring). Det den inte gör på samma sätt som paketet per dator:
 
 - **Ingen meny på första nivån i Windows 11.** I Windows 11 finns 7-ZSTar i högerklicksmenyn under *Visa fler alternativ*. Posten på första nivån kräver att det självsignerade certifikatet är betrott på hela datorn, vilket kräver en Administratör: uppmätt i Windows 11 räcker inte ett certifikat i `CurrentUser\TrustedPeople` för att Windows ska distribuera paketet. Därför utelämnar paketet per användare den.
 - **Ett av de två per dator.** Varje paket vägrar installeras medan det andra är installerat; avinstallera det ena innan du installerar det andra. Paketet per dator kan bara se kopian per användare för det konto som kör det, så en annan användares installation per användare upptäcks inte.

@@ -160,7 +160,7 @@ Las asociaciones establecidas en la columna **Todos los usuarios** no las toca e
 
 ## Idiomas
 
-Cada paquete incluye las traducciones de upstream, unos 90 idiomas. Elige uno en **Herramientas > Opciones > Lenguaje**; el MSI también permite omitirlos con la instalación *Custom* (personalizada). 7-ZSTar intenta seguir el idioma del sistema en el primer inicio, pero esa detección se rinde y se queda en inglés cuando los ajustes de Windows "language for non-Unicode programs" (idioma para programas que no son Unicode) y «Formato regional» no coinciden: elegir un idioma a mano siempre funciona.
+Cada paquete incluye las traducciones de upstream, poco más de 90 idiomas. Elige uno en **Herramientas > Opciones > Lenguaje**; el MSI también permite omitirlos con la instalación *Custom* (personalizada). 7-ZSTar intenta seguir el idioma del sistema en el primer inicio, pero esa detección se rinde y se queda en inglés cuando los ajustes de Windows "language for non-Unicode programs" (idioma para programas que no son Unicode) y «Formato regional» no coinciden: elegir un idioma a mano siempre funciona.
 
 Las cadenas que añadió el propio 7-ZSTar, es decir, los campos de nivel y de diccionario de zstd y los nombres de los nuevos formatos de archivo, no tienen traducción de upstream y siguen en inglés. La excepción son los botones **Donar** y **Sitio web** del cuadro de diálogo «Acerca de 7-ZSTar»: 67 de los 92 idiomas tienen una palabra para cada uno y los otros 25 muestran inglés (`Lang/UPSTREAM.md` los enumera).
 Las traducciones se incorporan tal cual desde upstream, no se escriben aquí: consulta [Lang/UPSTREAM.md](../../Lang/UPSTREAM.md).

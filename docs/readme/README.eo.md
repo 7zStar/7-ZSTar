@@ -10,7 +10,7 @@
 
 **7-Zip-disbranĉo pli amika al modernaj uzantoj de Windows 11: la kunteksta menuo en la unua nivelo, zstd-densigo kaj tar.zst en unu paŝo.**
 
-[Elŝuti](https://github.com/7zStar/7-ZSTar/releases/latest) · [Retejo](https://www.7zstar.com) · [Ŝanĝoprotokolo](../../CHANGELOG.md)
+[Elŝuto](https://github.com/7zStar/7-ZSTar/releases/latest) · [Retejo](https://www.7zstar.com) · [Ŝanĝoprotokolo](../../CHANGELOG.md)
 
 ## Kial 7-ZSTar
 

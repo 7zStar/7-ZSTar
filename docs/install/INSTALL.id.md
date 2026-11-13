@@ -50,7 +50,7 @@ toolchain tidak mendukungnya, penginstal tidak akan berjalan di sana, dan
 Fork ini membangun `7zz` native (program konsol `Alone2`) dengan gcc melalui
 makefile miliknya sendiri, yang menyertakan makefile upstream dan tidak mengubah satu pun darinya:
 `cd CPP/7zip/Bundles/Alone2 && make -j"$(nproc)" -f makefile.7zstar.gcc`.
-Build ini baru dibangun dan diuji pada Ubuntu 24.04 dengan gcc 13.3 (x86-64): build
+Build ini hanya pernah dibangun dan diuji pada Ubuntu 24.04 dengan gcc 13.3 (x86-64): build
 bebas peringatan dengan flag upstream, smoke test 77 pemeriksaan lulus,
 dan 25 vektor interop buatan Windows serta 37 buatan Linux memberi
 hasil yang sama seperti di Windows. Dua file milik fork yang disentuh oleh port ini tetap
@@ -220,7 +220,7 @@ dibangun tanpa bahasa lain), dan halaman selesainya memiliki *Launch
 ### Menu klik kanan Windows 11
 
 Di Windows 11, entri 7-ZSTar berada di menu tingkat pertama, tidak terkubur di bawah *Tampilkan opsi lainnya*
-seperti 7-Zip resmi dan WinRAR. Windows 11 hanya menampilkan
+tempat 7-Zip resmi dan WinRAR masih berada. Windows 11 hanya menampilkan
 ekstensi shell di sana jika disertai identitas paket, sehingga MSI menyertakan
 paket MSIX kecil yang hanya berisi identitas di samping program dan mendaftarkannya saat
 instalasi. Registrasi klasik tetap dipertahankan. Registrasi itulah yang menempatkan entri
@@ -401,7 +401,7 @@ akun lain, dan 7-Zip resmi berperilaku sama.
 
 ## Bahasa
 
-Setiap paket membawa terjemahan dari upstream, sekitar 90 bahasa lebih. Pilih satu di **Peralatan > Pilihan > Bahasa**;
+Setiap paket membawa terjemahan dari upstream, lebih dari 90 bahasa. Pilih satu di **Peralatan > Pilihan > Bahasa**;
 MSI juga memungkinkan Anda tidak menyertakannya pada jenis penyiapan *Custom*. 7-ZSTar mencoba mengikuti bahasa sistem
 saat pertama kali dijalankan, tetapi deteksi itu menyerah dan tetap berbahasa Inggris ketika "language for
 non-Unicode programs" (bahasa untuk program non-Unicode) di Windows dan pengaturan Format regional
