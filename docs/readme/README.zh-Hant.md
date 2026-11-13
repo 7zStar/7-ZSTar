@@ -14,9 +14,9 @@
 
 ## 為什麼用 7-ZSTar
 
-- **不用再點「顯示其他選項」。** 用全機安裝的 MSI 裝好，7-ZSTar 直接出現在 Windows 11 右鍵選單第一層。
-- **一次到位，磁碟上沒有 .tar。** 壓縮成 tar.zst、解開 tar.zst 都是一步完成，兩個方向都不會寫出 .tar。官方 7-Zip 不能壓縮成 .tar.zst，解壓縮也要先解出 .tar、再解一次。
-- **比 7z 快 10 倍。** 壓縮實際的專案資料夾，tar.zst 比 7z 快 10 到 18 倍。
+- **不用再點「顯示其他選項」。** 在 Windows 11 上，7-ZSTar 就在右鍵選單的第一層。
+- **一步做出 tar.zst。** 把資料夾壓成 .tar.zst，或把它解開，都只要一步，磁碟上不會留下 .tar。官方 7-Zip 做不出 .tar.zst，解開它也要兩步，中間會先產生一個 .tar。
+- **比 7z 快 10 倍左右。** 拿實際的專案資料夾來壓，tar.zst 比 7z 快 10 到 18 倍。
 
 ## 速度實測
 
@@ -26,18 +26,34 @@
 | Python `.venv` | 9,795 | 346 MB | 6.6 秒／107.8 MB | 54.8 秒／65.7 MB | **3.6 秒**／83.4 MB |
 | Python `.venv`（含大型二進位檔） | 11,654 | 671 MB | 25.5 秒／249.5 MB | 100.8 秒／167.2 MB | **5.6 秒**／210.9 MB |
 
-tar.zst 比 zip 小 15 到 23%，速度也不輸 zip。不過它比 7z 大 15 到 27%，最在乎檔案大小的話，還是選 7z。這裡比的是壓縮；解壓縮時，三種格式花的時間差不多。
+tar.zst 比 zip 小 15% 到 23%，速度也不輸 zip。最小的檔案還是 7z 做得出來（tar.zst 比它大 15% 到 27%），但 7z 花的時間多很多。解壓縮時，三種格式花的時間差不多。
 
-zip、7z、tar.zst 都用預設值壓縮。7-ZSTar 26.05.1 x64（7z.exe）、單機（Intel Core Ultra 7 155H、NVMe SSD）、三個實際專案資料夾、3 輪中位數、2026-11。
+三種格式都用預設設定；7-ZSTar 26.05.1 x64、Intel Core Ultra 7 155H、NVMe SSD，每項跑 3 次取中位數，2026 年 11 月測。
 
 ## 支援的格式
 
-- **一步壓縮（8 種）**：tar.zst、tar.br、tar.lz4、tar.lz5、tar.liz、tar.gz、tar.bz2、tar.xz
-- **一步解開（10 種）**：以上 8 種，加上 tar.lzma、tar.Z
-- **新增的壓縮方式**：zstd、brotli、lz4、lz5、lizard，可以當獨立格式，也可以用在 .7z 裡；另有 fast-lzma2 可替代 LZMA2。
-- 7-Zip 原本支援的格式都還在。
+- **一步壓縮：** tar.zst、tar.br、tar.lz4、tar.lz5、tar.liz、tar.gz、tar.bz2、tar.xz
+- **一步解壓縮：** 上面全部，再加上 tar.lzma 和 tar.Z
+- **新增的編碼器：** zstd、brotli、lz4、lz5、lizard（可以單獨使用，也可以用在 .7z 裡），以及 fast-lzma2（另一種 LZMA2 編碼器）
+- 官方 7-Zip 能處理的格式，這裡全部都能用。
 
-解開 tar.br、tar.lz4、tar.lz5、tar.liz、tar.Z 時，操作上一樣是一步，但程式會先解到暫存檔，用完刪除。
+## 下載
+
+大多數人下載全機安裝的 x64 `.msi` 就對了，在 [Releases](https://github.com/7zStar/7-ZSTar/releases/latest) 頁面。
+
+| | 全機安裝 `.msi` | 只裝給自己 `-user.msi` | 免安裝 `.zip` |
+|---|---|---|---|
+| 需要系統管理員權限 | 要 | 不用 | 不用 |
+| 右鍵選單 | Windows 11 上在第一層 | 傳統選單（Windows 11 上在「顯示其他選項」裡） | 沒有 |
+| [開始] 功能表項目 | 有 | 有 | 沒有 |
+
+每一種也都有 x86 和 arm64 版，請選和你的 Windows 相符的那個。在 64 位元 Windows 上，x86 版可能沒有右鍵選單；arm64 版還沒在實機上跑過。7-ZSTar 可以和官方 7-Zip 同時安裝，互不影響。
+
+**第一次執行時，Windows 可能會跳出警告。** 這些檔案沒有程式碼簽章，所以 SmartScreen 可能會擋下來，顯示「Windows 已保護您的電腦」（可能要先點「其他資訊」才看得到「仍要執行」）；在開啟了智慧型應用程式控制（Smart App Control）的 Windows 11 上，`.msi` 會直接被封鎖。每個發行版都附有 `SHA256SUMS`，可以用來核對你下載的檔案。怎麼核對、遇到智慧型應用程式控制該怎麼辦，請看 [安裝說明](../install/INSTALL.zh-Hant.md#未簽章的安裝包smartscreen-與智慧型應用程式控制)。
+
+**關於第一層選單：** 在 Windows 11 上，全機安裝的 `.msi` 會加裝一個用自簽憑證簽署的小套件，並信任這張憑證，這是 Windows 讓程式進入第一層的條件。解除安裝時兩者都會移除。如果不想這樣，用 `msiexec /i 7-ZSTar-<version>-<arch>.msi SPARSE=0` 安裝即可。這個套件只替執行安裝的帳號註冊，其他帳號會各自註冊。
+
+檔案關聯、解除安裝和「只裝給自己」版的細節，都寫在 [安裝說明](../install/INSTALL.zh-Hant.md)。
 
 ## 命令列
 
@@ -46,55 +62,31 @@ zip、7z、tar.zst 都用預設值壓縮。7-ZSTar 26.05.1 x64（7z.exe）、單
 7z x backup.tar.zst -oout
 ```
 
-在 PowerShell 裡，格式參數要加引號，例如 `7z a "-ttar.zst" backup.tar.zst docs`。不加的話，PowerShell 會把 `-ttar.zst` 拆成兩個參數，7z 就會建出一個名叫 `.zst` 的檔案。命令提示字元（cmd）不用加引號。
+在 PowerShell 裡，格式參數要加引號：`7z a "-ttar.zst" backup.tar.zst docs`。不加的話，PowerShell 會把它拆成兩段，結果做出一個叫 `.zst` 的檔案。命令提示字元（cmd）不用加。
 
-## 下載與安裝
+## 小提醒
 
-| | 全機安裝 `.msi` | 個別使用者 `-user.msi` | 免安裝 `.zip` |
-|---|---|---|---|
-| 安裝給 | 這台電腦所有帳號 | 目前帳號 | 不用安裝 |
-| 需要系統管理員權限 | 是 | 否 | 否 |
-| 右鍵選單 | Windows 11 第一層 | 傳統選單（Windows 11 上在「顯示其他選項」裡） | 沒有 |
-| [開始] 功能表 | 有 | 有 | 沒有 |
-
-三種都有 x64、x86、arm64 版，請選和 Windows 相同的架構：在 64 位元 Windows 上裝 x86 版，可能沒有右鍵選單。arm64 版還沒在實機上跑過。可以和官方 7-Zip 同時安裝，互不影響。
-
-**Windows 可能會對這些下載顯示警告。** 安裝程式和程式檔都沒有經過憑證授權單位簽發的程式碼簽署，所以第一次執行時，Microsoft Defender SmartScreen 可能會擋下來並顯示警告；在已開啟智慧型應用程式控制的 Windows 11 電腦上，`.msi` 安裝檔則會直接被封鎖，而且沒有任何可以繼續的選項。這不代表檔案有問題：每個 Release 都附有 `SHA256SUMS`，可以用來核對你下載的檔案是否和發布的一致。核對方法、智慧型應用程式控制對你的影響，以及核對無誤後如何繼續安裝，見 [docs/install/INSTALL.zh-Hant.md](../install/INSTALL.zh-Hant.md#未簽章的安裝包smartscreen-與智慧型應用程式控制)。
-
-**關於第一層選單**：Windows 11 只讓帶有套件身分的程式進第一層，所以在 Windows 11 上，全機 MSI 會安裝一個自簽憑證簽署的小型 MSIX 套件，並信任這張憑證；解除安裝時一併移除。不想信任的話，用 `msiexec /i 7-ZSTar-<版本>-<架構>.msi SPARSE=0` 安裝，選單就會留在「顯示其他選項」裡。套件只替執行安裝的帳號註冊，其他帳號要另外註冊。
-
-完整說明（含檔案關聯與解除安裝）在 [docs/install/INSTALL.zh-Hant.md](../install/INSTALL.zh-Hant.md)。
-
-## 已知限制
-
-- **取消勾選「整合到右鍵選單」會移除右鍵選單的註冊。** 在檔案管理員（`7zFM`）的「工具 > 選項 > 7-ZSTar」中，有一個「將 7-ZSTar 整合到快顯功能表中」核取方塊。和官方 7-Zip 一樣，取消勾選會刪掉安裝程式建立的殼層擴充註冊（`CLSID` 機碼），7-ZSTar 就從右鍵選單消失。全機安裝版以系統管理員身分執行檔案管理員，可以再勾回來；個別使用者版勾不回來：再勾選會顯示「存取被拒」，選單也不會回來。要補回，請重新執行當初的 `.msi` 安裝檔，選擇 *Repair*（修復）。
-- **第一層選單只有在互動式登入的工作階段安裝時才會註冊。** 從遠端或非互動的工作階段安裝全機 `.msi`（例如透過 SSH，或管理工具的靜默部署），安裝仍會回報成功，但 Windows 11 套件沒有註冊，只會出現「顯示其他選項」裡的傳統選單。詳情見 [docs/install/INSTALL.zh-Hant.md](../install/INSTALL.zh-Hant.md#windows-11-右鍵選單)。
+- **關掉「將 7-ZSTar 整合到快顯功能表中」**（檔案管理員的「工具 > 選項 > 7-ZSTar」）會讓右鍵選單裡的 7-ZSTar 消失，這點和官方 7-Zip 一樣。全機安裝版只要用系統管理員身分執行檔案管理員，就能再打開。「只裝給自己」版沒辦法這樣打開（會顯示「存取被拒」）；請重新執行原本的 `.msi`，選 *Repair*（修復）。
+- **在 Windows 11 上用靜默或遠端方式安裝**（例如透過 SSH，或用部署工具），安裝會成功，但第一層選單不會註冊，7-ZSTar 只會出現在「顯示其他選項」裡。[安裝說明裡有詳細說明](../install/INSTALL.zh-Hant.md#windows-11-右鍵選單)。
+- **解壓縮 tar.br、tar.lz4、tar.lz5、tar.liz 或 tar.Z** 對你來說一樣是一步完成，只是過程中會先解到暫存檔，結束後自動刪除。
 
 ## 系統需求
 
-Windows 7 或 Windows Server 2008 R2 以上（x64、x86）；arm64 需要 Windows 10 以上。不用另外安裝執行環境。這個下限是依套件需求推得。實測過的環境有 Windows 7 SP1（已裝後續更新）、Windows 10 22H2 和 Windows 11，皆為 64 位元；Windows 8 與 8.1、32 位元 Windows、Windows Server 和 arm64 實機則沒有測過。Linux 只提供自行建置的命令列版本，不支援 macOS。
-
-## 專案定位
-
-7-ZSTar 是對現代 Windows 11 使用者更友善的 7-Zip 分支版。7-Zip 的核心很出色，但有些地方沒跟上現在的使用方式：Windows 11 把它收在「顯示其他選項」裡，也不能壓縮成 zstd。7-ZSTar 補上這些缺口，其他操作都和 7-Zip 一樣，原本的使用習慣不用改。
+Windows 7／Server 2008 R2 以上（x64、x86），arm64 需要 Windows 10 以上。不用另外安裝任何東西。已在 64 位元的 Windows 7 SP1（已裝後續更新）、Windows 10 和 Windows 11 上實測；[測了哪些項目](../install/INSTALL.zh-Hant.md#系統需求)。Linux 上有命令列版本，需要自行建置；不支援 macOS。
 
 ## 說明文件
 
-每個套件都附官方 7-Zip 的說明檔，按「說明 > 內容」或 F1 開啟，內容原封不動，所以寫的是「7-Zip」，也不含 7-ZSTar 新增的功能；新增的內容請看本頁與 [CHANGELOG.md](../../CHANGELOG.md)。
+「說明 > 內容」和 F1 會開啟官方 7-Zip 的說明檔 `7-zip.chm`。裡面寫的都是「7-Zip」，也沒有涵蓋 7-ZSTar 新增的功能；這些請看本頁和 [更新紀錄](../../CHANGELOG.md)。如果找不到說明檔，同樣的選項會改為在線上開啟這一段。
 
-如果執行檔旁沒有說明檔，這些選項會改為在線上開啟本頁的這一節。
-
-## 從原始碼建置
-
-見 [build/README.md](../../build/README.md)。簡單說：裝好 VS2022 Build Tools（MSVC v143），再執行 `pwsh build\Build.ps1`。要合併上游新版前，先讀 [MAINTAINING.md](../../MAINTAINING.md)。
+想自己建置 7-ZSTar，請看 [build/README.md](../../build/README.md)；要合併上游的新版本之前，請先讀 [MAINTAINING.md](../../MAINTAINING.md)。
 
 <a id="donate"></a>
 
 ## 贊助
 
-7-ZSTar 可以免費使用，贊不贊助都一樣。如果它幫你省了一些時間，想說聲謝謝，可以把加密貨幣轉到下面的地址。這筆錢給我，也就是 DraftingDreamer，用在我自己的開發開銷上，不換取功能、協助或任何後續承諾。
+7-ZSTar 是免費的，你贊助或不贊助都一樣能用。如果它幫你省了時間，想表達謝意，可以把加密貨幣轉到下面的地址。這筆錢給我，也就是 DraftingDreamer，用在我自己的開發開銷上，不換取功能、協助或任何後續承諾。
 
-Ethereum 或 Polygon 鏈上的資產都收，ETH、POL、USDT、USDC 或其他代幣都歡迎。兩條鏈用同一個地址。
+Ethereum 或 Polygon 上的任何代幣都可以（ETH、POL、USDT、USDC 或其他），兩條鏈用同一個地址：
 
 ```
 0x6c60bFCaDfb3AD63eC6D821baB0E6323361BFD4f
@@ -103,15 +95,13 @@ Ethereum 或 Polygon 鏈上的資產都收，ETH、POL、USDT、USDC 或其他�
 <img src="../donate-qr.png" width="200" alt="贊助地址的 QR Code">
 
 - 只收 Ethereum（ERC20）和 Polygon 鏈上的轉帳。若兩者都有，建議用 Polygon，手續費通常比較低。
-- 官方地址只有這一個，我不會要求任何人改轉到別的地址。
-- 鏈上轉帳無法撤回，所以無法退款。
+- 這是唯一的官方地址，我不會要求你轉到其他地址。
+- 轉帳無法撤回，所以也無法退款。
 
-在 GitHub 幫 7-ZSTar 按星星，或介紹給朋友，也是幫忙。
+在 GitHub 上幫 7-ZSTar 按個星星，或推薦給朋友，也是很大的幫助。
 
 ## 授權
 
-LGPL v3，見 [LICENSE](../../LICENSE)。部分內容另有條款，例如 RAR 解壓縮受 unRAR 限制，因此含 RAR 支援的版本不是純 LGPL v3。完整清單見 [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md)，各元件的版權聲明見 [NOTICE](../../NOTICE)。
+採用 LGPL v3，見 [LICENSE](../../LICENSE)。有些部分另有條款：RAR 解壓縮受 unRAR 限制約束，所以含 RAR 支援的版本並不完全是 LGPL v3。完整清單在 [LICENSE-EXCEPTIONS.md](../../LICENSE-EXCEPTIONS.md)，各元件的著作權聲明在 [NOTICE](../../NOTICE)。
 
-## 致謝
-
-7-ZSTar 站在許多人的肩膀上。謝謝每一位為 7-Zip、各種壓縮演算法和開放原始碼世界付出過的人，沒有你們，就沒有這個軟體。
+感謝每一位為 7-Zip、壓縮演算法和整個開源世界付出時間的人。沒有你們，就沒有 7-ZSTar。
