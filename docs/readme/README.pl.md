@@ -45,7 +45,7 @@ Większość osób potrzebuje pliku `.msi` x64 dla wszystkich użytkowników z [
 |---|---|---|---|
 | Wymaga uprawnień administratora | Tak | Nie | Nie |
 | Menu kontekstowe | Pierwszy poziom w Windows 11 | Menu klasyczne (w Windows 11 pod „Pokaż więcej opcji”) | Brak |
-| Wpis w Start menu (menu Start) | Tak | Tak | Nie |
+| Wpis w Menu Start | Tak | Tak | Nie |
 
 Każdy z nich jest dostępny także dla x86 i arm64; wybierz ten, który pasuje do Twojego Windows. W 64-bitowym Windows pakiety x86 mogą nie mieć menu kontekstowego, a wersji arm64 nie wypróbowano jeszcze na prawdziwym sprzęcie. 7-ZSTar instaluje się obok oficjalnego 7-Zip i nie wpływa na jego działanie.
 
@@ -66,7 +66,7 @@ W PowerShellu ujmij przełącznik w cudzysłów: `7z a "-ttar.zst" backup.tar.zs
 
 ## Warto wiedzieć
 
-- **Wyłączenie opcji „Zintegruj program 7-ZSTar z menu kontekstowym powłoki”** (menedżer plików, **Narzędzia > Opcje > 7-ZSTar**) usuwa wpis z menu kontekstowego, tak jak w oficjalnym 7-Zip. W pakiecie dla wszystkich użytkowników włączysz ją z powrotem, uruchamiając menedżer plików w trybie *run as administrator* (jako administrator). W pakiecie dla bieżącego użytkownika nie da się tego zrobić („Odmowa dostępu.”); uruchom `.msi` jeszcze raz i wybierz *Repair* (napraw).
+- **Wyłączenie opcji „Zintegruj program 7-ZSTar z menu kontekstowym powłoki”** (menedżer plików, **Narzędzia > Opcje > 7-ZSTar**) usuwa wpis z menu kontekstowego, tak jak w oficjalnym 7-Zip. W pakiecie dla wszystkich użytkowników włączysz ją z powrotem, uruchamiając menedżer plików za pomocą polecenia *Uruchom jako administrator*. W pakiecie dla bieżącego użytkownika nie da się tego zrobić („Odmowa dostępu.”); uruchom `.msi` jeszcze raz i wybierz *Repair* (napraw).
 - **Ciche lub zdalne instalacje w Windows 11** (przez SSH albo z narzędzia do wdrażania) kończą się powodzeniem, ale wpis na pierwszym poziomie nie jest rejestrowany, więc 7-ZSTar pojawia się tylko pod „Pokaż więcej opcji”. [Więcej w instrukcji instalacji](../install/INSTALL.pl.md#menu-kontekstowe-windows-11).
 - **Rozpakowywanie tar.br, tar.lz4, tar.lz5, tar.liz lub tar.Z** dla Ciebie nadal jest jednym krokiem, ale przechodzi przez plik tymczasowy, który potem jest usuwany.
 

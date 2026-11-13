@@ -43,9 +43,9 @@ De flesta vill ha `.msi` för alla användare, x64, från [Releaser](https://git
 
 | | Alla användare `.msi` | Bara du `-user.msi` | Portabel `.zip` |
 |---|---|---|---|
-| Kräver administratörsbehörighet | Ja | Nej | Nej |
+| Kräver Administratör | Ja | Nej | Nej |
 | Högerklicksmeny | Första nivån i Windows 11 | Klassiska menyn (under ”Visa fler alternativ” i Windows 11) | Ingen |
-| Start menu (Startmenyn) | Ja | Ja | Nej |
+| Start-menyn | Ja | Ja | Nej |
 
 Alla finns även för x86 och arm64; välj den som passar din Windows. I 64-bitars Windows kanske x86-paketen saknar högerklicksmeny, och arm64-byggena har ännu inte prövats på riktig hårdvara. 7-ZSTar installeras vid sidan av den officiella versionen av 7-Zip utan att påverka den.
 
@@ -66,7 +66,7 @@ I PowerShell ska du sätta växeln inom citattecken: `7z a "-ttar.zst" backup.ta
 
 ## Bra att veta
 
-- **Om du stänger av ”Lägg till i 7-ZSTar som alternativ i Utforskarens snabbmeny”** (i filhanteraren, **Verktyg > Alternativ... > 7-ZSTar**) försvinner posten i högerklicksmenyn, precis som i den officiella versionen av 7-Zip. Med paketet för alla användare slår du på den igen genom att köra filhanteraren som administratör. Med paketet per användare går det inte (”Åtkomst nekad.”); kör `.msi` igen och välj *Repair* (reparera).
+- **Om du stänger av ”Lägg till i 7-ZSTar som alternativ i Utforskarens snabbmeny”** (i filhanteraren, **Verktyg > Alternativ... > 7-ZSTar**) försvinner posten i högerklicksmenyn, precis som i den officiella versionen av 7-Zip. Med paketet för alla användare slår du på den igen genom att köra filhanteraren med Kör som administratör. Med paketet per användare går det inte (”Åtkomst nekad.”); kör `.msi` igen och välj *Repair* (reparera).
 - **Tysta eller fjärrinstallationer i Windows 11** (över SSH, eller från ett distributionsverktyg) lyckas, men posten på första nivån registreras inte, så 7-ZSTar syns bara under ”Visa fler alternativ”. [Mer i INSTALL.sv.md](../install/INSTALL.sv.md#högerklicksmenyn-i-windows-11).
 - **Uppackning av tar.br, tar.lz4, tar.lz5, tar.liz eller tar.Z** är fortfarande ett enda steg för dig, men går via en temporär fil som tas bort efteråt.
 

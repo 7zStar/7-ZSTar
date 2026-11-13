@@ -43,9 +43,9 @@ Majoritatea utilizatorilor vor fișierul `.msi` x64 pentru toți utilizatorii, d
 
 | | `.msi` pentru toți utilizatorii | `-user.msi` doar pentru dvs. | `.zip` portabil |
 |---|---|---|---|
-| Necesită drepturi de administrator | Da | Nu | Nu |
+| Necesită drepturi de Administrator | Da | Nu | Nu |
 | Meniul contextual | Primul nivel în Windows 11 | Meniul clasic (în Windows 11, sub „Afișați mai multe opțiuni”) | Niciunul |
-| Intrare în Start menu (meniul Start) | Da | Da | Nu |
+| Intrare în Meniul Start | Da | Da | Nu |
 
 Fiecare există și pentru x86 și arm64; alegeți-l pe cel care corespunde versiunii dvs. de Windows. În Windows pe 64 de biți, este posibil ca pachetele x86 să nu aibă meniu contextual, iar variantele arm64 nu au fost încă încercate pe hardware real. 7-ZSTar se instalează alături de 7-Zip oficial, fără să îl afecteze.
 
@@ -66,7 +66,7 @@ Asocierile de fișiere, dezinstalarea și pachetul pe utilizator sunt descrise �
 
 ## Bine de știut
 
-- **Dezactivarea opțiunii „Integrează 7-ZSTar în meniul contextual”** (în managerul de fișiere, **Unelte > Opţiuni... > 7-ZSTar**) elimină intrarea din meniul contextual, ca în 7-Zip oficial. Cu pachetul pentru toți utilizatorii, o reactivați pornind managerul de fișiere ca administrator. Cu pachetul pe utilizator nu se poate („Access is denied.”); rulați din nou `.msi`-ul și alegeți *Repair* (reparare).
+- **Dezactivarea opțiunii „Integrează 7-ZSTar în meniul contextual”** (în managerul de fișiere, **Unelte > Opţiuni... > 7-ZSTar**) elimină intrarea din meniul contextual, ca în 7-Zip oficial. Cu pachetul pentru toți utilizatorii, o reactivați pornind managerul de fișiere cu „Executare ca administrator”. Cu pachetul pe utilizator nu se poate („Access is denied.”); rulați din nou `.msi`-ul și alegeți *Repair* (reparare).
 - **Instalările silențioase sau de la distanță în Windows 11** (prin SSH sau dintr-o unealtă de distribuire) reușesc, dar intrarea de prim nivel nu este înregistrată, așa că 7-ZSTar apare doar sub „Afișați mai multe opțiuni”. [Mai multe în ghidul de instalare](../install/INSTALL.ro.md#meniul-contextual-din-windows-11).
 - **Extragerea unui fișier tar.br, tar.lz4, tar.lz5, tar.liz sau tar.Z** rămâne un singur pas pentru dvs., dar trece printr-un fișier temporar, care este șters după aceea.
 

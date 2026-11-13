@@ -119,7 +119,7 @@ Setelah hash cocok dan Anda yakin dengan asal file:
   tetap menjalankannya ("Run anyway" pada Windows berbahasa Inggris; "Tetap jalankan"). Jendela peringatan
   mungkin perlu diperluas dulu: pada mesin Windows 10 yang diuji, jendela itu
   hanya menawarkan tombol untuk tidak menjalankan file ("Jangan jalankan") sampai tautan di bawah pesannya
-  ("Informasi lainnya") diklik. `.msi` untuk semua pengguna kemudian meminta persetujuan administrator seperti
+  ("Informasi lainnya") diklik. `.msi` untuk semua pengguna kemudian meminta persetujuan Administrator seperti
   penginstal lainnya.
 - **`.zip`** - ekstrak lalu jalankan `7zFM.exe` atau `7z.exe` dari folder tersebut. Program
   di dalamnya juga tidak ditandatangani, sehingga Windows mungkin menampilkan peringatan yang sama
@@ -164,7 +164,7 @@ dan memeriksa `SHA256SUMS` tidak mengubahnya. Yang mengubahnya adalah mematikan 
 Pintar di aplikasi Keamanan Windows, di bagian Pengaturan Kontrol Aplikasi Pintar (pada Windows berbahasa Mandarin Tradisional yang diuji: Windows 安全性, 應用程式與瀏覽器控制, 智慧型應用程式控制設定).
 Dalam pengujian, memilih opsi Nonaktif berlaku seketika tanpa restart, dan penginstal
 kemudian berhasil diinstal. Ini adalah pengaturan untuk seluruh PC dan tidak ada yang
-di sini meminta Anda mengubahnya: itu keputusan Anda, atau keputusan administrator Anda pada PC yang dikelola.
+di sini meminta Anda mengubahnya: itu keputusan Anda, atau keputusan Administrator Anda pada PC yang dikelola.
 
 Perlu diketahui juga lebih dulu apakah pengaturan itu bisa dihidupkan kembali. FAQ Microsoft
 menyatakan pembaruan Windows terbaru memungkinkan Kontrol Aplikasi Pintar diaktifkan lagi
@@ -273,7 +273,7 @@ alat manajemen - tetap melaporkan berhasil, tetapi paket Windows 11 tidak
 terdaftar, sehingga hanya menu klasik di bawah *Tampilkan opsi lainnya* yang muncul. Dalam
 pengujian, `msiexec /i ... /qn` dari sesi SSH (sesi 0) selesai dengan kode 0
 sementara `Setup-ShellIntegration.ps1` melaporkan `registration failed: 0x80070005`
-(akses ditolak); `.msi` yang sama yang diinstal dari sesi konsol administrator
+(akses ditolak); `.msi` yang sama yang diinstal dari sesi konsol Administrator
 terdaftar secara normal.
 
 `-Status` mencetak apa yang sudah dan belum terpasang.
@@ -287,7 +287,7 @@ sendiri). Hal yang tidak dilakukannya seperti paket per mesin:
 
 - **Tidak ada menu tingkat pertama Windows 11.** Di Windows 11, 7-ZSTar berada di
   menu klik kanan di bawah *Tampilkan opsi lainnya*. Entri tingkat pertama memerlukan
-  sertifikat self-signed yang dipercaya di seluruh mesin, yang membutuhkan administrator:
+  sertifikat self-signed yang dipercaya di seluruh mesin, yang membutuhkan Administrator:
   diukur di Windows 11, sertifikat di `CurrentUser\TrustedPeople` tidak
   cukup agar Windows men-deploy paket tersebut. Jadi paket per pengguna
   tidak menyertakannya.

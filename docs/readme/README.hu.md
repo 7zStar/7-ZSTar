@@ -43,9 +43,9 @@ A legtöbben a minden felhasználónak szóló x64 `.msi` fájlt keresik, amely 
 
 | | Minden felhasználónak `.msi` | Csak neked `-user.msi` | Hordozható `.zip` |
 |---|---|---|---|
-| Rendszergazdai jogosultság szükséges | Igen | Nem | Nem |
+| Rendszergazda szükséges | Igen | Nem | Nem |
 | Jobb gombos menü | Első szint Windows 11-en | Klasszikus menü (Windows 11-en a „További lehetőségek megjelenítése” alatt) | Nincs |
-| Start menu (Start-menü) bejegyzés | Igen | Igen | Nem |
+| Start menü bejegyzés | Igen | Igen | Nem |
 
 Mindegyik x86 és arm64 változatban is elérhető; válaszd azt, amelyik megfelel a Windowsodnak. 64 bites Windowson az x86 csomagoknak előfordulhat, hogy nincs jobb gombos menüjük, az arm64 buildeket pedig még nem próbálták ki valódi hardveren. A 7-ZSTar a hivatalos 7-Zip mellett települ, anélkül hogy az működésére hatással lenne.
 
@@ -66,7 +66,7 @@ PowerShellben tedd idézőjelbe a kapcsolót: `7z a "-ttar.zst" backup.tar.zst d
 
 ## Jó tudni
 
-- **A „7-ZSTar hozzáadása a parancsértelmező helyi menüjéhez” kikapcsolása** (fájlkezelő, **Eszközök > Beállítások... > 7-ZSTar**) eltávolítja a jobb gombos bejegyzést, ahogy a hivatalos 7-Zipben is. A minden felhasználónak szóló csomagnál a fájlkezelő rendszergazdaként való futtatásával kapcsolhatod vissza. A felhasználónkénti csomagnál ez nem megy („A hozzáférés megtagadva.”); futtasd újra az `.msi` fájlt, és válaszd a *Repair* (javítás) lehetőséget.
+- **A „7-ZSTar hozzáadása a parancsértelmező helyi menüjéhez” kikapcsolása** (fájlkezelő, **Eszközök > Beállítások... > 7-ZSTar**) eltávolítja a jobb gombos bejegyzést, ahogy a hivatalos 7-Zipben is. A minden felhasználónak szóló csomagnál a fájlkezelő Futtatás rendszergazdaként paranccsal való indításával kapcsolhatod vissza. A felhasználónkénti csomagnál ez nem megy („A hozzáférés megtagadva.”); futtasd újra az `.msi` fájlt, és válaszd a *Repair* (javítás) lehetőséget.
 - **A csendes vagy távoli telepítés Windows 11-en** (SSH-n keresztül, vagy telepítőeszközből) sikeres, de az első szintű bejegyzés nem regisztrálódik, így a 7-ZSTar csak a „További lehetőségek megjelenítése” alatt jelenik meg. [Részletek az INSTALL.md-ben](../install/INSTALL.hu.md#a-windows-11-jobb-gombos-menüje).
 - **A tar.br, tar.lz4, tar.lz5, tar.liz vagy tar.Z kicsomagolása** számodra továbbra is egy lépés, de egy ideiglenes fájlon keresztül megy, amelyet utána törlünk.
 

@@ -66,7 +66,7 @@ V PowerShellu dejte přepínač do uvozovek: `7z a "-ttar.zst" backup.tar.zst do
 
 ## Dobré vědět
 
-- **Vypnutí volby „Integrovat 7-ZSTar do kontextového menu“** (správce souborů, **Nástroje > Možnosti > 7-ZSTar**) odebere položku z nabídky po kliknutí pravým tlačítkem, stejně jako v oficiálním 7-Zip. U balíčku pro všechny uživatele ji znovu zapnete spuštěním správce souborů jako správce. U balíčku jen pro vás to nejde („Přístup byl odepřen.“); spusťte `.msi` znovu a zvolte *Repair*.
+- **Vypnutí volby „Integrovat 7-ZSTar do kontextového menu“** (správce souborů, **Nástroje > Možnosti > 7-ZSTar**) odebere položku z nabídky po kliknutí pravým tlačítkem, stejně jako v oficiálním 7-Zip. U balíčku pro všechny uživatele ji znovu zapnete spuštěním správce souborů příkazem „Spustit jako správce“. U balíčku jen pro vás to nejde („Přístup byl odepřen.“); spusťte `.msi` znovu a zvolte *Repair*.
 - **Tichá nebo vzdálená instalace ve Windows 11** (přes SSH nebo z nástroje pro nasazení) proběhne úspěšně, ale položka na první úrovni se nezaregistruje, takže se 7-ZSTar zobrazí jen pod „Zobrazit další možnosti“. [Více v Instalaci](../install/INSTALL.cs.md#kontextová-nabídka-windows-11).
 - **Rozbalení tar.br, tar.lz4, tar.lz5, tar.liz nebo tar.Z** je pro vás pořád jeden krok, jen prochází dočasným souborem, který se potom smaže.
 

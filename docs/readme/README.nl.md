@@ -43,9 +43,9 @@ De meeste mensen willen de x64 `.msi` voor alle gebruikers van [Releases](https:
 
 | | Alle gebruikers `.msi` | Alleen jij `-user.msi` | Draagbare `.zip` |
 |---|---|---|---|
-| Beheerdersrechten nodig | Ja | Nee | Nee |
+| Administrator vereist | Ja | Nee | Nee |
 | Rechtsklikmenu | Eerste niveau op Windows 11 | Klassiek menu (op Windows 11 onder “Meer opties weergeven”) | Geen |
-| Start menu-item (item in het Startmenu) | Ja | Ja | Nee |
+| Item in het Startmenu | Ja | Ja | Nee |
 
 Elk is er ook voor x86 en arm64; kies het pakket dat bij je Windows past. Op 64-bits Windows hebben de x86-pakketten mogelijk geen rechtsklikmenu, en de arm64-builds zijn nog niet op echte hardware geprobeerd. 7-ZSTar wordt naast het officiële 7-Zip geïnstalleerd, zonder dat te beïnvloeden.
 
@@ -66,7 +66,7 @@ Zet in PowerShell de schakelaar tussen aanhalingstekens: `7z a "-ttar.zst" backu
 
 ## Goed om te weten
 
-- **“7-ZSTar integreren in het contextmenu” uitzetten** (bestandsbeheer, **Extra > Opties... > 7-ZSTar**) haalt het rechtsklikitem weg, net als in het officiële 7-Zip. Bij het pakket voor alle gebruikers zet je het weer aan door het bestandsbeheer als administrator uit te voeren. Bij het pakket per gebruiker kan dat niet (“Toegang geweigerd.”); voer de `.msi` opnieuw uit en kies *Repair* (herstellen).
+- **“7-ZSTar integreren in het contextmenu” uitzetten** (bestandsbeheer, **Extra > Opties... > 7-ZSTar**) haalt het rechtsklikitem weg, net als in het officiële 7-Zip. Bij het pakket voor alle gebruikers zet je het weer aan door het bestandsbeheer uit te voeren via *Als administrator uitvoeren*. Bij het pakket per gebruiker kan dat niet (“Toegang geweigerd.”); voer de `.msi` opnieuw uit en kies *Repair* (herstellen).
 - **Stille of externe installaties op Windows 11** (via SSH, of vanuit een uitrolprogramma) slagen, maar het item op het eerste niveau wordt niet geregistreerd, dus 7-ZSTar verschijnt alleen onder “Meer opties weergeven”. [Meer in de installatiegids](../install/INSTALL.nl.md#het-windows-11-contextmenu).
 - **Tar.br, tar.lz4, tar.lz5, tar.liz of tar.Z uitpakken** is voor jou nog steeds één stap, maar gaat via een tijdelijk bestand dat daarna wordt verwijderd.
 

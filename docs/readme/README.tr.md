@@ -45,7 +45,7 @@ tar.zst, zip’ten %15 ila %23 daha küçük çıktı ve daha yavaş olmadı. En
 |---|---|---|---|
 | Yönetici hakları gerekir | Evet | Hayır | Hayır |
 | Sağ tık menüsü | Windows 11’de ilk düzey | Klasik menü (Windows 11’de “Daha fazla seçenek göster” altında) | Yok |
-| Start menu (Başlat menüsü) girişi | Evet | Evet | Hayır |
+| Başlat Menüsü girişi | Evet | Evet | Hayır |
 
 Her biri x86 ve arm64 için de vardır; Windows’unuzla eşleşeni seçin. 64 bit Windows’ta x86 paketlerinde sağ tık menüsü olmayabilir; arm64 derlemeleri henüz gerçek donanımda denenmedi. 7-ZSTar, resmî 7-Zip’i etkilemeden onunla yan yana kurulur.
 
@@ -66,7 +66,7 @@ PowerShell’de anahtarı tırnak içine alın: `7z a "-ttar.zst" backup.tar.zst
 
 ## Bilmekte fayda var
 
-- **“7-ZSTar'i sağ tık menüsüne ekle” seçeneğini kapatmak** (dosya yöneticisinde **Araçlar > Ayarlar... > 7-ZSTar**), resmî 7-Zip’te olduğu gibi sağ tık girişini kaldırır. Tüm kullanıcılar paketinde, dosya yöneticisini yönetici olarak çalıştırarak yeniden açabilirsiniz. Kullanıcıya özel pakette açamazsınız (“Erişim engellendi.”); `.msi` dosyasını yeniden çalıştırın ve *Repair* (onar) seçin.
+- **“7-ZSTar'i sağ tık menüsüne ekle” seçeneğini kapatmak** (dosya yöneticisinde **Araçlar > Ayarlar... > 7-ZSTar**), resmî 7-Zip’te olduğu gibi sağ tık girişini kaldırır. Tüm kullanıcılar paketinde, dosya yöneticisini *Yönetici olarak çalıştır* ile başlatarak yeniden açabilirsiniz. Kullanıcıya özel pakette açamazsınız (“Erişim engellendi.”); `.msi` dosyasını yeniden çalıştırın ve *Repair* (onar) seçin.
 - **Windows 11’de sessiz ya da uzaktan kurulumlar** (SSH üzerinden ya da bir dağıtım aracından) başarılı olur, ama ilk düzey giriş kaydedilmez; bu yüzden 7-ZSTar yalnızca “Daha fazla seçenek göster” altında görünür. [Ayrıntılar kurulum belgesinde](../install/INSTALL.tr.md#windows-11-sağ-tık-menüsü).
 - **tar.br, tar.lz4, tar.lz5, tar.liz veya tar.Z açmak** sizin için yine tek adımdır, ancak işlem sonradan silinen geçici bir dosyadan geçer.
 

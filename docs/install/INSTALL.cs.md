@@ -154,7 +154,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Program Files\7-ZSTar\Setup-ShellIn
 
 který odebere jen položky 7-ZSTar, nebo po odinstalaci typy znovu přiřadit v Nastavení > Aplikace > Výchozí aplikace. Ve správci souborů to znamená kliknout na každou buňku ve vlastním sloupci, která ukazuje 7-ZSTar, dokud není prázdná, pak OK; nevybírejte všechny řádky a nemačkejte „+“, které použije jeden stav na všechny vybrané řádky, a tak vymaže i formáty, které patří jinému programu, například oficiálnímu 7-Zip.
 
-Přidružení nastavená ve sloupci **Všichni uživatelé** se čištění při odinstalaci vůbec nedotkne a zůstanou ukazovat všechny účty na odebraný program. Správce, který nějaká nastavil, by měl tyto buňky vymazat ze správce souborů spuštěného jako správce, pak OK, před odinstalací; `-RemoveAssociations` tento sloupec nezasáhne. Vymazání těsně před odinstalací je neškodné, i když tam smaže vlastní registraci balíčku (viz výše), protože ji odinstalace stejně odebere. Balíček pro jednoho uživatele problém s ostatními účty nemá a oficiální 7-Zip se chová stejně.
+Přidružení nastavená ve sloupci **Všichni uživatelé** se čištění při odinstalaci vůbec nedotkne a zůstanou ukazovat všechny účty na odebraný program. Správce, který nějaká nastavil, by měl tyto buňky vymazat ze správce souborů spuštěného příkazem „Spustit jako správce“, pak OK, před odinstalací; `-RemoveAssociations` tento sloupec nezasáhne. Vymazání těsně před odinstalací je neškodné, i když tam smaže vlastní registraci balíčku (viz výše), protože ji odinstalace stejně odebere. Balíček pro jednoho uživatele problém s ostatními účty nemá a oficiální 7-Zip se chová stejně.
 
 ## Jazyky
 

@@ -64,7 +64,7 @@ După ce hash-urile se potrivesc și sunteți mulțumit de proveniența fișieru
   oricum („Executați oricum”; „Run anyway” într-un Windows în limba engleză). Poate fi nevoie să extindeți mai întâi
   fereastra de avertizare: pe mașina cu Windows 10 testată, aceasta oferea doar un buton
   pentru a nu rula fișierul, până când se făcea clic pe linkul de sub mesajul ei. `.msi`-ul pentru toți utilizatorii
-  cere apoi aprobarea administratorului, ca oricare alt program de instalare.
+  cere apoi aprobarea Administratorului, ca oricare alt program de instalare.
 - **`.zip`** - extrageți-l și porniți `7zFM.exe` sau `7z.exe` din folder. Programele
   din interior sunt și ele nesemnate, așa că Windows poate afișa același avertisment
   prima dată când porniți fiecare dintre ele.
@@ -105,7 +105,7 @@ iar verificarea `SHA256SUMS` nu schimbă acest lucru. Ce schimbă lucrurile este
 aplicațiilor în aplicația Securitate Windows, la „Setări Controlul inteligent al aplicațiilor” (pe Windows în chineză tradițională testat: Windows 安全性, 應用程式與瀏覽器控制, 智慧型應用程式控制設定).
 În test, alegerea opțiunii de dezactivare a avut efect imediat, fără repornire, iar
 programele de instalare s-au instalat apoi. Aceasta este o setare pentru întregul PC și nimic
-din cele de aici nu vă cere să o schimbați: decizia vă aparține dumneavoastră sau administratorului dumneavoastră, pe un PC gestionat.
+din cele de aici nu vă cere să o schimbați: decizia vă aparține dumneavoastră sau Administratorului dumneavoastră, pe un PC gestionat.
 
 Este bine de știut mai întâi și dacă poate fi reactivat. Întrebările frecvente Microsoft
 spun că actualizările recente ale Windows permit reactivarea Controlului inteligent al aplicațiilor
@@ -126,8 +126,8 @@ cu `-PerUser`):
 |---|---|---|---|
 | Se instalează pentru | toate conturile | contul care instalează | - |
 | Meniul contextual din Explorer | da | da, doar meniul clasic ([mai jos](#pachetul-pe-utilizator)) | nu |
-| Intrare în Start menu (meniul Start) | da | da | nu |
-| Necesită administrator | da | nu | nu |
+| Intrare în Meniul Start | da | da | nu |
+| Necesită Administrator | da | nu | nu |
 | Eliminare | *Aplicații instalate* din Setări | *Aplicații instalate* din Setări | ștergeți folderul |
 
 *Aplicații instalate* este denumirea din Windows 11. Windows 10 numește aceeași pagină *Aplicații și
@@ -211,7 +211,7 @@ instrument de administrare - raportează totuși succes, dar pachetul pentru Win
 este înregistrat, așa că apare doar meniul clasic de sub *Afișați mai multe opțiuni*. În
 test, `msiexec /i ... /qn` dintr-o sesiune SSH (sesiunea 0) s-a încheiat cu 0, în timp ce
 `Setup-ShellIntegration.ps1` a raportat `registration failed: 0x80070005`
-(Access is denied.); același `.msi` instalat din sesiunea de consolă a unui administrator
+(Access is denied.); același `.msi` instalat din sesiunea de consolă a unui Administrator
 s-a înregistrat normal.
 
 `-Status` afișează ce este și ce nu este configurat.
@@ -225,7 +225,7 @@ așa cum face pachetul pe mașină:
 
 - **Fără meniul de prim nivel din Windows 11.** În Windows 11, 7-ZSTar se află în
   meniul contextual sub *Afișați mai multe opțiuni*. Intrarea de prim nivel are nevoie ca
-  certificatul autosemnat să fie de încredere la nivel de mașină, ceea ce cere un administrator:
+  certificatul autosemnat să fie de încredere la nivel de mașină, ceea ce cere un Administrator:
   măsurat pe Windows 11, un certificat din `CurrentUser\TrustedPeople` nu
   este suficient pentru ca Windows să implementeze pachetul. De aceea pachetul pe utilizator
   o lasă deoparte.
@@ -283,7 +283,7 @@ a returnat `7zFM.exe` pentru ambele.
 a pachetului pe mașină pentru acel format.** Coloana aceea scrie
 `HKLM\Software\Classes`, unde pachetul pe mașină își ține ProgID-urile și
 intrările *Deschidere cu* pe care le anunță, iar ștergerea unui format de acolo (ceea ce necesită
-managerul de fișiere pornit cu „run as administrator” - rulat ca administrator) șterge integral acele chei - pentru fiecare
+managerul de fișiere pornit cu „Executare ca administrator”) șterge integral acele chei - pentru fiecare
 cont. Repararea a restabilit aceleași chei pentru pachetul pe utilizator; pentru acesta
 nu a fost măsurat.
 
@@ -328,8 +328,8 @@ tuturor rândurilor selectate și șterge astfel și formatele care aparțin alt
 
 Asocierile setate în coloana **Toți utilizatorii** nu sunt atinse deloc de curățarea
 de la dezinstalare și rămân îndreptând fiecare cont către programul eliminat.
-Un administrator care a setat vreuna ar trebui să șteargă acele celule, dintr-un manager de fișiere rulat
-ca administrator, apoi Bine, înainte de dezinstalare; `-RemoveAssociations` nu
+Un Administrator care a setat vreuna ar trebui să șteargă acele celule, dintr-un manager de fișiere pornit
+cu „Executare ca administrator”, apoi Bine, înainte de dezinstalare; `-RemoveAssociations` nu
 ajunge la această coloană. Ștergerea ei chiar înainte de o dezinstalare este inofensivă, chiar dacă
 șterge și înregistrarea proprie a pachetului de acolo (mai sus), deoarece
 dezinstalarea o elimină oricum. Pachetul pe utilizator nu are problema

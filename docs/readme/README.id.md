@@ -43,7 +43,7 @@ Kebanyakan orang cukup mengambil `.msi` x64 untuk semua pengguna dari [Releases]
 
 | | `.msi` untuk semua pengguna | `-user.msi` hanya untuk Anda | `.zip` portabel |
 |---|---|---|---|
-| Memerlukan hak administrator | Ya | Tidak | Tidak |
+| Memerlukan hak Administrator | Ya | Tidak | Tidak |
 | Menu klik kanan | Tingkat pertama di Windows 11 | Menu klasik (di bawah “Tampilkan opsi lainnya” di Windows 11) | Tidak ada |
 | Entri di Menu Mulai | Ya | Ya | Tidak |
 
@@ -66,7 +66,7 @@ Di PowerShell, beri tanda kutip pada switch-nya: `7z a "-ttar.zst" backup.tar.zs
 
 ## Perlu diketahui
 
-- **Mematikan “Integrasikan 7-ZSTar ke cangkang menu konteks”** (pengelola file, **Peralatan > Pilihan > 7-ZSTar**) menghapus entri klik kanan, sama seperti di 7-Zip resmi. Dengan paket untuk semua pengguna, nyalakan kembali dengan menjalankan pengelola file sebagai administrator. Dengan paket per pengguna hal itu tidak bisa dilakukan (“Access is denied.”); jalankan `.msi` itu lagi dan pilih *Repair* (perbaiki).
+- **Mematikan “Integrasikan 7-ZSTar ke cangkang menu konteks”** (pengelola file, **Peralatan > Pilihan > 7-ZSTar**) menghapus entri klik kanan, sama seperti di 7-Zip resmi. Dengan paket untuk semua pengguna, nyalakan kembali dengan menjalankan pengelola file lewat "Jalankan sebagai administrator". Dengan paket per pengguna hal itu tidak bisa dilakukan (“Access is denied.”); jalankan `.msi` itu lagi dan pilih *Repair* (perbaiki).
 - **Instalasi senyap atau jarak jauh di Windows 11** (lewat SSH, atau dari alat deployment) berhasil, tetapi entri tingkat pertamanya tidak terdaftar, sehingga 7-ZSTar hanya muncul di bawah “Tampilkan opsi lainnya”. [Selengkapnya di panduan instalasi](../install/INSTALL.id.md#menu-klik-kanan-windows-11).
 - **Mengekstrak tar.br, tar.lz4, tar.lz5, tar.liz, atau tar.Z** bagi Anda tetap satu langkah, tetapi prosesnya melewati file sementara yang dihapus setelahnya.
 

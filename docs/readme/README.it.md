@@ -43,9 +43,9 @@ Per la maggior parte delle persone va bene l’`.msi` x64 per tutti gli utenti, 
 
 | | `.msi` per tutti gli utenti | Solo per te `-user.msi` | `.zip` portatile |
 |---|---|---|---|
-| Richiede privilegi di administrator (amministratore) | Sì | No | No |
+| Richiede privilegi di amministratore | Sì | No | No |
 | Menu contestuale | Primo livello su Windows 11 | Menu classico (su Windows 11 sotto «Mostra altre opzioni») | Nessuno |
-| Voce nel *Start menu* (menu Start) | Sì | Sì | No |
+| Voce nel *Menu Start* | Sì | Sì | No |
 
 Ognuno è disponibile anche per x86 e arm64; scegli quello che corrisponde al tuo Windows. Su Windows a 64 bit i pacchetti x86 potrebbero non avere il menu contestuale, e le build arm64 non sono ancora state provate su hardware reale. 7-ZSTar si installa accanto al 7-Zip ufficiale senza influire su di esso.
 
@@ -66,7 +66,7 @@ In PowerShell, metti l’opzione tra virgolette: `7z a "-ttar.zst" backup.tar.zs
 
 ## Da sapere
 
-- **Disattivare «Integra 7-ZSTar nel menù contestuale della shell»** (file manager, **Strumenti > Opzioni > 7-ZSTar**) rimuove la voce dal menu contestuale, come nel 7-Zip ufficiale. Con il pacchetto per tutti gli utenti, per riattivarla basta avviare il file manager come administrator (amministratore). Con il pacchetto per singolo utente non si può («Accesso negato.»); esegui di nuovo l’`.msi` e scegli *Repair* (ripristina l’installazione).
+- **Disattivare «Integra 7-ZSTar nel menù contestuale della shell»** (file manager, **Strumenti > Opzioni > 7-ZSTar**) rimuove la voce dal menu contestuale, come nel 7-Zip ufficiale. Con il pacchetto per tutti gli utenti, per riattivarla basta avviare il file manager con *Esegui come amministratore*. Con il pacchetto per singolo utente non si può («Accesso negato.»); esegui di nuovo l’`.msi` e scegli *Repair* (ripristina l’installazione).
 - **Le installazioni silenziose o da remoto su Windows 11** (via SSH, o da uno strumento di distribuzione) riescono, ma la voce al primo livello non viene registrata, quindi 7-ZSTar compare solo sotto «Mostra altre opzioni». [Altri dettagli nelle istruzioni di installazione](../install/INSTALL.it.md#il-menu-contestuale-di-windows-11).
 - **Estrarre tar.br, tar.lz4, tar.lz5, tar.liz o tar.Z** resta un solo passaggio per te, ma passa da un file temporaneo che poi viene eliminato.
 
