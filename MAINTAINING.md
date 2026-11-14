@@ -694,11 +694,18 @@ reads it the same way on both networks. Nothing in the build regenerates the
 picture or decodes it, so if the address ever changes, the QR must be remade
 **and decoded back** (OpenCV's `QRCodeDetector` works) and compared character
 for character with the text, capitals included - they are the EIP-55 checksum.
-What `Test-Smoke.ps1` does check ("all README*.md carry one identical donation
-address and the QR picture") is that the ten READMEs print the same address
-exactly once each and reference a non-empty `docs/donate-qr.png`; it neither
+What `Test-Smoke.ps1` does check ("all READMEs carry one identical donation
+address and the QR picture") is that every README - one per language on
+`README.md`'s language bar - prints the same address exactly once and
+references a non-empty `docs/donate-qr.png`; it neither
 reads the picture nor verifies the checksum. A QR that scans to a different
 address than the text beside it is the failure this guards against.
+
+The languages the README and the install guide come in are the ones on
+`README.md`'s own language bar. Adding a language means adding
+`docs/readme/README.<tag>.md`, `docs/install/INSTALL.<tag>.md` and an entry on
+every language bar of both; `Test-Smoke.ps1` fails until all of them are there,
+and its two family checks name each file that is missing or out of step.
 
 ### 3.16 The freshness stamp only watches the paths it is told about
 

@@ -318,12 +318,13 @@ if (Test-Path $donateJson) {
     }
 }
 
-# --- donation address in the READMEs ---------------------------------------
+# --- README and install-guide helpers --------------------------------------
 #
-# The English README.md sits at the repository root and the nine translations
-# in docs\readme\ (moved there 2026-11-12), so links differ by directory:
-# references are resolved against the file that holds them and compared as
-# full paths, never as literal strings.
+# The English README.md sits at the repository root and its translations in
+# docs\readme\ (README.<tag>.md, moved there 2026-11-12); the install guide is
+# docs\INSTALL.md with its translations in docs\install\ (INSTALL.<tag>.md).
+# Links differ by directory, so references are resolved against the file that
+# holds them and compared as full paths, never as literal strings.
 function Get-ReadmeFiles {
     $all = @(Get-Item -LiteralPath (Join-Path $RepoRoot 'README.md') -ErrorAction SilentlyContinue)
     $dir = Join-Path $RepoRoot 'docs\readme'
@@ -331,6 +332,20 @@ function Get-ReadmeFiles {
         $all += @(Get-ChildItem -LiteralPath $dir -Filter 'README*.md' -File | Sort-Object Name)
     }
     return @($all | Where-Object { $_ })
+}
+function Get-InstallFiles {
+    $all = @(Get-Item -LiteralPath (Join-Path $RepoRoot 'docs\INSTALL.md') -ErrorAction SilentlyContinue)
+    $dir = Join-Path $RepoRoot 'docs\install'
+    if (Test-Path -LiteralPath $dir) {
+        $all += @(Get-ChildItem -LiteralPath $dir -Filter 'INSTALL*.md' -File | Sort-Object Name)
+    }
+    return @($all | Where-Object { $_ })
+}
+function Get-DocLang([System.IO.FileInfo]$File) {
+    # README.md and docs\INSTALL.md are English; the translations carry the tag.
+    $m = [regex]::Match($File.Name, '^(?:README|INSTALL)\.(.+)\.md$')
+    if ($m.Success) { return $m.Groups[1].Value }
+    return 'en'
 }
 function Get-LinkTargets([System.IO.FileInfo]$File, [string]$Text, [string]$LeafPattern) {
     # Link targets (markdown "](...)" and HTML src="...") whose last path
@@ -352,9 +367,68 @@ function Get-LinkTargets([System.IO.FileInfo]$File, [string]$Text, [string]$Leaf
     }
     return $out
 }
-function Get-ReadmeLabel([System.IO.FileInfo]$File) {
-    return $File.FullName.Substring($RepoRoot.Length).TrimStart('\')
+function Get-RepoLabel([string]$FullPath) {
+    return $FullPath.Substring($RepoRoot.Length).TrimStart('\')
 }
+function Show-Invisible([string]$Text) {
+    # Format characters (U+200F, U+2066..U+2069 and the like, all over the RTL
+    # translations) print as nothing, so a quoted bar item that is wrong only
+    # because of one would look right in the message.
+    return [regex]::Replace($Text, '\p{Cf}', { param($m) '<U+{0:X4}>' -f [int][char]$m.Value })
+}
+# The language bar: the first line outside code fences that uses the
+# " <U+00B7> " separator and links a README*.md or INSTALL*.md (the Download /
+# Website / Changelog line uses the same separator but links neither). Found
+# this way, not by line number, because translations carry a sync comment
+# above it. Each item must be "**Name**" (the page's own language) or
+# "[Name](target)"; items that are not are returned in .Bad, so a damaged bar
+# is reported as damaged instead of being skipped for some other line.
+function Get-LanguageBar([string]$Text) {
+    # The separator is U+00B7; kept out of this file so it stays ASCII.
+    $sep = " $([char]0xB7) "
+    $fence = $false
+    foreach ($line in ($Text -split "`r?`n")) {
+        if ($line.TrimStart().StartsWith('```')) { $fence = -not $fence; continue }
+        if ($fence -or -not $line.Contains($sep)) { continue }
+        if ($line -notmatch '\]\([^)]*(README|INSTALL)[^)/]*\.md\)') { continue }
+        $items = @($line.Trim() -split [regex]::Escape($sep))
+        $bad = @($items | Where-Object { $_ -notmatch '^(\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\))$' })
+        return [pscustomobject]@{ Line = $line; Items = $items; Bad = $bad }
+    }
+    return $null
+}
+# The languages the documentation is in: 'en' for README.md itself plus the
+# tag of every README its language bar links. Every README, every install
+# guide and every bar is held to this list. Empty when README.md has no bar or
+# a damaged one.
+function Get-DocLanguageTags {
+    $en = Join-Path $RepoRoot 'README.md'
+    if (-not (Test-Path -LiteralPath $en)) { return @() }
+    $bar = Get-LanguageBar (Get-Content -LiteralPath $en -Raw -Encoding UTF8)
+    if (-not $bar -or $bar.Bad.Count) { return @() }
+    $tags = @('en')
+    foreach ($p in (Get-LinkTargets (Get-Item -LiteralPath $en) $bar.Line '^README(\..+)?\.md$')) {
+        $tags += Get-DocLang ([System.IO.FileInfo]$p)
+    }
+    return $tags
+}
+# Empty when $Files are exactly the languages on README.md's bar; otherwise one
+# message naming the languages that are missing or that the bar does not list.
+function Get-DocCountProblem([System.IO.FileInfo[]]$Files, [string]$What) {
+    $want = @(Get-DocLanguageTags)
+    if ($want.Count -lt 2) { return "README.md has no well-formed language bar to count the languages from" }
+    $have = @($Files | ForEach-Object { Get-DocLang $_ })
+    $missing = @($want | Where-Object { $have -notcontains $_ })
+    $extra = @($have | Where-Object { $want -notcontains $_ })
+    if (-not $missing -and -not $extra -and $have.Count -eq $want.Count) { return '' }
+    $parts = @()
+    if ($missing) { $parts += "missing: $($missing -join ', ')" }
+    if ($extra) { $parts += "not on the bar: $($extra -join ', ')" }
+    if (-not $parts) { $parts += 'a language is there twice' }
+    return "README.md's language bar lists $($want.Count) languages and $What has $($have.Count); $($parts -join '; ')"
+}
+
+# --- donation address in the READMEs ---------------------------------------
 #
 # The wallet address is printed in every README and encoded in
 # docs\donate-qr.png. Transfers cannot be reversed, nothing else in the build
@@ -364,7 +438,8 @@ function Get-ReadmeLabel([System.IO.FileInfo]$File) {
 # QR picture; it is not an EIP-55 checksum check (PowerShell has no keccak).
 Check "all READMEs carry one identical donation address and the QR picture" {
     $readmes = Get-ReadmeFiles
-    if ($readmes.Count -ne 10) { return "expected 10 READMEs (README.md + docs\readme\README*.md), found $($readmes.Count): $(($readmes | ForEach-Object { Get-ReadmeLabel $_ }) -join ', ')" }
+    $count = Get-DocCountProblem $readmes 'README.md + docs\readme\README*.md'
+    if ($count) { return $count }
     $qr = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot 'docs\donate-qr.png'))
     if (-not (Test-Path -LiteralPath $qr) -or (Get-Item -LiteralPath $qr).Length -eq 0) { return "docs\donate-qr.png is missing or empty" }
     $addr = @{}
@@ -372,9 +447,9 @@ Check "all READMEs carry one identical donation address and the QR picture" {
         $t = Get-Content -LiteralPath $f.FullName -Raw -Encoding UTF8
         # [regex]::Matches is case-sensitive, and the capitals are the checksum.
         $m = [regex]::Matches($t, '0x[0-9a-fA-F]{40}')
-        if ($m.Count -ne 1) { return "$(Get-ReadmeLabel $f) has $($m.Count) 0x addresses, expected exactly 1" }
+        if ($m.Count -ne 1) { return "$(Get-RepoLabel $f.FullName) has $($m.Count) 0x addresses, expected exactly 1" }
         $qrRefs = @(Get-LinkTargets $f $t '^donate-qr\.png$')
-        if (-not ($qrRefs -contains $qr)) { return "$(Get-ReadmeLabel $f) does not link docs\donate-qr.png (found: $($qrRefs -join ', '))" }
+        if (-not ($qrRefs -contains $qr)) { return "$(Get-RepoLabel $f.FullName) does not link docs\donate-qr.png (found: $($qrRefs -join ', '))" }
         $addr[$f.Name] = $m[0].Value
     }
     $ref = $readmes[0]
@@ -382,41 +457,93 @@ Check "all READMEs carry one identical donation address and the QR picture" {
     if ($odd) { return "address differs from $($ref.Name) ($($addr[$ref.Name])) in: $(($odd.Name) -join ', ')" }
 }
 
-# --- README structure -------------------------------------------------------
+# --- README and install-guide families -------------------------------------
 #
-# The ten READMEs are translations of one document, and nothing else in the
-# build notices when one falls behind: three paragraphs added to README.md
-# reached none of the seven newer translations until a manual audit found them.
-# This compares counts only, so it says nothing about wording, but it catches a
-# missing section, a missing link to docs\INSTALL.md and a language bar that was
-# not extended when a language was added.
-Check "all READMEs have the same section count, INSTALL.md link count and a ten-item language bar" {
-    $readmes = Get-ReadmeFiles
-    if ($readmes.Count -ne 10) { return "expected 10 READMEs (README.md + docs\readme\README*.md), found $($readmes.Count): $(($readmes | ForEach-Object { Get-ReadmeLabel $_ }) -join ', ')" }
-    $install = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot 'docs\INSTALL.md'))
-    # The bar's separator is U+00B7; kept out of this file so it stays ASCII.
-    $sep = [regex]::Escape(" $([char]0xB7) ")
+# The READMEs are translations of one document and the install guides of
+# another, and nothing else in the build notices when one falls behind: three
+# paragraphs added to README.md once reached none of the newer translations
+# until a manual audit found them. The languages come from README.md's own
+# language bar, so adding a language means adding its README, its install guide
+# and its entry on every bar; this fails until all of them are there, and names
+# every file that is not (not just the first). It compares counts and links
+# only, so it says nothing about wording, but it catches a missing or extra
+# language, a missing or extra section, a README that does not lead to its own
+# install guide (or a guide that does not lead back to its README), and a bar
+# that misses a language or links a file that is not there.
+#
+# Nothing in the repository tests these checks' failure paths. When changing the
+# bar or heading patterns, run them against a damaged copy of the docs (an
+# INSTALL.<tag>.md removed, one bar item dropped, an extra "## " line) and see
+# each one fail.
+function Test-DocFamily {
+    param([System.IO.FileInfo[]]$Files, [string]$Kind, [string]$What, [string]$PartnerName, [scriptblock]$Partner)
+    $count = Get-DocCountProblem $Files $What
+    if ($count) { return $count }
+    $n = $Files.Count
+    $all = @($Files | ForEach-Object { $_.FullName })
+    $problems = New-Object System.Collections.Generic.List[string]
     $stat = @{}
-    foreach ($f in $readmes) {
+    foreach ($f in $Files) {
+        $label = Get-RepoLabel $f.FullName
         $t = Get-Content -LiteralPath $f.FullName -Raw -Encoding UTF8
+        $bar = Get-LanguageBar $t
+        if (-not $bar) {
+            $problems.Add("$label has no language bar (a line linking the other $Kind files, items separated by ' <U+00B7> ')")
+        } elseif ($bar.Bad.Count) {
+            $problems.Add("$label language bar has items that are neither **Name** nor [Name](target): $(($bar.Bad | ForEach-Object { "'$(Show-Invisible $_)'" }) -join ', ')")
+        } else {
+            $barIssues = @()
+            if ($bar.Items.Count -ne $n) { $barIssues += "$($bar.Items.Count) items, expected $n" }
+            $linked = @(Get-LinkTargets $f $bar.Line "^$Kind(\..+)?\.md$")
+            $notLinked = @($all | Where-Object { $_ -ne $f.FullName -and $linked -notcontains $_ })
+            if ($notLinked) { $barIssues += "does not link $(($notLinked | ForEach-Object { Get-RepoLabel $_ }) -join ', ')" }
+            $dead = @($linked | Where-Object { -not (Test-Path -LiteralPath $_) })
+            if ($dead) { $barIssues += "links missing $(($dead | ForEach-Object { Get-RepoLabel $_ }) -join ', ')" }
+            if ($barIssues) { $problems.Add("$label language bar: $($barIssues -join '; ')") }
+        }
+        # Not "$partner": variable names ignore case, so that would be the
+        # [scriptblock] parameter itself.
+        $counterpart = & $Partner $f
+        if (-not (Test-Path -LiteralPath $counterpart)) { $problems.Add("$label has no counterpart $(Get-RepoLabel $counterpart)"); continue }
         # A "## " line inside a code fence is not a section.
         $prose = [regex]::Replace($t, '(?s)```.*?```', '')
-        $bar = @(@($t -split "`r?`n")[5] -split $sep).Count
-        if ($bar -ne 10) { return "$(Get-ReadmeLabel $f) line 6 has $bar language-bar items, expected 10" }
-        $stat[$f.Name] = @{
-            Sections = [regex]::Matches($prose, '(?m)^## ').Count
-            InstallLinks = @(Get-LinkTargets $f $prose '^INSTALL\.md$' | Where-Object { $_ -eq $install }).Count
+        $stat[$f.FullName] = @{
+            H2 = [regex]::Matches($prose, '(?m)^## ').Count
+            H3 = [regex]::Matches($prose, '(?m)^### ').Count
+            Partner = @(Get-LinkTargets $f $prose '^(README|INSTALL)(\..+)?\.md$' | Where-Object { $_ -eq $counterpart }).Count
         }
+        if ($stat[$f.FullName].Partner -lt 1) { $problems.Add("$label never links $(Get-RepoLabel $counterpart)") }
     }
-    foreach ($what in 'Sections', 'InstallLinks') {
+    $counted = @($Files | Where-Object { $stat.ContainsKey($_.FullName) })
+    $names = [ordered]@{ H2 = '"## " headings'; H3 = '"### " headings'; Partner = "links to its own $PartnerName" }
+    foreach ($key in $names.Keys) {
         # Compare with the most common value, so the file that is out of step is
         # the one named, not whichever sorts first.
-        $common = ($readmes | Group-Object { $stat[$_.Name][$what] } | Sort-Object Count -Descending | Select-Object -First 1).Name
-        $odd = @($readmes | Where-Object { "$($stat[$_.Name][$what])" -ne $common })
+        $common = ($counted | Group-Object { $stat[$_.FullName][$key] } | Sort-Object Count -Descending | Select-Object -First 1).Name
+        $odd = @($counted | Where-Object { "$($stat[$_.FullName][$key])" -ne $common })
         if ($odd) {
-            return "${what}: most READMEs have $common, but " + (($odd | ForEach-Object { "$($_.Name)=$($stat[$_.Name][$what])" }) -join ', ')
+            $problems.Add("$($names[$key]): most $Kind files have $common, but " + (($odd | ForEach-Object { "$(Get-RepoLabel $_.FullName)=$($stat[$_.FullName][$key])" }) -join ', '))
         }
     }
+    return ($problems -join '; ')
+}
+# Joined into one string: anything else a function writes to the pipeline would
+# turn the result into an array, which Check counts as a pass.
+Check "all READMEs: one per language on README.md's bar, same sections, each links its install guide, full bars" {
+    return (@(Test-DocFamily -Files (Get-ReadmeFiles) -Kind 'README' -What 'README.md + docs\readme\README*.md' -PartnerName 'install guide' -Partner {
+        param($f)
+        $lang = Get-DocLang $f
+        if ($lang -eq 'en') { return [System.IO.Path]::GetFullPath((Join-Path $RepoRoot 'docs\INSTALL.md')) }
+        return [System.IO.Path]::GetFullPath((Join-Path $RepoRoot "docs\install\INSTALL.$lang.md"))
+    }) -join '; ')
+}
+Check "all install guides: one per language on README.md's bar, same sections, each links its README, full bars" {
+    return (@(Test-DocFamily -Files (Get-InstallFiles) -Kind 'INSTALL' -What 'docs\INSTALL.md + docs\install\INSTALL*.md' -PartnerName 'README' -Partner {
+        param($f)
+        $lang = Get-DocLang $f
+        if ($lang -eq 'en') { return [System.IO.Path]::GetFullPath((Join-Path $RepoRoot 'README.md')) }
+        return [System.IO.Path]::GetFullPath((Join-Path $RepoRoot "docs\readme\README.$lang.md"))
+    }) -join '; ')
 }
 
 # --- licence documents -----------------------------------------------------
