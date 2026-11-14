@@ -32,7 +32,7 @@ tar.zst 比 zip 小 15% 到 23%，速度也不輸 zip。最小的檔案還是 7z
 
 - **一步壓縮：** tar.zst、tar.br、tar.lz4、tar.lz5、tar.liz、tar.gz、tar.bz2、tar.xz
 - **一步解壓縮：** 上面全部，再加上 tar.lzma 和 tar.Z
-- **新增的編碼器：** zstd、brotli、lz4、lz5、lizard（可以單獨使用，也可以用在 .7z 裡），以及 fast-lzma2（另一種 LZMA2 編碼器）
+- **新增的編解碼器：** zstd、brotli、lz4、lz5、lizard（可以單獨使用，也可以用在 .7z 裡），以及 fast-lzma2（另一種 LZMA2 編碼器）
 - 官方 7-Zip 能處理的格式，這裡全部都能用。
 
 ## 下載
