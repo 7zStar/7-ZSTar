@@ -705,7 +705,8 @@ The languages the README and the install guide come in are the ones on
 `README.md`'s own language bar. Adding a language means adding
 `docs/readme/README.<tag>.md`, `docs/install/INSTALL.<tag>.md` and an entry on
 every language bar of both; `Test-Smoke.ps1` fails until all of them are there,
-and its two family checks name each file that is missing or out of step.
+and its two family checks name every language that is missing and every file
+that is out of step.
 
 ### 3.16 The freshness stamp only watches the paths it is told about
 
